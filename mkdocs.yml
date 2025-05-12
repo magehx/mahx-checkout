@@ -1,0 +1,54 @@
+site_name: MAHXCheckout
+repo_url: https://github.com/magehx/mahx-checkout
+repo_name: magehx/mahx-checkout
+nav:
+  - Home: index.md
+  - Why MAHX Checkout?: why-mahx-checkout.md
+  - The Puzzle Piece - HTMX: puzzle-htmx.md
+  - Layout: layouts.md
+  - Address Field Renderers: address-renderers.md
+  - Steps Implementation: steps.md
+theme:
+  name: material
+  favicon: assets/favicon.ico
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.sections
+    - navigation.path
+    - toc.follow
+    - toc.integrate
+    - navigation.top
+  logo: assets/logo-s.png
+  font:
+    text: Inter
+    code: Fira Code
+  palette:
+    - scheme: default
+      primary: blue
+      accent: orange
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue
+      accent: green
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+extra:
+  font:
+    text: https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap
+    code: https://fonts.googleapis.com/css2?family=Fira+Code&display=swap
