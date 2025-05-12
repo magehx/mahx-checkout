@@ -1,0 +1,40 @@
+<?php
+
+use Magento\Framework\View\Element\Template;
+use MageHx\MahxCheckout\ViewModel\GuestEmail;
+
+/** @var Template $block */
+/** @var Closure $eHtml */
+/** @var Closure $eHtmlAttr */
+/** @var string $formKey */
+/** @var Closure $viewModelProvider */
+/** @var GuestEmail $viewModel */
+$viewModel = $viewModelProvider(GuestEmail::class);
+?>
+<div id="guest-email-form-container">
+    <form id="guest-email-form" novalidate="novalidate" x-data="GuestEmailForm">
+        <div class="form-control w-full max-w-sm">
+            <label class="label" for="gef-email">
+                <span class="label-text">
+                    <?= $eHtml(__('Email Address')) ?>
+                    <span class="text-red-500 ml-1" aria-hidden="true">*</span>
+                </span>
+            </label>
+            <input
+                id="gef-email" type="text" name="email" placeholder="joe@example.com"
+                class="input input-bordered w-full max-w-sm" value="<?= $eHtmlAttr($viewModel->getEmail()) ?>"
+                @change="validate" @keydown.enter.prevent="validate"
+                hx-target="#guest-email-form-container"
+                hx-swap="outerHTML"
+                hx-trigger="mahxcheckout-guest-email-form-validated from:body"
+                hx-post="<?= $block->getUrl('mahxcheckout/form/guestEmailPost')?>"
+                hx-on:afterSwap="dispatchEmailSavedEvent"
+            />
+        </div>
+        <?= $formKey ?>
+    </form>
+
+    <div class="max-w-xs my-12">
+        <div class="divider"></div>
+    </div>
+</div>

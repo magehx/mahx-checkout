@@ -1,0 +1,64 @@
+<?php
+
+use Magento\Framework\View\Element\Template;
+use MageHx\MahxCheckout\ViewModel\BillingAddressCards;
+
+/** @var Template $block */
+/** @var Closure $eHtml */
+/** @var Closure $eHtmlAttr */
+/** @var Closure $eUrl */
+/** @var Closure $classNames */
+/** @var Closure $viewModelProvider */
+/** @var BillingAddressCards $viewModel */
+
+$viewModel = $viewModelProvider(BillingAddressCards::class);
+
+if (!$viewModel->canShowCards()) {
+    return;
+}
+?>
+<div id="billing-address-cards" class="my-8">
+    <ul class="space-y-4">
+        <?php foreach ($viewModel->getAddressCards() as $addressCard): ?>
+            <?php
+                $id = $addressCard['id'];
+                $isSelected = $addressCard['isSelected'];
+                $inputId = "bac-input-{$id}";
+            ?>
+            <li class="<?= $classNames([
+                    'alert shadow transition-colors duration-200',
+                    'bg-white hover:bg-base-200' => !$isSelected,
+                    'border-2 border-orange-500 relative' => $isSelected
+                ]) ?>"
+            >
+                <input
+                    type="radio" name="billing_address_id" class="radio"
+                    id="<?= $eHtmlAttr($inputId) ?>" value="<?= $eHtmlAttr($id) ?>" <?= $isSelected ? 'checked' : '' ?>
+                    hx-include="[name=form_key]"
+                    hx-indicator="#checkout-page-loader"
+                    hx-target="#checkout-main-content"
+                    hx-swap="outerHTML"
+                    hx-post="<?= $eUrl($block->getUrl('mahxcheckout/billing/saveBillingById')) ?>"
+                    hx-on:afterSwap="dispatchBillingAddressSavedById"
+                />
+                <label for="<?= $eHtmlAttr($inputId) ?>" class="cursor-pointer"><?= $eHtml($addressCard['label']) ?></label>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+    <?php if (!$viewModel->canShowForm()): ?>
+        <div id="bac-form-section" class="mt-8">
+            <div id="bac-form-actions">
+                <button
+                    type="button" class="btn btn-outline"
+                    hx-target="#billing-address-section"
+                    hx-indicator="#billing-address-section-loader"
+                    hx-include="#is-billing-same"
+                    hx-vals='{"show_form": 1 }'
+                    hx-get="<?= $block->getUrl('mahxcheckout/billing/editBilling') ?>"
+                >
+                    + <?= $eHtml(__('New Address')) ?>
+                </button>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>

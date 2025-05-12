@@ -1,0 +1,21 @@
+<?php
+/** @var string $eHtmlAttr */
+/** @var string $nonce */
+?>
+<script nonce="<?= $eHtmlAttr($nonce) ?>">
+    document.addEventListener('alpine:init', () => {
+        let timer;
+        Alpine.data('Notification', () => ({
+            show: true,
+
+            init() {
+                clearTimeout(timer);
+                timer = setTimeout(() => this.setShow(false),  3000);
+            },
+
+            setShow(status) {
+                this.show = status;
+            },
+        }));
+    });
+</script>

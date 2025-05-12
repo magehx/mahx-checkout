@@ -1,0 +1,69 @@
+<?php
+
+use Magento\Framework\View\Element\Template;
+use MageHx\MahxCheckout\ViewModel\ShippingAddressCards;
+
+/** @var Template $block */
+/** @var string $eHtmlAttr */
+/** @var string $nonce */
+/** @var Closure $eJs */
+/** @var Closure $eUrl */
+/** @var Closure $viewModelProvider */
+/** @var ShippingAddressCards $viewModel */
+$viewModel = $viewModelProvider(ShippingAddressCards::class);
+?>
+<script nonce="<?= $eHtmlAttr($nonce) ?>">
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('shippingAddressCardStorage', {
+            selectedAddressId: null,
+        });
+
+        Alpine.data('ShippingAddressCards', () => ({
+            get selectedAddressId() {
+                return this.store.selectedAddressId;
+            },
+
+            init() {
+                this.store.selectedAddressId = this.$el.dataset.selectedAddress;
+            },
+
+            isAddressCardSelected(addressId) {
+                return this.selectedAddressId === addressId;
+            },
+
+            setShipToAddress(event) {
+                const addressId = event.target.dataset.id;
+                this.store.selectedAddressId = addressId;
+                this.$dispatch(`mahxcheckout-customer-address-${addressId}-selected`);
+            },
+
+            get store() {
+                return this.$store.shippingAddressCardStorage;
+            },
+        }));
+
+        Alpine.data('AddressCard', () => ({
+            addressId: null,
+
+            get isSelected() {
+                return this.store.selectedAddressId === this.addressId;
+            },
+
+            get isNotSelected() {
+                return !this.isSelected;
+            },
+
+            get addressCardExtraClasses() {
+                return this.isSelected ? 'border-2 border-orange-500 relative' : 'border border-gray-300';
+            },
+
+            init() {
+                this.addressId = this.$el.dataset.addressId;
+            },
+
+            get store() {
+                return this.$store.shippingAddressCardStorage;
+            },
+        }));
+    });
+</script>

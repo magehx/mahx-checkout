@@ -1,0 +1,61 @@
+<?php
+
+use Magento\Framework\View\Element\Template;
+use MageHx\MahxCheckout\Enum\CheckoutForm;
+use MageHx\MahxCheckout\ViewModel\ShippingAddress;
+use MageHx\MahxCheckout\ViewModel\ShippingAddressCards;
+
+/** @var Template $block */
+/** @var Closure $eHtml */
+/** @var Closure $eHtmlAttr */
+/** @var Closure $eUrl */
+/** @var string $formKey */
+/** @var Closure $viewModelProvider */
+/** @var ShippingAddressCards $viewModel */
+/** @var ShippingAddress $formModel */
+
+$viewModel = $viewModelProvider(ShippingAddressCards::class);
+$formModel = $viewModelProvider(ShippingAddress::class);
+$addOOBAttribute = $block->getData('add_oob_attribute');
+$newAddressFormName = CheckoutForm::NEW_ADDRESS->value;
+?>
+<div id="new-address-form-container" x-data="NewAddressFormManager">
+    <form id="<?= $eHtmlAttr($newAddressFormName) ?>">
+        <h2 class="text-xl font-semibold mb-4"><?= $eHtml(__('Add New Address')) ?></h2>
+        <?php foreach ($formModel->getAddressFields($newAddressFormName) as $field): ?>
+            <?= $formModel->renderField($field) ?>
+        <?php endforeach; ?>
+        <?= $formKey ?>
+        <div class="flex items-center justify-end space-x-4">
+            <button
+                class="btn btn-ghost" type="button"
+                hx-target="#shipping-address-cards-container"
+                hx-indicator="#shipping-address-cards-loader"
+                hx-get="<?= $block->getUrl("mahxcheckout/shipping/getShippingAddressCardsContent") ?>"
+            >
+                <?= $eHtml(__('Cancel')) ?>
+            </button>
+            <button
+                class="btn btn-neutral" type="button"
+                @click="updateNewShippingAddress"
+                hx-target="#shipping-address-cards-container"
+                hx-indicator="#shipping-address-cards-loader"
+                hx-trigger="mahxcheckout-new-shipping-address-created from:body"
+                hx-post="<?= $block->getUrl("mahxcheckout/form/saveNewShippingAddress") ?>"
+                hx-on:afterSwap="dispatchShippingAddressSaved"
+            >
+                <?= $eHtml($viewModel->isNewAddressExists() ? __('Ship Here') : __('Update')) ?>
+            </button>
+        </div>
+    </form>
+    <?php if (!$viewModel->isNewAddressExists()): ?>
+        <button
+            type="button" class="btn btn-outline btn-md"
+            hx-target="#shipping-address-form-section"
+            hx-indicator="#shipping-address-cards-loader"
+            hx-get="<?= $block->getUrl("mahxcheckout/shipping/getNewAddressForm") ?>"
+        >
+            + <?= $eHtml(__('New Address')) ?>
+        </button>
+    <?php endif; ?>
+</div>

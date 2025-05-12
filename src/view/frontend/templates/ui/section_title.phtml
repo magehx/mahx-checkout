@@ -1,0 +1,13 @@
+<?php
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+$title = $block->getData('title') ?? '';
+?>
+<?php if ($title): ?>
+    <h2 class="text-2xl font-semibold mb-4"><?= $escaper->escapeHtml(__($title)) ?></h2>
+<?php endif; ?>
+<div class="divider"></div>

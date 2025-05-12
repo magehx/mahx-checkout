@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="checkout.scripts">
+            <block name="checkout.main.script" template="MageHx_MahxCheckout::main_js.phtml" />
+            <block name="checkout.step.script" template="MageHx_MahxCheckout::navigation/navigation_js.phtml" />
+            <block name="checkout.notifications.script" template="MageHx_MahxCheckout::notification/notifications_js.phtml" />
+            <block name="checkout.guest.email.script" template="MageHx_MahxCheckout::email/guest_email_js.phtml" />
+            <block name="checkout.shipping.address.script" template="MageHx_MahxCheckout::address/shipping_address_js.phtml" />
+            <block name="shipping.address.cards.script" template="MageHx_MahxCheckout::address/shipping/shipping_address_cards_js.phtml"/>
+            <block name="shipping.new.address.form.script" template="MageHx_MahxCheckout::address/shipping/shipping_new_address_js.phtml" />
+            <block name="checkout.shipping.methods.js" template="MageHx_MahxCheckout::shipping/shipping_methods_js.phtml" />
+            <block name="checkout.payment.methods.js" template="MageHx_MahxCheckout::payment/payment_methods_js.phtml" />
+            <block name="checkout.billing.address.script" template="MageHx_MahxCheckout::address/billing_address_js.phtml" />
+            <block name="checkout.order.summary.script" template="MageHx_MahxCheckout::summary/order_summary_js.phtml" />
+        </referenceContainer>
+    </body>
+</page>

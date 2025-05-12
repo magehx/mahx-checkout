@@ -1,0 +1,18 @@
+<?php
+
+use MageHx\MahxCheckout\Block\Address\FieldRenderer;
+
+/** @var FieldRenderer $block */
+/** @var Closure $eHtmlAttr */
+
+$fieldAttributes = $block->getFieldAttributes();
+
+if (! $fieldAttributes) {
+    return;
+}
+?>
+<input
+    type="hidden"
+    id="<?= $eHtmlAttr($fieldAttributes->getFieldId()) ?>"
+    name="<?= $eHtmlAttr($fieldAttributes->name) ?>"
+    value="<?= $eHtmlAttr($fieldAttributes->value)  ?>" />

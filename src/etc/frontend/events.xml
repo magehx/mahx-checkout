@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="mahxcheckout_address_form_fields_prepared">
+        <observer name="MageHx_MahxCheckout::add_address_country_options"
+            instance="MageHx\MahxCheckout\Observer\Address\AddCountryOptions"/>
+    </event>
+    <event name="mahxcheckout_shipping_address_form_fields_prepared">
+        <observer name="MageHx_MahxCheckout::populate_shipping_address_form_values"
+            instance="MageHx\MahxCheckout\Observer\ShippingAddress\PopulateShippingAddressFormValues"/>
+        <observer name="MageHx_MahxCheckout::populate_new_address_form_values"
+                  instance="MageHx\MahxCheckout\Observer\Address\PopulateNewAddressFormValues"/>
+        <observer name="MageHx_MahxCheckout::add_save_address_field_for_customer_with_no_address"
+                  instance="MageHx\MahxCheckout\Observer\ShippingAddress\AddSaveAddressFieldForCustomerWithNoAddress"/>
+    </event>
+    <event name="mahxcheckout_billing_address_form_fields_prepared">
+        <observer name="MageHx_MahxCheckout::populate_billing_address_form_values"
+            instance="MageHx\MahxCheckout\Observer\BillingAddress\PopulateBillingAddressFormValues"/>
+        <observer name="MageHx_MahxCheckout::add_additional_attributes_to_country_field"
+                  instance="MageHx\MahxCheckout\Observer\BillingAddress\AddAdditionalAttributesToCountryField"/>
+        <observer name="MageHx_MahxCheckout::add_additional_attributes_to_region_field"
+                  instance="MageHx\MahxCheckout\Observer\BillingAddress\AddAdditionalAttributesToRegionField"/>
+    </event>
+    <event name="mahxcheckout_address_field_renderer_selected">
+        <observer name="MageHx_MahxCheckout::add_htmx_attributes_to_inputs_for_shipping_estimation"
+                  instance="MageHx\MahxCheckout\Observer\ShippingAddress\AddHtmxAttributesToInputsForShippingEstimation"/>
+        <observer name="MageHx_MahxCheckout::re_populate_shipping_address_with_form_data"
+                  instance="MageHx\MahxCheckout\Observer\ShippingAddress\RePopulateShippingAddressWithFormData"/>
+        <observer name="MageHx_MahxCheckout::update_region_field_based_on_country"
+                  instance="MageHx\MahxCheckout\Observer\Address\UpdateRegionFieldBasedOnCountry"/>
+    </event>
+    <event name="layout_load_before">
+        <observer name="MageHx_MahxCheckout::add_additional_layout_handlers"
+                  instance="MageHx\MahxCheckout\Observer\Layout\AddAdditionalLayoutHandlers" />
+    </event>
+</config>

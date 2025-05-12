@@ -1,0 +1,25 @@
+<?php
+
+use Magento\Framework\View\Element\Template;
+use MageHx\MahxCheckout\ViewModel\ShippingAddress;
+
+/** @var Template $block */
+/** @var Closure $e */
+/** @var Closure $eUrl */
+/** @var string $formKey */
+/** @var Closure $viewModelProvider */
+/** @var ShippingAddress $viewModel */
+$viewModel = $viewModelProvider(ShippingAddress::class);
+$addOOBAttribute = $block->getData('add_oob_attribute');
+?>
+<div id="shipping-address-form-container" <?= $addOOBAttribute ? 'hx-swap-oob="true"' : '' ?>>
+    <?= $block->getChildHtml('formTitle') ?>
+    <?= $block->getChildHtml('guestEmailForm') ?>
+
+    <form id="shipping-address-form" x-data="ShippingAddressForm">
+        <?php foreach ($viewModel->getAddressFields() as $field): ?>
+            <?= $viewModel->renderField($field) ?>
+        <?php endforeach; ?>
+        <?= $formKey ?>
+    </form>
+</div>

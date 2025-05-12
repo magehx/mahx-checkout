@@ -1,0 +1,18 @@
+<?php
+/** @var string $eHtmlAttr */
+/** @var string $nonce */
+?>
+<script nonce="<?= $eHtmlAttr($nonce) ?>">
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('app', {
+            orderSummary: {
+                isCartItemsVisible: false,
+                cartItemOptionsVisibility: {},
+            },
+            shipping: {
+                method: '',
+            }
+        });
+        window.mahxCheckout.getAppStoreSection = (section) => Alpine.store('app')[section];
+    });
+</script>

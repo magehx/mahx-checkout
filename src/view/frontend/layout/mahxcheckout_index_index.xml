@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      layout="checkout"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="mahxcheckout_layout" />
+    <update handle="mahxcheckout_scripts" />
+
+    <head>
+        <!-- Remove existing styles -->
+        <remove src="css/styles-m.css" />
+        <remove src="css/styles-l.css" />
+        <remove src="css/print.css" />
+        <remove src="mage/calendar.css"/>
+        <remove src="jquery/uppy/dist/uppy-custom.css"/>
+        <remove src="requirejs/require.js"/>
+
+        <!-- Our essential css and js libs -->
+        <css src="MageHx_MahxCheckout::css/mahxcheckout-styles.css" />
+<!--        <script src="MageHx_MahxCheckout::js/lib/alpine.min.js" defer="true" />-->
+        <script src="MageHx_MahxCheckout::js/lib/htmx.min.js" />
+        <script src="MageHx_MahxCheckout::js/jsbundler/dist/mahxcheckout-js.iife.js" defer="true" />
+    </head>
+    <body>
+        <referenceContainer name="content" htmlTag="div" htmlClass="bg-gray-50 min-h-screen text-gray-800 relative">
+            <block cacheable="false" name="checkout.main" template="MageHx_MahxCheckout::main.phtml" />
+            <container name="checkout.scripts" />
+            <block name="checkout.page.loader" template="MageHx_MahxCheckout::ui/page/loader.phtml" />
+        </referenceContainer>
+
+        <referenceBlock name="logo" template="MageHx_MahxCheckout::html/header/logo.phtml" />
+
+        <move element="checkout.step.navigation" destination="checkout.main" before="-"/>
+        <move element="checkout.main.content" destination="checkout.main" after="checkout.step.navigation"/>
+
+        <referenceBlock name="page.main.title" remove="true" />
+    </body>
+</page>

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <block name="shipping.address.form" template="MageHx_MahxCheckout::address/shipping_address.phtml">
+            <block name="shipping.address.section.title" as="formTitle" template="MageHx_MahxCheckout::ui/section_title.phtml">
+                <arguments>
+                    <argument name="title" xsi:type="string">Shipping Address</argument>
+                </arguments>
+            </block>
+            <block name="guest.email.form" as="guestEmailForm" template="MageHx_MahxCheckout::email/guest_email.phtml" />
+        </block>
+
+        <block class="MageHx\MahxCheckout\Block\ShippingMethodsForm" name="shipping.methods.form"
+            template="MageHx_MahxCheckout::shipping/shipping_methods.phtml">
+            <block name="shipping.methods.title" as="formTitle" template="MageHx_MahxCheckout::ui/section_title.phtml">
+                <arguments>
+                    <argument name="title" xsi:type="string">Shipping Methods</argument>
+                </arguments>
+            </block>
+        </block>
+
+        <block name="payment.methods.form" template="MageHx_MahxCheckout::payment/payment_methods.phtml">
+            <block name="payment.methods.title" as="formTitle" template="MageHx_MahxCheckout::ui/section_title.phtml">
+                <arguments>
+                    <argument name="title" xsi:type="string">Payment Method</argument>
+                </arguments>
+            </block>
+        </block>
+
+        <block name="billing.address.section" template="MageHx_MahxCheckout::address/billing_address.phtml">
+            <block name="billing.address.title" as="formTitle" template="MageHx_MahxCheckout::ui/section_title.phtml">
+                <arguments>
+                    <argument name="title" xsi:type="string">Billing Address</argument>
+                </arguments>
+            </block>
+            <block name="billing.address.details"
+                   template="MageHx_MahxCheckout::address/billing/billing_address_details.phtml" />
+            <block name="billing.address.form" as="billingAddressForm"
+                   template="MageHx_MahxCheckout::address/billing/billing_address_new_form.phtml" />
+            <block name="billing.address.section.loader" as="sectionLoader"
+                   template="MageHx_MahxCheckout::ui/common/section_loader.phtml">
+                <arguments>
+                    <argument name="id" xsi:type="string">billing-address-section-loader</argument>
+                </arguments>
+            </block>
+        </block>
+
+        <block name="checkout.step.auto.loader" template="MageHx_MahxCheckout::ui/common/step_loader.phtml" />
+    </body>
+</page>

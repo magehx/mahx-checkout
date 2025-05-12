@@ -1,0 +1,191 @@
+<?php
+
+use Magento\Framework\View\Element\Template;
+use MageHx\MahxCheckout\ViewModel\StepManager;
+
+/** @var Template $block */
+/** @var string $eHtmlAttr */
+/** @var string $nonce */
+/** @var Closure $eJs */
+/** @var Closure $eUrl */
+/** @var Closure $viewModelProvider */
+/** @var StepManager $viewModel */
+$viewModel = $viewModelProvider(StepManager::class);
+?>
+<script nonce="<?= $eHtmlAttr($nonce) ?>">
+    /**
+     * @typedef {Object} FormComponentData
+     * @property {string} name - Unique identifier for the form component. This is equals to the form id.
+     * @property {string} label - Display label for the form component.
+     */
+
+    /**
+     * @typedef {Object} CheckoutStepData
+     * @property {number} order - The step's position in the flow.
+     * @property {string} name - Unique step identifier.
+     * @property {string} label - Display label for the step.
+     * @property {string} urlHash - Hash used for URL navigation.
+     * @property {boolean} isDefault - Whether this is the default step.
+     * @property {string} saveDataUrl - URL to POST step form data.
+     * @property {Object.<string, FormComponentData>} formComponents - Keyed list of form components.
+     */
+
+    /**
+     * @typedef {Object.<string, CheckoutStepData>} CheckoutStepsMap
+     * A map of step names to their step data.
+     */
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('checkoutStepStorage', {
+            currentStep: null,
+            /** @type {CheckoutStepsMap} */
+            steps: JSON.parse('<?= $eJs($viewModel->getStepsJson()) ?>'),
+            validators: {},
+
+            findStepBy(prop, value) {
+                const key = Object.keys(this.steps).find(
+                    (stepKey) => this.steps[stepKey][prop] === value
+                );
+                return key ? this.steps[key] : null;
+            },
+
+            getFirstStep() {
+                const firstKey = Object.keys(this.steps)[0];
+                return this.steps[firstKey];
+            },
+        });
+
+        Alpine.data('PageNavigation', () => ({
+            init() {
+                this.calculateCurrentStep();
+                this.addEventListeners();
+            },
+
+            calculateCurrentStep() {
+                const hash = window.location.hash.substring(1);
+                this.stepStore.currentStep =
+                    this.stepStore.findStepBy('urlHash', hash) ||
+                    this.stepStore.findStepBy('isDefault', true) ||
+                    this.stepStore.getFirstStep();
+            },
+
+            addValidatorToPageNavigation(componentId, validator) {
+                this.stepStore.validators[componentId] = validator;
+            },
+
+            removeValidatorFromPageNavigation(componentId) {
+                delete this.stepStore.validators[componentId];
+            },
+
+            async handleStepAction() {
+                if (!this.currentStep) {
+                    return;
+                }
+
+                this.$dispatch('mahxcheckout-step-validation-before', { currentStep: this.currentStep });
+
+                const validationResults = await Promise.all(
+                    Object.keys(this.currentStep.formComponents).map((componentId) => {
+                        const form = document.getElementById(componentId);
+                        const validator = this.stepStore.validators[componentId];
+
+                        return this.prepareValidationPromiseForForm(form, validator)
+                    })
+                );
+
+                const isAllValid = validationResults.every((result) => result === true);
+
+                if (isAllValid) {
+                    this.$dispatch('mahxcheckout-step-validation-success', { currentStep: this.currentStep });
+                    htmx.trigger(document.body, 'mahxcheckout-step-validated');
+                }
+            },
+
+            prepareValidationPromiseForForm(form, validator) {
+                if (!form || !validator) {
+                    return Promise.resolve(true);
+                }
+
+                return validator.revalidate().then((isValid) => {
+                    if (!isValid) {
+                        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                    }
+                    return isValid;
+                });
+            },
+
+            addEventListeners() {
+                document.addEventListener('htmx:afterSwap', (event) => {
+                    const pushUrl = event.detail.xhr.getResponseHeader('HX-Push-Url') || '';
+                    const newStepName = pushUrl.split('#')[1] || '';
+                    const prevStepName = this.currentStep.name;
+                    const newStep = this.stepStore.findStepBy('urlHash', newStepName);
+
+                    if (newStep) {
+                        this.stepStore.currentStep = newStep;
+                    }
+
+                    this.$dispatch('mahxcheckout-step-changed', {
+                        htmxEvent: event,
+                        prevStep: this.stepStore.findStepBy('urlHash', prevStepName),
+                        newStep: this.currentStep
+                    });
+                });
+
+                document.body.addEventListener('htmx:configRequest', function(evt) {
+                    if (evt.detail.parameters && evt.detail.parameters['step']) {
+                        return;
+                    }
+
+                    const stepInput = document.querySelector('#current-step');
+                    if (stepInput) {
+                        evt.detail.parameters['step'] = stepInput.value;
+                    }
+                });
+            },
+
+            dispatchPageActionCompleted(event) {
+                this.$dispatch('mahxcheckout-page-action-completed', { htmxEvent: event });
+            },
+
+            get stepStore() {
+                return this.$store.checkoutStepStorage;
+            },
+
+            get currentStep() {
+                return this.stepStore.currentStep;
+            },
+        }));
+
+        Alpine.data('NavItem', () => ({
+            stepName: null,
+            step: null,
+
+            init() {
+                this.stepName = this.$el.dataset.stepName;
+                this.step = this.stepStore.findStepBy('name', this.stepName);
+            },
+
+            get isStepCompleted() {
+                const currentStep = this.stepStore.currentStep;
+
+                return currentStep && this.step && this.step.order <= currentStep.order;
+            },
+
+            get stepExtraClass() {
+                return this.isStepCompleted ? 'step-success font-extrabold': ''
+            },
+
+            get stepDataContent() {
+                return this.isStepCompleted ? '✓' : this.step.order;
+            },
+
+            dispatchNavStepChanged(event) {
+                this.$dispatch('mahxcheckout-step-nav-changed', { htmxEvent: event, step: this.stepName });
+            },
+
+            get stepStore() {
+                return this.$store.checkoutStepStorage;
+            },
+        }))
+    });
+</script>

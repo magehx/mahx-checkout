@@ -1,0 +1,65 @@
+<?php
+
+use Magento\Framework\View\Element\Template;
+use MageHx\MahxCheckout\ViewModel\BillingAddress;
+
+/** @var Template $block */
+/** @var string $eHtmlAttr */
+/** @var string $nonce */
+/** @var Closure $eJs */
+/** @var Closure $viewModelProvider */
+/** @var BillingAddress $viewModel */
+$viewModel = $viewModelProvider(BillingAddress::class);
+?>
+<script nonce="<?= $eHtmlAttr($nonce) ?>">
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('BillingAddressForm', () => ({
+            form: null,
+            validator: null,
+
+            init() {
+                this.form = this.$el;
+                this.modifyFormAfterRender();
+            },
+
+            async handleBillingUpdate() {
+                const isValid = await this.validator.revalidate();
+                if (isValid) {
+                    htmx.trigger(document.body, 'mahxcheckout-billing-address-form-validated')
+                }
+            },
+
+            handleCountryChange(event) {
+                this.$dispatch(`mahxcheckout-${this.form.id}-country_id-changed`, { country: event.target.value })
+            },
+
+            modifyFormAfterRender() {
+                this.$nextTick(() => {
+                    this.focusOnFirstname();
+                    this.applyValidation();
+                });
+            },
+
+            focusOnFirstname() {
+                this.form.elements.firstname.focus();
+            },
+
+            applyValidation() {
+                const fieldsConfig = JSON.parse('<?= $eJs($viewModel->getAddressFieldsJson()) ?>');
+                this.validator = mahxCheckout.validator(this.form)
+                this.validator.createValidationRulesForFieldConfig(fieldsConfig);
+                this.addValidatorToPageNavigation(this.form.id, this.validator);
+            },
+        }));
+
+        Alpine.data('BillingAddressSection', () => ({
+            dispatchBillingAddressSavedById(event) {
+                this.$dispatch('mahxcheckout-billing-saved-by-id', { htmxEvent: event });
+            },
+
+            dispatchBillingAddressSaved(event) {
+                this.$dispatch('mahxcheckout-billing-saved', { htmxEvent: event });
+            }
+        }))
+    });
+</script>

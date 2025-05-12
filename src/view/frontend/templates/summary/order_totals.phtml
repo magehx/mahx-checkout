@@ -1,0 +1,36 @@
+<?php
+
+use Magento\Framework\View\Element\Template;
+use MageHx\MahxCheckout\ViewModel\Totals;
+
+/** @var Template $block */
+/** @var Closure $eHtml */
+/** @var Totals $viewModel */
+
+$viewModel = $block->getData('view_model');
+$totals = $viewModel->getTotals();
+$grandTotal = $viewModel->getGrandTotal();
+?>
+<div id="checkout-totals-summary" x-cloak>
+    <dl class="space-y-3">
+        <?php foreach ($totals as $total): ?>
+            <?php if ($total->code === 'grand_total') continue; ?>
+
+            <div class="flex justify-between items-center">
+                <dt class="text-gray-600">
+                    <?= /** @noEscape */ $total->label ?>
+                </dt>
+                <dd class="text-gray-800 font-medium">
+                    <?= $viewModel->formatPrice($total->value) ?>
+                </dd>
+            </div>
+        <?php endforeach; ?>
+
+        <?php if ($grandTotal): ?>
+            <div class="border-t border-gray-300 pt-4 mt-4 flex justify-between items-center text-xl font-semibold">
+                <dt><?= $eHtml(__('Order Total')) ?></dt>
+                <dd><?= $viewModel->formatPrice($grandTotal->value) ?></dd>
+            </div>
+        <?php endif; ?>
+    </dl>
+</div>
