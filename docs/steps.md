@@ -1,263 +1,161 @@
-# Checkout Step System
+# Checkout Step System in MAHX Checkout
 
-MAHX Checkout implements a modular **checkout step system** for Magento 2.
-Each step is composed of **one or more form components**, and supports:
+The **MAHX Checkout** module provides an extendable and modular **step system** to structure your checkout process. It's designed with flexibility in mind, allowing developers to easily customize or extend individual steps without rewriting the entire flow.
 
-- Dynamic saving (via HTMX / APIs)
-- Customizable step order
-- Easy addition of new steps or forms
-- Event-based extension points
+## ✨ Key Features
 
-!!! tip
-    Checkout steps are defined via **dependency injection** (`di.xml`) and loaded using the **StepManager** ViewModel.
+* ✅ Simple to add custom steps
+* ✅ Easy to modify existing steps
+* ✅ Clean architecture using Magento DI (Dependency Injection)
+* ✅ Default implementation mimics Magento Luma checkout with two steps:
 
----
-
-## How Checkout Steps Work
-
-- **Steps** are declared as **Virtual Types** under `CheckoutStepPool`.
-- Each step has:
-  - A **name** (`shipping`, `payment`, etc.)
-  - A **label** (display text)
-  - A **layout handle** (for rendering)
-  - A **save URL** (HTMX target URL)
-  - A list of **form components**
-- **Form Components** are simple containers with:
-  - A `name`
-  - A `label`
-
-Steps and forms are serialized for the frontend using `StepManager`.
-
-!!! note
-    Fields, buttons, and save behavior are fully customizable using Dependency Injection and Observers.
+    * **Shipping**
+    * **Payment**
 
 ---
 
-## Declaring Steps (in `di.xml`)
+## 🧱 Architecture Overview
 
-Steps are added via dependency injection in `etc/frontend/di.xml`.
+### Step Configuration via `di.xml`
 
-=== "XML"
+The checkout steps are configured using Magento's `di.xml`. Here's a simplified excerpt that shows how steps are registered:
 
 ```xml
-<type name="Rkt\MahxCheckout\Model\StepManager\CheckoutStepPool">
-  <arguments>
-    <argument name="steps" xsi:type="array">
-      <item name="shipping" xsi:type="object">ShippingStepVirtual</item>
-      <item name="payment" xsi:type="object">PaymentStepVirtual</item>
-    </argument>
-  </arguments>
+<type name="MageHx\MahxCheckout\Model\StepManager\CheckoutStepPool">
+    <arguments>
+        <argument name="steps" xsi:type="array">
+            <item name="shipping" xsi:type="object">MageHx\MahxCheckout\Model\StepManager\Step\ShippingStepVirtual</item>
+            <item name="payment" xsi:type="object">MageHx\MahxCheckout\Model\StepManager\Step\PaymentStepVirtual</item>
+        </argument>
+    </arguments>
 </type>
 ```
 
-Each step is a **VirtualType** extending `CheckoutStep`.
-
----
-
-## Example: Shipping Step
-
-=== "XML"
+Each step is defined as a **virtual type**. For example:
 
 ```xml
-<virtualType name="ShippingStepVirtual" type="Rkt\MahxCheckout\Model\StepManager\CheckoutStep">
-  <arguments>
-    <argument name="name" xsi:type="string">shipping</argument>
-    <argument name="label" xsi:type="string">Shipping</argument>
-    <argument name="urlHash" xsi:type="string">shipping</argument>
-    <argument name="saveDataUrl" xsi:type="string">mahxcheckout/shipping/saveShippingInformation</argument>
-    <argument name="components" xsi:type="array">
-      <item name="guest_email_form" xsi:type="object">GuestEmailForm</item>
-      <item name="shipping_address_form" xsi:type="object">ShippingAddressForm</item>
-      <item name="shipping_methods_form" xsi:type="object">ShippingMethodsForm</item>
-    </argument>
-  </arguments>
+<virtualType name="MageHx\MahxCheckout\Model\StepManager\Step\ShippingStepVirtual"
+             type="MageHx\MahxCheckout\Model\StepManager\CheckoutStep">
+    <arguments>
+        <argument name="name" xsi:type="string">shipping</argument>
+        <argument name="label" xsi:type="string">Shipping</argument>
+        <argument name="urlHash" xsi:type="string">shipping</argument>
+        <argument name="isDefault" xsi:type="boolean">true</argument>
+        <argument name="stepButtonLabel" xsi:type="string">Continue</argument>
+        <argument name="stepLayoutHandle" xsi:type="string">mahxcheckout_step_shipping</argument>
+        <argument name="saveDataUrl" xsi:type="string">mahxcheckout/shipping/saveShippingInformation</argument>
+        <argument name="components" xsi:type="array">
+            <item name="guest_email_form" xsi:type="object">GuestEmailForm</item>
+            <item name="shipping_address_form" xsi:type="object">ShippingAddressForm</item>
+            <item name="shipping_methods_form" xsi:type="object">ShippingMethodsForm</item>
+        </argument>
+    </arguments>
 </virtualType>
 ```
 
----
+### 🔍 Key Step Properties
 
-## Rendering Steps on Frontend
+Each checkout step can be customized using the following properties:
 
-The ViewModel `StepManager` provides useful methods:
-
-| Method | Purpose |
-|:-------|:--------|
-| `getStepsInfo()` | Get full list of steps |
-| `getStepsJson()` | Get steps in JSON format |
-| `getCurrentStep()` | Get currently active step |
-| `getHtmxIncludesForCurrentStep()` | Get HTMX includes for current step forms |
-
-Example:
-
-=== "PHP"
-
-```php
-/** @var \Rkt\MahxCheckout\ViewModel\StepManager $stepManager */
-foreach ($stepManager->getStepsInfo() as $step) {
-    echo $step->getLabel();
-}
-```
-
-=== "JavaScript (HTMX)"
-
-```html
-<div hx-get="/mahxcheckout/step/load"
-     hx-target="#step-container"
-     hx-include="#current-step">
-</div>
-```
+| Property           | Description                                                              |
+| ------------------ | ------------------------------------------------------------------------ |
+| `name`             | Unique identifier of the step.                                           |
+| `label`            | Step label shown in the step navigation bar.                             |
+| `urlHash`          | The URL fragment (e.g., `#shipping`) used for direct access to the step. |
+| `isDefault`        | Whether this step is the default (first) step.                           |
+| `stepButtonLabel`  | Label of the navigation button (e.g., Continue, Place Order).            |
+| `stepLayoutHandle` | Layout handle used to render the step's contents.                        |
+| `saveDataUrl`      | URL endpoint used to persist data for the step.                          |
+| `components`       | List of form components involved in the step.                            |
 
 ---
 
-## Step Validation
+## 📦 Form Components
 
-Validation for steps (e.g., checking shipping address, payment info) is hooked via a **plugin**:
-
-| Plugin Class | Purpose |
-|:-------------|:--------|
-| `ApplyStepValidation` | Validates steps after `isValid()` call |
-
-It automatically validates shipping and payment steps using quote data.
-
----
-
-# Customizing Checkout Steps
-
-You can fully customize the checkout step system using **dependency injection** **and** **event observers**.
-
----
-
-## What You Can Customize in a Step
-
-| Area | How to Customize |
-|:-----|:-----------------|
-| Add a New Step | Define a new VirtualType and inject it |
-| Change Step Order | Reorder the `steps` array in `di.xml` |
-| Add/Remove Form Components | Modify the `components` array |
-| Change Step Labels | Override `label`, `stepButtonLabel` |
-| Change Save URL | Set a different `saveDataUrl` |
-| Add Dynamic Validation | Use event observers |
-| Skip/Hide Steps | Use observer or frontend HTMX/JS |
-| HTMX Targeting | Customize `hx-include`, `hx-get` |
-| Pre-process Save Requests | Observe save events |
-
-!!! tip
-    Observers allow runtime changes without changing the `di.xml` directly.
-
----
-
-## Example: Adding a New "Gift Message" Step
-
-### Step 1: Create a Virtual Type
-
-=== "XML (di.xml)"
+Each step is composed of multiple **FormComponents** that handle different parts of the UI (e.g., shipping address, email form). These are also defined via `di.xml` as virtual types:
 
 ```xml
-<virtualType name="GiftMessageStepVirtual" type="Rkt\MahxCheckout\Model\StepManager\CheckoutStep">
-  <arguments>
-    <argument name="name" xsi:type="string">gift_message</argument>
-    <argument name="label" xsi:type="string">Gift Message</argument>
-    <argument name="urlHash" xsi:type="string">gift-message</argument>
-    <argument name="stepButtonLabel" xsi:type="string">Continue to Payment</argument>
-    <argument name="saveDataUrl" xsi:type="string">mahxcheckout/gift/saveGiftMessage</argument>
-    <argument name="components" xsi:type="array">
-      <item name="gift_message_form" xsi:type="object">GiftMessageForm</item>
-    </argument>
-  </arguments>
+<virtualType name="ShippingAddressForm" type="MageHx\MahxCheckout\Model\StepManager\FormComponent">
+    <arguments>
+        <argument name="name" xsi:type="string">shipping-address-form</argument>
+        <argument name="label" xsi:type="string">Shipping Address</argument>
+    </arguments>
 </virtualType>
 ```
 
----
+### Component Attributes
 
-### Step 2: Insert the New Step
+| Attribute | Description                                           |
+| --------- | ----------------------------------------------------- |
+| `name`    | Used as the `id` in the frontend — must be unique.    |
+| `label`   | Displayed as the title of the form section in the UI. |
 
-Add it between `shipping` and `payment`:
+Each component extends:
 
-=== "XML"
-
-```xml
-<argument name="steps" xsi:type="array">
-  <item name="shipping" xsi:type="object">ShippingStepVirtual</item>
-  <item name="gift_message" xsi:type="object">GiftMessageStepVirtual</item>
-  <item name="payment" xsi:type="object">PaymentStepVirtual</item>
-</argument>
-```
+* `MageHx\MahxCheckout\Model\StepManager\FormComponent`
+* Implements: `FormComponentInterface`
 
 ---
 
-### Step 3: Customize Step Behavior Dynamically via Observer
+## 🧩 How It Works: Step Registration & Pooling
 
-=== "PHP"
+The `CheckoutStepPool` class manages all steps:
 
-```php
-class CustomizeGiftStep implements ObserverInterface
-{
-    public function execute(Observer $observer): void
-    {
-        /** @var DataObject $transport */
-        $transport = $observer->getData('transport');
-        $steps = $transport->getData('steps');
+* Instantiated via DI with all registered steps.
+* Builds a collection of `MageHx\MahxCheckout\Data\CheckoutStepData` objects.
+* Provides methods to fetch step data and navigation ordering.
 
-        if (isset($steps['gift_message'])) {
-            $steps['gift_message']->setLabel('Add a Special Message');
-            $steps['gift_message']->setStepButtonLabel('Next: Payment');
-        }
+Additional step data (beyond XML configuration):
 
-        $transport->setData('steps', $steps);
-    }
-}
-```
+| Property  | Description                                                                  |
+| --------- | ---------------------------------------------------------------------------- |
+| `order`   | Sort order of the step; used to determine navigation sequence.               |
+| `isValid` | Backend validation flag for the step — true if all its components are valid. |
 
 ---
 
-## Event Observers You Can Use
+## 🧠 Extendability & Customization
 
-| Event | Purpose |
-|:------|:--------|
-| `mahxcheckout_checkout_steps_prepared` | Modify step list before frontend rendering |
-| `mahxcheckout_checkout_step_validated` | Hook into step validation dynamically |
-| `mahxcheckout_checkout_save_before` | Intercept save payload before processing |
+### 🆕 Add a New Step
 
-!!! note
-    Observers make the checkout process **dynamic and flexible** without touching core logic.
+You can add new steps easily by adding another item in the `CheckoutStepPool` configuration and defining a virtual type with required properties.
+
+### 🛠 Modify an Existing Step
+
+Override the step’s virtual type in your module’s `di.xml` file to change its behavior or UI.
+
+### 🧩 Modify Steps at Runtime (Observers)
+
+Two helpful events are dispatched by the `CheckoutStepPool`:
+
+| Event Name                             | Description                                                     |
+| -------------------------------------- | --------------------------------------------------------------- |
+| `mahxcheckout_steps_data_build_before` | Modify or add steps *before* the step data collection is built. |
+| `mahxcheckout_steps_data_build_after`  | Modify step data *after* the collection is built.               |
+
+These allow dynamic manipulation of the step list or its attributes.
+
+---
+
+## 🖼️ Template Files
+
+The following PHTML templates control how steps are rendered in the frontend:
+
+| File                    | Purpose                                                   |
+| ----------------------- | --------------------------------------------------------- |
+| `step_navigation.phtml` | Renders the top step navigation bar.                      |
+| `page_action.phtml`     | Defines the step action button (Continue/Place Order).    |
+| `navigation_js.phtml`   | Defines Alpine.js component that manages step navigation. |
 
 ---
 
-## Best Practices for Step Customization
+## 🧪 Summary
 
-- **Use DI and Observers** rather than modifying core code.
-- **Validate** all important fields at backend even if frontend checks exist.
-- **Keep each step focused** (small number of forms per step).
-- **Use events** (`mahxcheckout_checkout_steps_prepared`) for dynamic adjustment.
-- Keep **saveDataUrl** API endpoints small and fast for good UX.
+MAHX Checkout’s step system is fully declarative and highly extensible:
 
----
+* Add new steps by updating `di.xml`.
+* Modify or override existing ones via DI or observers.
+* Hook into the step building process using dispatched events.
+* Easily manage and render steps using the provided ViewModels and templates.
 
-## Checkout Step Lifecycle
-
-The following diagram shows the typical lifecycle of a checkout step:
-
-```mermaid
-flowchart TD
-    A[Start] --> B["Declare Steps in di.xml"]
-    B --> C["Load Steps via CheckoutStepPool and StepManager"]
-    C --> D["Render Step UI (HTMX / Alpine.js)"]
-    D --> E["User Fills Forms"]
-    E --> F["Validate Step (Plugin and Observers)"]
-    F --> G["Save Step Data (via Save URL)"]
-    G --> H{"Successful Save?"}
-    H -- Yes --> I["Move to Next Step"]
-    H -- No --> E
-    I --> J["Repeat Until Payment"]
-    J --> K["Place Order"]
-    K --> L[End]
-```
-
-## References
-
-- [`StepManager`](src/ViewModel/StepManager.php)
-- [`CheckoutStepPool`](src/Model/StepManager/CheckoutStepPool.php)
-- [`CheckoutStep`](src/Model/StepManager/CheckoutStep.php)
-- [`ApplyStepValidation`](src/Plugin/Model/StepManagerCheckoutStepInterface/ApplyStepValidation.php)
-
----
+This architecture ensures that your checkout flow remains modular, testable, and fully customizable without breaking the core logic.

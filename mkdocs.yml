@@ -6,8 +6,8 @@ nav:
   - Why MAHX Checkout?: why-mahx-checkout.md
   - The Puzzle Piece - HTMX: puzzle-htmx.md
   - Layout: layouts.md
-  - Address Field Renderers: address-renderers.md
   - Steps Implementation: steps.md
+  - Address Field Renderers: address-renderers.md
 theme:
   name: material
   favicon: assets/favicon.ico
