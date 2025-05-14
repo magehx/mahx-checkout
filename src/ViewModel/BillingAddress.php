@@ -85,7 +85,7 @@ class BillingAddress implements ArgumentInterface
         $fieldHtml = $rendererData->getData('renderer')->render($fieldAttributes);
         $fieldHtmlDataObject = new DataObject(['html' => $fieldHtml]);
 
-        $this->eventDispatcher->dispatchShippingAddressFieldRenderAfter(
+        $this->eventDispatcher->dispatchBillingAddressFieldRenderAfter(
             ['field_attributes' => $fieldAttributes, 'fieldHtml' => $fieldHtmlDataObject]
         );
 
