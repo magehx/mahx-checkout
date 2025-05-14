@@ -1,12 +1,14 @@
-export default {
+import { defineConfig } from 'vite';
+
+export default defineConfig({
     build: {
         lib: {
             entry: 'index.js',
-            name: 'RktCheckoutJS',
-            fileName: 'mahxcheckout-js',
+            name: 'MahxCheckoutJS',
+            fileName: 'checkout',
             formats: ['iife'] // for browser usage
         },
         minify: 'esbuild',
         outDir: 'dist',
     }
-}
+});

@@ -16,9 +16,8 @@
 
         <!-- Our essential css and js libs -->
         <css src="MageHx_MahxCheckout::css/mahxcheckout-styles.css" />
-<!--        <script src="MageHx_MahxCheckout::js/lib/alpine.min.js" defer="true" />-->
-        <script src="MageHx_MahxCheckout::js/lib/htmx.min.js" />
-        <script src="MageHx_MahxCheckout::js/jsbundler/dist/mahxcheckout-js.iife.js" defer="true" />
+        <script src="MageHx_MahxCheckout::js/lib/htmx.min.js" defer="true" />
+        <script src="MageHx_MahxCheckout::js/mahx/dist/checkout.iife.js" defer="true" />
     </head>
     <body>
         <referenceContainer name="content" htmlTag="div" htmlClass="bg-gray-50 min-h-screen text-gray-800 relative">

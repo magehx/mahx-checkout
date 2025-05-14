@@ -1,15 +1,11 @@
 <?php
 
 use Magento\Framework\View\Element\Template;
-use MageHx\MahxCheckout\ViewModel\GuestEmail;
 
 /** @var Template $block */
 /** @var string $eHtmlAttr */
 /** @var string $nonce */
 /** @var Closure $eJs */
-/** @var Closure $viewModelProvider */
-/** @var GuestEmail $viewModel */
-$viewModel = $viewModelProvider(GuestEmail::class);
 ?>
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
     document.addEventListener('alpine:init', () => {
