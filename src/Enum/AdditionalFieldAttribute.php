@@ -13,4 +13,5 @@ enum AdditionalFieldAttribute: string
     case AFTER_INPUT_HTML = 'afterInputHtml';
     case WRAPPER_ELEM_EXTRA_CLASS = 'wrapperElemExtraClass';
     case WRAPPER_ELEM_EXTRA_ATTRIBUTES = 'wrapperElemAdditionalAttributes';
+    case MULTILINE_COUNT = 'multilineCount';
 }

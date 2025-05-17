@@ -4,6 +4,8 @@
     <event name="mahxcheckout_address_form_fields_prepared">
         <observer name="MageHx_MahxCheckout::add_address_country_options"
                   instance="MageHx\MahxCheckout\Observer\Address\AddCountryOptions"/>
+        <observer name="MageHx_MahxCheckout::apply_customer_address_config_to_fields"
+                  instance="MageHx\MahxCheckout\Observer\Address\ApplyCustomerAddressConfigToFields"/>
     </event>
     <event name="mahxcheckout_shipping_address_form_fields_prepared">
         <observer name="MageHx_MahxCheckout::populate_shipping_address_form_values"
