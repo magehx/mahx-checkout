@@ -24,9 +24,9 @@ $viewModel = $viewModelProvider(StepManager::class);
 >
 </div>
 
-<div class="w-full py-4 mb-4">
-    <div class="max-w-7xl mx-auto px-4">
-        <ul class="steps">
+<div id="step-navigation-section" class="w-full py-4 mb-4">
+    <div class="px-4 mx-auto max-w-7xl">
+        <ul class="text-base steps">
             <?php foreach ($viewModel->getStepsInfo() as $step): ?>
                 <li class="step !min-w-56 cursor-pointer"
                     data-step-name="<?= $eHtmlAttr($step->name) ?>"

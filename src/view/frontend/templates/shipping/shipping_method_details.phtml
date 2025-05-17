@@ -10,13 +10,13 @@ use MageHx\MahxCheckout\ViewModel\ShippingMethods;
 /** @var ShippingMethods $viewModel */
 $viewModel = $viewModelProvider(ShippingMethods::class);
 ?>
-<div class="collapse collapse-open mt-4">
-    <div class="collapse-title text-xl font-medium border-b">
+<div id="shipping-method-details" class="mt-4 collapse collapse-open">
+    <div class="text-xl font-medium border-b collapse-title">
         <div class="flex items-center justify-between">
             <h3><?= $eHtml(__('Shipping Method:')) ?></h3>
             <?php // Hero Solid Pencil Svg icon ?>
             <button
-                type="button" class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer"
+                type="button" class="btn-edit-pencil"
                 hx-target="#checkout-main-content"
                 hx-swap="outerHTML"
                 hx-indicator="#checkout-page-loader"
@@ -29,7 +29,7 @@ $viewModel = $viewModelProvider(ShippingMethods::class);
         </div>
 
     </div>
-    <div class="collapse-content pt-4">
+    <div class="pt-4 text-base font-normal collapse-content">
         <div class="space-y-2">
             <p><?= $eHtml($viewModel->getShippingMethodDetails()) ?></p>
         </div>

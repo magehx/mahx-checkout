@@ -22,7 +22,7 @@ $viewModel = $viewModelProvider(GuestEmail::class);
             </label>
             <input
                 id="gef-email" type="text" name="email" placeholder="joe@example.com"
-                class="input input-bordered w-full max-w-sm" value="<?= $eHtmlAttr($viewModel->getEmail()) ?>"
+                class="input input-bordered input-sm w-full max-w-sm" value="<?= $eHtmlAttr($viewModel->getEmail()) ?>"
                 @change="validate" @keydown.enter.prevent="validate"
                 hx-target="#guest-email-form-container"
                 hx-swap="outerHTML"
@@ -34,7 +34,7 @@ $viewModel = $viewModelProvider(GuestEmail::class);
         <?= $formKey ?>
     </form>
 
-    <div class="max-w-xs my-12">
+    <div class="max-w-xs my-4">
         <div class="divider"></div>
     </div>
 </div>

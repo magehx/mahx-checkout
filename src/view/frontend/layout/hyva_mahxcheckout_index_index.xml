@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      layout="checkout"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <remove src="MageHx_MahxCheckout::css/luma-checkout-overrides.css"/>
+        <!--
+            Uncomment this line if you decided to include checkout styles in the theme stylesheet itself
+            and remove checkout specific stylesheet here
+        -->
+<!--        <remove src="MageHx_MahxCheckout::css/mahxcheckout-styles.css"/>-->
+        <remove src="MageHx_MahxCheckout::js/lib/alpine3-csp.min.js"/>
+    </head>
+    <body>
+        <referenceContainer name="content" htmlClass="bg-gray-50 min-h-screen text-gray-800 relative">
+            <referenceBlock name="checkout.main" template="MageHx_MahxCheckout::main.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

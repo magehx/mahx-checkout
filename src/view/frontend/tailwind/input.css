@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/**
+ * Styles common to every theme.
+ */
+.mahxcheckout-index-index {
+    .just-validate-error-label {
+        @apply text-sm text-red-600 label-text-alt;
+        max-width: fit-content;
+    }
+    .btn-edit-pencil {
+        @apply w-4 h-4 text-gray-400 border-0 cursor-pointer hover:text-gray-600 hover:border-0 hover:bg-inherit;
+    }
+    form {
+        label {
+            @apply mb-0;
+        }
+    }
+}

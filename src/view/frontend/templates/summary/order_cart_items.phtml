@@ -11,19 +11,22 @@ use MageHx\MahxCheckout\ViewModel\OrderCartItems;
 $viewModel = $viewModelProvider(OrderCartItems::class);
 ?>
 <?php // CART ITEMS ?>
-<div class="collapse collapse-arrow" x-data="OrderSummary" :class="cartItemsCollapseClass">
-    <div class="collapse-title text-xl border-b border-base-300 font-normal px-0 cursor-pointer" @click="toggleCartItemsVisibility">
+<div id="cart-items-section" class="collapse collapse-arrow" x-data="OrderSummary" :class="cartItemsCollapseClass">
+    <div
+        class="px-0 text-xl font-normal border-b cursor-pointer collapse-title border-base-300"
+        @click="toggleCartItemsVisibility"
+    >
         <?php if ($viewModel->getCartItemsTotalQty() > 1): ?>
             <?= $eHtml($viewModel->getCartItemsTotalQty()) ?> <?= $eHtml(__('Items in Cart')) ?>
         <?php else: ?>
             1 <?= $eHtml(__('Item in Cart')) ?>
         <?php endif; ?>
     </div>
-    <div class="collapse-content py-4">
+    <div class="py-4 collapse-content">
         <?php foreach ($viewModel->getCartItems() as $cartItem): ?>
         <div class="flex space-x-4" x-data="CartItem">
             <?php if ($cartItem->image): ?>
-                <div class="h-20 w-20">
+                <div class="w-20 h-20">
                     <img src="<?= $eHtmlAttr($cartItem->image->src) ?>"
                          width="<?= $eHtmlAttr($cartItem->image->width) ?>"
                          height="<?= $eHtmlAttr($cartItem->image->height) ?>"
@@ -32,7 +35,7 @@ $viewModel = $viewModelProvider(OrderCartItems::class);
                          loading="lazy" class="h-auto max-w-full" />
                 </div>
             <?php endif; ?>
-            <div class="space-y-2">
+            <div class="space-y-2 text-base font-normal">
                 <h4><?= $eHtml($cartItem->name) ?></h4>
                 <ul>
                     <li><span>Qty: </span><?= $eHtml($cartItem->qty) ?></li>
@@ -40,10 +43,10 @@ $viewModel = $viewModelProvider(OrderCartItems::class);
                 </ul>
                 <?php if (!empty($cartItem->options)): ?>
                     <div class="collapse collapse-arrow" :class="optionsCollapseClass">
-                        <div class="collapse-title pl-1 -mt-4" @click="toggleOptionsVisibility">
+                        <div class="pl-1 -mt-4 collapse-title" @click="toggleOptionsVisibility">
                             <?= $eHtml(__('View Details')) ?>
                         </div>
-                        <div class="collapse-content pl-1 -mt-4">
+                        <div class="pl-1 -mt-4 collapse-content">
                             <ul>
                                 <?php foreach ($cartItem->options as $option): ?>
                                     <li>

@@ -27,7 +27,7 @@ $grandTotal = $viewModel->getGrandTotal();
         <?php endforeach; ?>
 
         <?php if ($grandTotal): ?>
-            <div class="border-t border-gray-300 pt-4 mt-4 flex justify-between items-center text-xl font-semibold">
+            <div class="grand-total border-t border-gray-300 pt-4 mt-4 flex justify-between items-center text-xl font-semibold">
                 <dt><?= $eHtml(__('Order Total')) ?></dt>
                 <dd><?= $viewModel->formatPrice($grandTotal->value) ?></dd>
             </div>

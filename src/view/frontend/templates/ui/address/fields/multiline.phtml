@@ -1,6 +1,7 @@
 <?php
 
 use MageHx\MahxCheckout\Block\Address\FieldRenderer;
+use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute as AFA;
 
 /** @var FieldRenderer $block */
 /** @var Closure $eHtml */
@@ -28,11 +29,11 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
         </span>
     </label>
     <div class="space-y-2">
-        <?php foreach (range(0, $fieldAttributes->additionalData['multilineCount'] ?? 0) as $index): ?>
+        <?php foreach (range(0, ($fieldAttributes->additionalData[AFA::MULTILINE_COUNT->value] ?? 1) - 1) as $index): ?>
             <?php if ($index === 0): ?><div><?php endif; ?>
             <input
                 type="text"
-                class="input input-bordered w-full max-w-sm"
+                class="input input-bordered input-sm w-full max-w-sm"
                 id="<?= $eHtmlAttr($fieldAttributes->getFieldId() . '-' . $index) ?>"
                 name="<?= $eHtmlAttr($fieldAttributes->name) ?>[<?= $eHtmlAttr($index) ?>]"
                 value="<?= $eHtmlAttr($fieldAttributes->value[$index] ?? '')  ?>"

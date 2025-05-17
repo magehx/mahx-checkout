@@ -1,0 +1,14 @@
+<?php
+
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+?>
+<!-- Main Content -->
+<div id="checkout-main" x-data="PageNavigation">
+    <?= $block->getChildHtml('checkout.notifications') ?>
+    <?=  $block->getChildHtml('checkout.step.navigation') ?>
+    <?=  $block->getChildHtml('checkout.main.content') ?>
+</div>
+
+

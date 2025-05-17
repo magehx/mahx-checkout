@@ -11,13 +11,13 @@ use MageHx\MahxCheckout\ViewModel\ShippingAddressCards;
 
 $viewModel = $viewModelProvider(ShippingAddressCards::class);
 ?>
-<div class="collapse collapse-open">
-    <div class="collapse-title text-xl font-medium border-b">
+<div id="shipping-address-details" class="collapse collapse-open">
+    <div class="text-xl font-medium border-b collapse-title">
         <div class="flex items-center justify-between">
             <h3><?= $eHtml(__('Ship To:')) ?></h3>
             <?php // Hero Solid Pencil Svg icon ?>
             <button
-                type="button" class="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer"
+                type="button" class="btn-edit-pencil"
                 hx-target="#checkout-main-content"
                 hx-swap="outerHTML"
                 hx-indicator="#checkout-page-loader"
@@ -29,8 +29,8 @@ $viewModel = $viewModelProvider(ShippingAddressCards::class);
             </button>
         </div>
     </div>
-    <div class="collapse-content pt-4">
-        <div class="space-y-2 italic">
+    <div class="pt-4 collapse-content">
+        <div class="space-y-2 text-base italic font-normal">
             <?php foreach ($viewModel->getShippingAddressLines() as $addressLine): ?>
                 <p><?= $eHtml($addressLine) ?></p>
             <?php endforeach; ?>

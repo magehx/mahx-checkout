@@ -1,6 +1,7 @@
 <?php
 
 use MageHx\MahxCheckout\Block\Address\FieldRenderer;
+use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute as AFA;
 
 /** @var FieldRenderer $block */
 /** @var Closure $eHtml */
@@ -29,13 +30,13 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
         </span>
     </label>
     <select
-        class="select select-bordered"
+        class="select select-bordered select-sm"
         id="<?= $eHtmlAttr($fieldAttributes->getFieldId()) ?>"
         name="<?= $eHtmlAttr($fieldAttributes->name) ?>"
         <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
     >
-        <option value=""><?= $eHtml($fieldAttributes->additionalData['defaultOptionLabel']) ?: '' ?></option>
-        <?php foreach ($fieldAttributes->additionalData['options'] ?? [] as $value => $label): ?>
+        <option value=""><?= $eHtml($fieldAttributes->additionalData[AFA::DEFAULT_OPTION_LABEL->value] ?? '') ?></option>
+        <?php foreach ($fieldAttributes->additionalData[AFA::OPTIONS->value] ?? [] as $value => $label): ?>
             <option value="<?= $eHtmlAttr($value) ?>" <?= $fieldAttributes->value == $value ? 'selected' : '' ?>>
                 <?= $eHtml($label) ?>
             </option>
