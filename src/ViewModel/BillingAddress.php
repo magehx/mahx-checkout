@@ -49,6 +49,11 @@ class BillingAddress implements ArgumentInterface
         return $this->customerSession->isLoggedIn();
     }
 
+    public function isVirtualCart(): bool
+    {
+        return $this->quote->isVirtualQuote();
+    }
+
     public function getBillingAddressLines(): array
     {
         $address = $this->isBillingSameAsShipping() ?
@@ -99,6 +104,12 @@ class BillingAddress implements ArgumentInterface
 
     public function canShowForm(): bool
     {
-        return (bool)$this->formDataStorage->getData('show_form');
+        $showForm = $this->formDataStorage->getData('show_form');
+
+        if ($showForm === null) {
+            return $this->quote->isVirtualQuote();
+        }
+
+        return (bool)$showForm;
     }
 }

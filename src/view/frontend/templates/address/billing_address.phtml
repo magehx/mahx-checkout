@@ -1,9 +1,18 @@
 <?php
 
+use MageHx\MahxCheckout\ViewModel\BillingAddress;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
+/** @var Closure $classNames */
+/** @var Closure $viewModelProvider */
+/** @var BillingAddress $viewModel */
+
+$viewModel = $viewModelProvider(BillingAddress::class);
 ?>
-<div id="billing-address-section" class="mt-12 relative" x-data="BillingAddressSection">
+<div
+    id="billing-address-section" x-data="BillingAddressSection"
+    class="<?= $classNames(['relative', $viewModel->isVirtualCart() ? 'mt-8' : 'mt-12']) ?>"
+>
     <?= $block->getChildHtml() ?>
 </div>

@@ -44,4 +44,9 @@ class PaymentMethods implements ArgumentInterface
 
         return $renderer->render($paymentMethodData);
     }
+
+    public function isVirtualCart(): bool
+    {
+        return $this->quote->isVirtualQuote();
+    }
 }

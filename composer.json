@@ -13,6 +13,7 @@
         "magento/module-customer": ">=102.0.0",
         "rkt/magento-data": "*",
         "magehx/htmx-actions": "*",
+        "magehx/mahx-checkout-virtual": "*",
         "magehx/mage-template-utils": "^1.0.0"
     },
     "autoload": {

@@ -10,6 +10,7 @@
             <module name="MageHx_HtmxActions"/>
             <module name="MageHx_MageTemplateUtils"/>
             <module name="Rkt_MageData"/>
+            <module name="MageHx_MahxCheckoutVirtual"/>
         </sequence>
     </module>
 </config>

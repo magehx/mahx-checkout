@@ -21,28 +21,7 @@ $isSameAsShipping = $viewModel->isBillingSameAsShipping();
             <?php foreach ($viewModel->getAddressFields() as $field): ?>
                 <?= $viewModel->renderField($field) ?>
             <?php endforeach; ?>
-            <div class="flex items-center justify-end space-x-4">
-                <button
-                    class="btn btn-ghost" type="button"
-                    hx-target="#billing-address-section"
-                    hx-indicator="#billing-address-section-loader"
-                    hx-include="#is-billing-same"
-                    hx-vals='{"show_form": 0, "is_edit": <?= $eHtmlAttr((int)$viewModel->isCustomerLoggedIn()) ?> }'
-                    hx-get="<?= $block->getUrl('mahxcheckout/billing/editBilling') ?>"
-                >
-                    <?= $eHtml(__('Cancel')) ?>
-                </button>
-                <button class="btn btn-neutral" type="button" @click="handleBillingUpdate"
-                        hx-swap="outerHTML"
-                        hx-indicator="#checkout-page-loader"
-                        hx-target="#checkout-main-content"
-                        hx-trigger="mahxcheckout-billing-address-form-validated from:body"
-                        hx-post="<?= $eUrl($block->getUrl('mahxcheckout/billing/billingAddressPost')) ?>"
-                        hx-on:afterSwap="dispatchBillingAddressSaved"
-                >
-                    <?= $eHtml(__('Update')) ?>
-                </button>
-            </div>
+            <?= $block->getChildHtml('actions') ?>
         </div>
     </form>
 <?php endif; ?>

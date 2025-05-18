@@ -5,12 +5,13 @@ use MageHx\MahxCheckout\ViewModel\PaymentMethods;
 
 /** @var Template $block */
 /** @var string $formKey */
+/** @var Closure $classNames */
 /** @var Closure $viewModelProvider */
 /** @var PaymentMethods $viewModel */
 
 $viewModel = $viewModelProvider(PaymentMethods::class);
 ?>
-<div id="payment-methods-section" class="relative">
+<div id="payment-methods-section" class="<?= $classNames(['relative', 'mt-12' => $viewModel->isVirtualCart()]) ?>">
     <?= $block->getChildHtml('formTitle') ?>
     <div class="overflow-x-auto">
         <form id="payment-methods-form" x-data="PaymentMethodsForm">

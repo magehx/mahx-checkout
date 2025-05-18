@@ -33,7 +33,7 @@ abstract class ComponentAction extends HtmxAction
     protected HtmxHeaderManager $htmxHeaderManager;
 
     public function __construct(Context $context) {
-        parent::__construct($context->magentoAppActionContext, $context->layoutFactory, $context->rawFactory);
+        parent::__construct($context->htmxActionContext);
         $this->rawFactory = $context->rawFactory;
         $this->layoutFactory = $context->layoutFactory;
         $this->formDataStorage = $context->formDataStorage;

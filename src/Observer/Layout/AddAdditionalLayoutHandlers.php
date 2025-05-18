@@ -10,36 +10,50 @@ use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\View\LayoutInterface;
 
 /**
- * This adds special layout handles that can be used when customer is logged in. It is useful to introduce or change
- * blocks which are related to customer logged in scenario.
+ * Observer that dynamically adds layout handles for MahxCheckout during layout generation.
  *
- * An example, suppose there are layout handles ['default', 'mahxcheckout_some_handle'], then it will add two more
- * handles so that the totals handles looks like: ['default', 'mahxcheckout_some_handle', 'default_customer_logged_in',
- * 'mahxcheckout_some_handle_customer_logged_in']
+ * It supports:
+ * - Adding layout handles for customer-logged-in states, enabling block customization for logged-in users.
  *
  * @event layout_load_before
  */
 class AddAdditionalLayoutHandlers implements ObserverInterface
 {
+    private ?LayoutInterface $layout = null;
+
     public function __construct(
-        private CustomerSession $customerSession,
-    ) {
-    }
+        private readonly CustomerSession $customerSession,
+    ) {}
 
     public function execute(Observer $observer): void
     {
-        if (!$this->isCustomerLoggedIn() || !$this->isMahxCheckoutAction($observer)) {
+        if (!$this->isMahxCheckoutAction($observer) || !$this->isCustomerLoggedIn()) {
             return;
         }
 
-        $this->addAdditionalHandles($observer);
+        $this->layout = $observer->getData('layout');
+
+        $this->addCustomerLoggedInHandles();
     }
 
+    /**
+     * Determines if the current action is part of MahxCheckout routes.
+     */
     private function isMahxCheckoutAction(Observer $observer): bool
     {
         $fullAction = (string) $observer->getData('full_action_name');
-
         return str_contains($fullAction, 'mahxcheckout');
+    }
+
+    /**
+     * Adds additional layout handles with `_customer_logged_in` suffix for every existing handle.
+     * Enables conditional rendering of blocks for logged-in customers.
+     */
+    private function addCustomerLoggedInHandles(): void
+    {
+        foreach ($this->layout->getUpdate()->getHandles() as $handle) {
+            $this->addLayoutHandle("{$handle}_customer_logged_in");
+        }
     }
 
     private function isCustomerLoggedIn(): bool
@@ -47,15 +61,8 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
         return $this->customerSession->isLoggedIn();
     }
 
-    private function addAdditionalHandles(Observer $observer): void
+    private function addLayoutHandle(string $handleName): void
     {
-        /** @var LayoutInterface $layout */
-        $layout = $observer->getData('layout');
-        $update = $layout->getUpdate();
-        $currentHandles = $update->getHandles();
-
-        foreach ($currentHandles as $handle) {
-            $update->addHandle($handle . '_customer_logged_in');
-        }
+        $this->layout->getUpdate()->addHandle($handleName);
     }
 }

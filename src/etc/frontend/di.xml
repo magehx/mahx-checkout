@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference
+        for="MageHx\MahxCheckout\Model\StepManager\FormComponentInterface"
+        type="\MageHx\MahxCheckout\Model\StepManager\FormComponent" />
+
     <type name="Magento\Checkout\Controller\Index\Index">
         <plugin name="MageHx_MahxCheckout::use_mahxcheckout_for_magento_checkout"
                 type="MageHx\MahxCheckout\Plugin\Checkout\IndexController\UseMahxCheckoutForMagentoCheckout"/>

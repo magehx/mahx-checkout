@@ -98,4 +98,9 @@ class QuoteDetails
     {
         return $this->getInstance()->getShippingAddress()->getShippingMethod();
     }
+
+    public function isVirtualQuote(): bool
+    {
+        return $this->getInstance()->isVirtual();
+    }
 }

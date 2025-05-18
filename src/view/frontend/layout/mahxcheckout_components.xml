@@ -37,7 +37,10 @@
             <block name="billing.address.details"
                    template="MageHx_MahxCheckout::address/billing/billing_address_details.phtml" />
             <block name="billing.address.form" as="billingAddressForm"
-                   template="MageHx_MahxCheckout::address/billing/billing_address_new_form.phtml" />
+                   template="MageHx_MahxCheckout::address/billing/billing_address_new_form.phtml">
+                <block name="billing.address.form.actions" as="actions"
+                       template="MageHx_MahxCheckout::address/billing/form/actions.phtml"/>
+            </block>
             <block name="billing.address.section.loader" as="sectionLoader"
                    template="MageHx_MahxCheckout::ui/common/section_loader.phtml">
                 <arguments>
