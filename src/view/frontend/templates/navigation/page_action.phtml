@@ -28,7 +28,6 @@ $currentStep = $viewModel->getCurrentStep();
             hx-trigger="mahxcheckout-step-validated from:body"
             hx-target="#checkout-main-content"
             hx-indicator="#checkout-page-loader"
-            hx-swap="outerHTML"
             hx-on:afterSwap="dispatchPageActionCompleted"
         >
             <?= $eHtml(__('Continue')) ?>

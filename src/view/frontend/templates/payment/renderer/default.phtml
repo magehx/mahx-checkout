@@ -1,13 +1,18 @@
 <?php
 
+use MageHx\HtmxActions\Enums\HtmxCoreAttributes;
 use MageHx\MahxCheckout\Block\PaymentRenderer;
+use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
 
 /** @var PaymentRenderer $block */
 /** @var Closure $eHtml */
 /** @var Closure $eHtmlAttr */
 /** @var Closure $eUrl */
+/** @var Closure $viewModelProvider */
+/** @var HxAttributesRenderer $hxAttrRenderer */
 
 $payment = $block->getPaymentData();
+$hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
 ?>
 <div class="form-control">
     <label class="label cursor-pointer justify-start space-x-2">
@@ -16,11 +21,9 @@ $payment = $block->getPaymentData();
             value="<?= $eHtmlAttr($payment->code) ?>"
             id="payment_form_method__<?= $eHtmlAttr($payment->code) ?>"
             <?= $block->isSelected() ? 'checked="checked"': '' ?>
-            hx-indicator="#checkout-page-loader"
-            hx-target="#checkout-main-content"
-            hx-swap="outerHTML"
-            hx-post="<?= $eUrl($block->getUrl('mahxcheckout/form/paymentMethodPost')) ?>"
-            hx-on:afterSwap="dispatchPaymentSaved"
+            <?= $hxAttrRenderer->renderWithDefaults([
+                HtmxCoreAttributes::post->name => 'mahxcheckout/form/paymentMethodPost',
+            ]) ?>
         />
         <span class="label-text"><?= $eHtml($payment->title) ?></span>
     </label>

@@ -9,4 +9,5 @@ enum CheckoutForm: string
     case BILLING_ADDRESS = 'billing-address-form';
     case SHIPPING_ADDRESS = 'shipping-address-form';
     case NEW_ADDRESS = 'new-address-form';
+    case PAYMENT_METHODS = 'payment-methods-form';
 }
