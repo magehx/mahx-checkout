@@ -53,9 +53,6 @@ That’s where [`magento-data`](https://github.com/rajeev-k-tomy/magento-data) c
 
 ---
 
-Absolutely! Here's an updated version of the **"Advanced Validation with `magento-data`"** section with a clear explanation of the `rules()` method, its purpose, and how it integrates into validation. This adds helpful context for developers reading the MahxCheckout docs.
-
----
 
 ## ✅ Advanced Validation with `magento-data`
 
