@@ -1,5 +1,7 @@
 <?php
 
+use MageHx\HtmxActions\Enums\HtmxSwapOption;
+use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\GuestEmail;
 
@@ -9,7 +11,9 @@ use MageHx\MahxCheckout\ViewModel\GuestEmail;
 /** @var string $formKey */
 /** @var Closure $viewModelProvider */
 /** @var GuestEmail $viewModel */
+/** @var HxAttributesRenderer $hxAttrRenderer */
 $viewModel = $viewModelProvider(GuestEmail::class);
+$hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
 ?>
 <div id="guest-email-form-container">
     <form id="guest-email-form" novalidate="novalidate" x-data="GuestEmailForm">
@@ -24,11 +28,12 @@ $viewModel = $viewModelProvider(GuestEmail::class);
                 id="gef-email" type="text" name="email" placeholder="joe@example.com"
                 class="input input-bordered input-sm w-full max-w-sm" value="<?= $eHtmlAttr($viewModel->getEmail()) ?>"
                 @change="validate" @keydown.enter.prevent="validate"
-                hx-target="#guest-email-form-container"
-                hx-swap="outerHTML"
-                hx-trigger="mahxcheckout-guest-email-form-validated from:body"
-                hx-post="<?= $block->getUrl('mahxcheckout/form/guestEmailPost')?>"
-                hx-on:afterSwap="dispatchEmailSavedEvent"
+                <?= $hxAttrRenderer->hxBuilder()
+                        ->target('#guest-email-form-container')
+                        ->swap(HtmxSwapOption::OUTER_HTML->value)
+                        ->trigger('mahxcheckout-guest-email-form-validated from:body')
+                        ->post('mahxcheckout/form/guestEmailPost')
+                        ->render(); ?>
             />
         </div>
         <?= $formKey ?>
