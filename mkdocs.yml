@@ -5,9 +5,12 @@ nav:
   - Home: index.md
   - Why MAHX Checkout?: why-mahx-checkout.md
   - The Puzzle Piece - HTMX: puzzle-htmx.md
-  - Layout: layouts.md
-  - Steps Implementation: steps.md
-  - Address Field Renderers: address-renderers.md
+  - Checkout:
+    - Layout: layouts.md
+    - Steps Implementation: steps.md
+    - Address Field Renderers: address-renderers.md
+  - Concepts:
+    - Data Objects: data-objects.md
 theme:
   name: material
   favicon: assets/favicon.ico
@@ -17,8 +20,8 @@ theme:
     - navigation.sections
     - navigation.path
     - toc.follow
-    - toc.integrate
     - navigation.top
+    - navigation.footer
   logo: assets/logo-s.png
   font:
     text: Inter
@@ -36,6 +39,7 @@ theme:
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
+copyright: 'Copyright © MahxCheckout 2025-present. All rights reserved.'
 
 markdown_extensions:
   - admonition
@@ -48,7 +52,9 @@ markdown_extensions:
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
 
+
 extra:
+  generator: false
   font:
     text: https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap
     code: https://fonts.googleapis.com/css2?family=Fira+Code&display=swap
