@@ -11,6 +11,7 @@ class PaymentMethodData extends Data
     public function __construct(
         public string $code,
         public ?string $title = '',
+        public ?array $additionalData = [],
     ) {
     }
 

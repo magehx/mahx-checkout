@@ -4,6 +4,7 @@ use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\PaymentMethods;
 
 /** @var Template $block */
+/** @var Closure $eHtmlAttr */
 /** @var string $formKey */
 /** @var Closure $classNames */
 /** @var Closure $viewModelProvider */
@@ -14,7 +15,11 @@ $viewModel = $viewModelProvider(PaymentMethods::class);
 <div id="payment-methods-section" class="<?= $classNames(['relative', 'mt-12' => $viewModel->isVirtualCart()]) ?>">
     <?= $block->getChildHtml('formTitle') ?>
     <div class="overflow-x-auto">
-        <form id="payment-methods-form" x-data="PaymentMethodsForm">
+        <form
+            id="payment-methods-form"
+            x-data="PaymentMethodsForm"
+            data-validation="<?= $eHtmlAttr($viewModel->getValidationDataJson()) ?>"
+        >
             <?= $formKey ?>
             <?php foreach ($viewModel->getPaymentMethods() as $method): ?>
                 <?= $viewModel->renderPayment($method) ?>

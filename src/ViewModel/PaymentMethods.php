@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\ViewModel;
 
+use MageHx\MahxCheckout\Block\PaymentRenderer;
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use MageHx\MahxCheckout\Data\PaymentMethodData;
 use MageHx\MahxCheckout\Model\PaymentRenderer\PaymentRendererPool;
 use MageHx\MahxCheckout\Model\QuoteDetails;
-use MageHx\MahxCheckout\Service\GetPaymentMethods;
+use Magento\Framework\View\LayoutInterface;
+use Magento\Quote\Api\PaymentMethodManagementInterface;
 
 class PaymentMethods implements ArgumentInterface
 {
@@ -16,8 +19,10 @@ class PaymentMethods implements ArgumentInterface
 
     public function __construct(
         private readonly QuoteDetails $quote,
+        private readonly Json $jsonSerializer,
+        private readonly LayoutInterface $layout,
         private readonly PaymentRendererPool $paymentRendererPool,
-        private readonly GetPaymentMethods $getPaymentMethodsService,
+        private readonly PaymentMethodManagementInterface $paymentMethodManagement,
     ) {
     }
 
@@ -27,7 +32,10 @@ class PaymentMethods implements ArgumentInterface
     public function getPaymentMethods(): array
     {
         if (!$this->methods) {
-            $this->methods = $this->getPaymentMethodsService->execute($this->quote->getId());
+            foreach($this->paymentMethodManagement->getList($this->quote->getId()) as $paymentMethod) {
+                $paymentData = $this->paymentRendererPool->getPaymentDataFor($paymentMethod);
+                $this->methods[$paymentMethod->getCode()] = $paymentData;
+            }
         }
 
         return $this->methods;
@@ -35,18 +43,28 @@ class PaymentMethods implements ArgumentInterface
 
     public function getSelectedMethod(): PaymentMethodData
     {
-        return $this->quote->getPaymentMethodData();
+        $selectedMethod = $this->quote->getPaymentMethod()->getMethod();
+
+        return $selectedMethod ? $this->getPaymentMethods()[$selectedMethod] : PaymentMethodData::from(['code' => '']);
     }
 
     public function renderPayment(PaymentMethodData $paymentMethodData): string
     {
-        $renderer = $this->paymentRendererPool->getRenderer($paymentMethodData->code);
+        $template = $this->paymentRendererPool->getRendererTemplateFor($paymentMethodData);
 
-        return $renderer->render($paymentMethodData);
+        return $this->layout->createBlock(PaymentRenderer::class)
+            ->setTemplate($template)
+            ->setPaymentData($paymentMethodData)
+            ->toHtml();
     }
 
     public function isVirtualCart(): bool
     {
         return $this->quote->isVirtualQuote();
+    }
+
+    public function getValidationDataJson(): string
+    {
+        return $this->jsonSerializer->serialize($this->getSelectedMethod()->rules());
     }
 }

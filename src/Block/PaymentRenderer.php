@@ -33,6 +33,6 @@ class PaymentRenderer extends Template
 
     public function isSelected(): bool
     {
-        return $this->paymentData->code === $this->quote->getPaymentMethodData()->code;
+        return $this->paymentData->code === $this->quote->getPaymentMethod()->getMethod();
     }
 }

@@ -4,26 +4,28 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Model\PaymentRenderer;
 
-use Magento\Framework\ObjectManagerInterface;
+use MageHx\MahxCheckout\Data\PaymentMethodData;
+use Magento\Quote\Api\Data\PaymentMethodInterface;
 
 class PaymentRendererPool
 {
-    private array $instances = [];
-
     public function __construct(
-        private readonly ObjectManagerInterface $objectManager,
-        private readonly array $rendererClasses = []
+        private readonly array $rendererDataList = []
     ) {
     }
 
-    public function getRenderer(string $methodCode): PaymentRendererInterface
+    public function getPaymentDataFor(PaymentMethodInterface $paymentMethod): PaymentMethodData
     {
-        $rendererClass = $this->rendererClasses[$methodCode] ?? $this->rendererClasses['default'];
+        $methodCode = $paymentMethod->getCode();
+        $dataClass = $this->rendererDataList[$methodCode]['dataClass'] ?? PaymentMethodData::class;
 
-        if (!isset($this->instances[$rendererClass])) {
-            $this->instances[$rendererClass] = $this->objectManager->create($rendererClass);
-        }
+        return $dataClass::from(['code' => $methodCode, 'title' => $paymentMethod->getTitle()]);
+    }
 
-        return $this->instances[$rendererClass];
+    public function getRendererTemplateFor(PaymentMethodData $paymentMethodData): string
+    {
+        $defaultTemplate = $this->rendererDataList['default']['template'];
+
+        return $this->rendererDataList[$paymentMethodData->code]['template'] ?? $defaultTemplate;
     }
 }

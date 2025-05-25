@@ -6,6 +6,7 @@ namespace MageHx\MahxCheckout\Enum;
 
 enum AdditionalFieldAttribute: string
 {
+    case ID = 'id';
     case OPTIONS = 'options';
     case DEFAULT_OPTION_LABEL = 'defaultOptionLabel';
     case INPUT_EXTRA_ATTRIBUTES = 'inputElemAdditionalAttributes';

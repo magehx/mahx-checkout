@@ -4,6 +4,9 @@ module.exports = {
         '../templates/**/*.phtml',
         '../layout/*.xml',
     ],
+    safelist: [
+        'input-error',
+    ],
     theme: {
         extend: {},
     },

@@ -32,7 +32,5 @@ class PaymentMethodPost extends ComponentAction
             $this->prepareErrorNotificationsWithFormData($paymentData->toArray(), $e);
             return $this->withNoReswapHeader($this->getNotificationsResponse());
         }
-
-
     }
 }

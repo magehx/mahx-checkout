@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Data;
 
+use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute;
 use Rkt\MageData\Data;
 
 class AddressFieldAttributes extends Data
@@ -23,6 +24,6 @@ class AddressFieldAttributes extends Data
 
     public function getFieldId(): string
     {
-        return $this->additionalData['id'] ?? $this->form . '-' . $this->name;
+        return $this->additionalData[AdditionalFieldAttribute::ID->value] ?? $this->form . '-' . $this->name;
     }
 }

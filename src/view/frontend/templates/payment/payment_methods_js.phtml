@@ -11,25 +11,13 @@
 
             init() {
                 this.form = this.$el;
+                this.applyValidationToForm();
+            },
+
+            applyValidationToForm() {
                 this.validator = mahxCheckout.validator(this.form);
                 this.validator.addRequiredGroup(this.form, '<?= $eJs(__("The payment method is missing. Select the payment method and try again.")) ?>');
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
-
-                this.registerEventListeners();
-            },
-
-            dispatchPaymentSaved(event) {
-                this.$dispatch('mahxcheckout-payment-saved', { htmxEvent: event });
-            },
-
-            registerEventListeners() {
-                window.addEventListener('htmx:afterSwap', (event) => {
-                    const triggeringElement = event.detail?.requestConfig?.elt;
-
-                    if (triggeringElement && this.form.contains(triggeringElement)) {
-                        this.dispatchPaymentSaved(event);
-                    }
-                }, { once: true });
             },
         }));
     });
