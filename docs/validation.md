@@ -109,7 +109,7 @@ MahxCheckout uses the [JustValidate](https://just-validate.dev/) library for fro
 
 ```html
 <form id="shipping-address" method="post" x-data="ShippingAddressForm">
-  <input name="firstname" placeholder="First Name">
+  <input id="#firstname" name="firstname" placeholder="First Name">
   <input name="lastname" placeholder="Last Name">
   <input name="street[]" placeholder="Street Line 1">
   <input name="street[]" placeholder="Street Line 2">
@@ -149,7 +149,7 @@ MahxCheckout uses the [JustValidate](https://just-validate.dev/) library for fro
 * **Live validation** before submit.
 * **Error highlighting** and error messages.
 * **Custom triggers**: validate manually via `validator.revalidate()`.
-* **Field-level validation**: use `validator.revalidateField('firstname')`.
+* **Field-level validation**: use `validator.revalidateField('#firstname')`.
 
 You can read more in [JustValidate documentation](https://just-validate.dev/).
 
