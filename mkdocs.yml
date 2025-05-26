@@ -9,6 +9,7 @@ nav:
     - Layout: layouts.md
     - Steps Implementation: steps.md
     - Address Field Renderers: address-renderers.md
+    - Payment Renderers: payment-renderer.md
   - Concepts:
     - Data Objects: data-objects.md
     - Validation: validation.md
