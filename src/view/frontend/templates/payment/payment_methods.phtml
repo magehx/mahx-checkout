@@ -1,28 +1,23 @@
 <?php
 
-use Magento\Framework\View\Element\Template;
-use MageHx\MahxCheckout\ViewModel\PaymentMethods;
+use MageHx\MahxCheckout\Block\PaymentMethods;
 
-/** @var Template $block */
+/** @var PaymentMethods $block */
 /** @var Closure $eHtmlAttr */
 /** @var string $formKey */
 /** @var Closure $classNames */
-/** @var Closure $viewModelProvider */
-/** @var PaymentMethods $viewModel */
-
-$viewModel = $viewModelProvider(PaymentMethods::class);
 ?>
-<div id="payment-methods-section" class="<?= $classNames(['relative', 'mt-12' => $viewModel->isVirtualCart()]) ?>">
+<div id="payment-methods-section" class="<?= $classNames(['relative', 'mt-12' => $block->isVirtualCart()]) ?>">
     <?= $block->getChildHtml('formTitle') ?>
     <div class="overflow-x-auto">
         <form
             id="payment-methods-form"
             x-data="PaymentMethodsForm"
-            data-validation="<?= $eHtmlAttr($viewModel->getValidationJson()) ?>"
+            data-validation="<?= $eHtmlAttr($block->getValidationJson()) ?>"
         >
             <?= $formKey ?>
-            <?php foreach ($viewModel->getPaymentMethods() as $method): ?>
-                <?= $viewModel->renderPayment($method) ?>
+            <?php foreach ($block->getPaymentMethods() as $method): ?>
+                <?= $block->getPaymentHtml($method) ?>
             <?php endforeach; ?>
         </form>
     </div>

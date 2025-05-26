@@ -43,17 +43,6 @@
         </arguments>
     </type>
 
-    <type name="MageHx\MahxCheckout\Model\PaymentRenderer\PaymentRendererPool">
-        <arguments>
-            <argument name="rendererDataList" xsi:type="array">
-                <item name="default" xsi:type="array">
-                    <item name="dataClass" xsi:type="string">MageHx\MahxCheckout\Data\PaymentMethodData</item>
-                    <item name="template" xsi:type="string">MageHx_MahxCheckout::payment/renderer/default.phtml</item>
-                </item>
-            </argument>
-        </arguments>
-    </type>
-
     <virtualType name="GuestEmailForm" type="MageHx\MahxCheckout\Model\StepManager\FormComponent">
         <arguments>
             <argument name="name" xsi:type="string">guest-email-form</argument>

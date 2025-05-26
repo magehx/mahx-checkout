@@ -8,7 +8,7 @@ use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\Data\PaymentMethodData;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 
-class PaymentRenderer extends Template
+class PaymentRenderer extends Template implements PaymentRendererBlockInterface
 {
     private ?PaymentMethodData $paymentData = null;
 

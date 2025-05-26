@@ -20,12 +20,15 @@
             </block>
         </block>
 
-        <block name="payment.methods.form" template="MageHx_MahxCheckout::payment/payment_methods.phtml">
+        <block class="MageHx\MahxCheckout\Block\PaymentMethods"
+               name="payment.methods.form" template="MageHx_MahxCheckout::payment/payment_methods.phtml">
             <block name="payment.methods.title" as="formTitle" template="MageHx_MahxCheckout::ui/section_title.phtml">
                 <arguments>
                     <argument name="title" xsi:type="string">Payment Method</argument>
                 </arguments>
             </block>
+            <block name="payment.method.renderer.default" as="default" class="MageHx\MahxCheckout\Block\PaymentRenderer"
+                template="MageHx_MahxCheckout::payment/renderer/default.phtml" />
         </block>
 
         <block name="billing.address.section" template="MageHx_MahxCheckout::address/billing_address.phtml">
