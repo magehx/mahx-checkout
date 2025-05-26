@@ -10,5 +10,4 @@ interface PaymentRendererBlockInterface
 {
     public function setPaymentData(PaymentMethodData $paymentData): self;
     public function getPaymentData(): ?PaymentMethodData;
-    public function isSelected(): bool;
 }
