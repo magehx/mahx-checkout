@@ -11,7 +11,7 @@
 
             init() {
                 this.form = this.$el;
-                this.validator = mahxCheckout.validator(this.form);
+                this.validator = mahxCheckout.validator({ form: this.form });
                 this.validator.addRequiredGroup(this.form, '<?= $eJs(__("The shipping method is missing. Select the shipping method and try again.")) ?>');
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },

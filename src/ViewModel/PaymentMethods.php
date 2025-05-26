@@ -63,7 +63,8 @@ class PaymentMethods implements ArgumentInterface
         return $this->quote->isVirtualQuote();
     }
 
-    public function getValidationDataJson(): string
+    // @todo before after events to modify rules
+    public function getValidationJson(): string
     {
         return $this->jsonSerializer->serialize($this->getSelectedMethod()->rules());
     }

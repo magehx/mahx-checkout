@@ -18,7 +18,7 @@ $viewModel = $viewModelProvider(PaymentMethods::class);
         <form
             id="payment-methods-form"
             x-data="PaymentMethodsForm"
-            data-validation="<?= $eHtmlAttr($viewModel->getValidationDataJson()) ?>"
+            data-validation="<?= $eHtmlAttr($viewModel->getValidationJson()) ?>"
         >
             <?= $formKey ?>
             <?php foreach ($viewModel->getPaymentMethods() as $method): ?>

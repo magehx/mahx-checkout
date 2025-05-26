@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\ViewModel;
 
+use MageHx\MahxCheckout\Data\AddressData;
 use Magento\Framework\DataObject;
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use MageHx\MahxCheckout\Data\AddressFieldAttributes;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
@@ -19,6 +21,7 @@ class ShippingAddress implements ArgumentInterface
     private ?array $fields = null;
 
     public function __construct(
+        private readonly Json $jsonSerializer,
         private readonly EventDispatcher $eventDispatcher,
         private readonly AddressFieldManager $addressFieldManager,
     ) {
@@ -61,5 +64,20 @@ class ShippingAddress implements ArgumentInterface
     public function getAddressFieldsJson(): string
     {
         return $this->addressFieldManager->prepareAddressFieldsDataForJs($this->getAddressFields());
+    }
+
+    // @todo before after events to modify rules
+    public function getValidationJson(): string
+    {
+        return $this->jsonSerializer->serialize(AddressData::getValidationRules([
+            'firstname' => '',
+            'lastname' => '',
+            'street' => [],
+            'city' => '',
+            'country_id' => '',
+            'postcode' => '',
+            'telephone' => '',
+            'region' => '',
+        ]));
     }
 }

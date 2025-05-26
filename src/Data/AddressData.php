@@ -26,12 +26,13 @@ class AddressData extends Data
     public function rules(): array
     {
         return [
-            'firstname' => 'required',
-            'lastname' => 'required',
+            'firstname' => 'required|alpha_spaces',
+            'lastname' => 'required|alpha_spaces',
             'street.0' => 'required',
-            'city' => 'required',
-            'country_id' => 'required',
+            'city' => 'required|alpha_spaces',
+            'country_id' => 'required|max:2',
             'postcode' => 'required',
+            'telephone' => 'required',
         ];
     }
 

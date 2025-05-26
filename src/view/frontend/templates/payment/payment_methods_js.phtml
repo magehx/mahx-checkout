@@ -15,7 +15,15 @@
             },
 
             applyValidationToForm() {
-                this.validator = mahxCheckout.validator(this.form);
+                this.validator = mahxCheckout.validator({
+                    form: this.form,
+                    /**
+                     * We are passing payment validation via data attribute because, payment validation
+                     * can change depending upon the payment method selected. So the logic here must
+                     * be dynamic to accommodate this change.
+                     */
+                    rules: JSON.parse(this.form.dataset.validation) || {},
+                });
                 this.validator.addRequiredGroup(this.form, '<?= $eJs(__("The payment method is missing. Select the payment method and try again.")) ?>');
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },

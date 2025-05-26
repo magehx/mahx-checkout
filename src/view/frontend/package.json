@@ -21,8 +21,10 @@
     "@alpinejs/csp": "^3.14.9",
     "autoprefixer": "^10.4.21",
     "daisyui": "^4.12.24",
+    "jsdom": "^26.1.0",
     "postcss": "^8.5.3",
     "postcss-cli": "^11.0.1",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "vitest": "^3.1.4"
   }
 }

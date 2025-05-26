@@ -1,11 +1,16 @@
 <?php
 
+use MageHx\MahxCheckout\ViewModel\GuestEmail;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
 /** @var string $eHtmlAttr */
 /** @var string $nonce */
 /** @var Closure $eJs */
+/** @var Closure $viewModelProvider */
+/** @var GuestEmail $viewModel */
+
+$viewModel = $viewModelProvider(GuestEmail::class);
 ?>
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
     document.addEventListener('alpine:init', () => {
@@ -37,10 +42,11 @@ use Magento\Framework\View\Element\Template;
             },
 
             addValidationToForm() {
-                const validator = mahxCheckout.validator(this.form);
-                validator.setValidationRules([{ element: this.form.elements.email, rules: 'required|email' }]);
-                this.addValidatorToPageNavigation(this.form.id, validator);
-                this.validator = validator;
+                this.validator = mahxCheckout.validator({
+                    form: this.form,
+                    rules: JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>'),
+                });
+                this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
         }));
     });

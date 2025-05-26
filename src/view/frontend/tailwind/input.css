@@ -7,7 +7,7 @@
  */
 .mahxcheckout-index-index {
     .just-validate-error-label {
-        @apply text-sm text-red-600 label-text-alt;
+        @apply text-sm text-red-600 label-text-alt mt-1;
         max-width: fit-content;
     }
     .btn-edit-pencil {

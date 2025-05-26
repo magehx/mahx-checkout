@@ -8,6 +8,7 @@ use Rkt\MageData\Data;
 
 class ShippingInformation extends Data
 {
+    // @todo AddressData should be used here. duplication here.
     public function __construct(
         public string $firstname,
         public string $lastname,
@@ -28,12 +29,13 @@ class ShippingInformation extends Data
     public function rules(): array
     {
         return [
-            'firstname' => 'required',
-            'lastname' => 'required',
+            'firstname' => 'required|alpha_spaces',
+            'lastname' => 'required|alpha_spaces',
             'street.0' => 'required',
-            'city' => 'required',
+            'city' => 'required|alpha_spaces',
             'country_id' => 'required|max:2',
             'postcode' => 'required',
+            'telephone' => 'required',
             'method' => 'required',
         ];
     }

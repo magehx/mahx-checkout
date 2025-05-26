@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\ViewModel;
 
+use MageHx\MahxCheckout\Data\AddressData;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\DataObject;
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use MageHx\MahxCheckout\Data\AddressFieldAttributes;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
@@ -20,6 +22,7 @@ class BillingAddress implements ArgumentInterface
     private ?array $fields = null;
 
     public function __construct(
+        private readonly Json $json,
         private readonly QuoteDetails $quote,
         private readonly CustomerSession $customerSession,
         private readonly EventDispatcher $eventDispatcher,
@@ -111,5 +114,20 @@ class BillingAddress implements ArgumentInterface
         }
 
         return (bool)$showForm;
+    }
+
+    // @todo before after events to modify rules
+    public function getValidationJson(): string
+    {
+        return $this->json->serialize(AddressData::getValidationRules([
+            'firstname' => '',
+            'lastname' => '',
+            'street' => [],
+            'city' => '',
+            'country_id' => '',
+            'postcode' => '',
+            'telephone' => '',
+            'region' => '',
+        ]));
     }
 }

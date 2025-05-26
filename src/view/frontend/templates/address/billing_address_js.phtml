@@ -45,9 +45,10 @@ $viewModel = $viewModelProvider(BillingAddress::class);
             },
 
             applyValidation() {
-                const fieldsConfig = JSON.parse('<?= $eJs($viewModel->getAddressFieldsJson()) ?>');
-                this.validator = mahxCheckout.validator(this.form)
-                this.validator.createValidationRulesForFieldConfig(fieldsConfig);
+                this.validator = mahxCheckout.validator({
+                    form: this.form,
+                    rules: JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>'),
+                })
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
         }));
