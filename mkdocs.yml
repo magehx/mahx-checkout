@@ -11,6 +11,7 @@ nav:
     - Address Field Renderers: address-renderers.md
   - Concepts:
     - Data Objects: data-objects.md
+    - Validation: validation.md
 theme:
   name: material
   favicon: assets/favicon.ico
@@ -22,7 +23,7 @@ theme:
     - toc.follow
     - navigation.top
     - navigation.footer
-  logo: assets/logo-s.png
+  logo: assets/logo.jpg
   font:
     text: Inter
     code: Fira Code
