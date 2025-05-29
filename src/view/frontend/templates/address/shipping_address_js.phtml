@@ -21,10 +21,9 @@ $viewModel = $viewModelProvider(ShippingAddress::class);
 
                 init() {
                     this.form = this.$el;
-                    this.validator = mahxCheckout.validator({
+                    this.validator = mahxCheckout.validator(Object.assign({
                         form: this.form,
-                        rules: JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>'),
-                    });
+                    }, JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>')));
                     this.addValidatorToPageNavigation(this.form.id, this.validator);
                 },
 

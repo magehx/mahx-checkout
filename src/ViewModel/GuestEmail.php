@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MageHx\MahxCheckout\ViewModel;
 
 use MageHx\MahxCheckout\Data\GuestEmailData;
+use MageHx\MahxCheckout\Data\ValidationMapperData;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use MageHx\MahxCheckout\Model\FormDataStorage;
@@ -21,11 +22,24 @@ class GuestEmail implements ArgumentInterface
 
     public function getEmail(): string
     {
-        return $this->formDataStorage->getData('email') ?? $this->quote->getQuoteCustomerEmail();
+        return $this->getEmailData()->email;
     }
 
     public function getValidationJson(): string
     {
-        return $this->jsonSerializer->serialize(GuestEmailData::getValidationRules(['email' => $this->getEmail()]));
+        $guestEmailData = $this->getEmailData();
+
+        return $this->jsonSerializer->serialize(ValidationMapperData::from([
+            'rules' => $guestEmailData->rules(),
+            'messages' => $guestEmailData->messages(),
+            'aliases' => $guestEmailData->aliases(),
+        ])->exportToJs());
+    }
+
+    public function getEmailData(): GuestEmailData
+    {
+        return GuestEmailData::from([
+            'email' => $this->formDataStorage->getData('email') ?? $this->quote->getQuoteCustomerEmail(),
+        ]);
     }
 }

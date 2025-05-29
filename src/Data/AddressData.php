@@ -36,6 +36,13 @@ class AddressData extends Data
         ];
     }
 
+    public function aliases(): array
+    {
+        return [
+            'street.0' => __('street'),
+        ];
+    }
+
     public function getAddress(): array
     {
         return [

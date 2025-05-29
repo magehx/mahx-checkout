@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MageHx\MahxCheckout\ViewModel;
 
 use MageHx\MahxCheckout\Data\AddressData;
+use MageHx\MahxCheckout\Data\ValidationMapperData;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\DataObject;
 use Magento\Framework\Serialize\Serializer\Json;
@@ -22,8 +23,8 @@ class BillingAddress implements ArgumentInterface
     private ?array $fields = null;
 
     public function __construct(
-        private readonly Json $json,
         private readonly QuoteDetails $quote,
+        private readonly Json $jsonSerializer,
         private readonly CustomerSession $customerSession,
         private readonly EventDispatcher $eventDispatcher,
         private readonly FormDataStorage $formDataStorage,
@@ -119,7 +120,7 @@ class BillingAddress implements ArgumentInterface
     // @todo before after events to modify rules
     public function getValidationJson(): string
     {
-        return $this->json->serialize(AddressData::getValidationRules([
+        $addressData = AddressData::from([
             'firstname' => '',
             'lastname' => '',
             'street' => [],
@@ -128,6 +129,11 @@ class BillingAddress implements ArgumentInterface
             'postcode' => '',
             'telephone' => '',
             'region' => '',
-        ]));
+        ]);
+        return $this->jsonSerializer->serialize(ValidationMapperData::from([
+            'rules' => $addressData->rules(),
+            'messages' => $addressData->messages(),
+            'aliases' => $addressData->aliases(),
+        ])->exportToJs());
     }
 }

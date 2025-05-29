@@ -1,8 +1,10 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import Validator from '../../app/new_validator.js';
+import Validator from '../../../app/new_validator';
 
 function setupForm(html) {
+  // eslint-disable-next-line no-undef
   document.body.innerHTML = html;
+  // eslint-disable-next-line no-undef
   return document.getElementById('myForm');
 }
 
@@ -276,7 +278,7 @@ describe('ValidatorTest', () => {
     });
   });
 
-    describe('rule:json', () => {
+  describe('rule:json', () => {
     let form;
 
     beforeEach(() => {
@@ -554,96 +556,95 @@ describe('ValidatorTest', () => {
   });
 
   describe('rule:min|max|between', () => {
-  let form;
+    let form;
 
-  describe('text inputs (string length)', () => {
-    beforeEach(() => {
-      form = setupForm(`
+    describe('text inputs (string length)', () => {
+      beforeEach(() => {
+        form = setupForm(`
         <form id="myForm">
           <input name="code" type="text" />
         </form>
       `);
-    });
-
-    test('min failure for short string', async () => {
-      form.elements.code.value = '5'; // 1 character
-
-      const validator = Validator({
-        form,
-        rules: { code: 'min:2' }, // expects at least 2 characters
       });
 
-      expect(await validator.revalidate()).toBe(false);
-    });
+      test('min failure for short string', async () => {
+        form.elements.code.value = '5'; // 1 character
 
-    test('max failure for long string', async () => {
-      form.elements.code.value = '123456'; // 6 characters
+        const validator = Validator({
+          form,
+          rules: { code: 'min:2' }, // expects at least 2 characters
+        });
 
-      const validator = Validator({
-        form,
-        rules: { code: 'max:5' }, // allows max 5 characters
+        expect(await validator.revalidate()).toBe(false);
       });
 
-      expect(await validator.revalidate()).toBe(false);
-    });
+      test('max failure for long string', async () => {
+        form.elements.code.value = '123456'; // 6 characters
 
-    test('between pass for acceptable length', async () => {
-      form.elements.code.value = '123'; // 3 characters
+        const validator = Validator({
+          form,
+          rules: { code: 'max:5' }, // allows max 5 characters
+        });
 
-      const validator = Validator({
-        form,
-        rules: { code: 'between:2,5' }, // between 2 and 5 characters
+        expect(await validator.revalidate()).toBe(false);
       });
 
-      expect(await validator.revalidate()).toBe(true);
-    });
-  });
+      test('between pass for acceptable length', async () => {
+        form.elements.code.value = '123'; // 3 characters
 
-  describe('number inputs (numeric value)', () => {
-    beforeEach(() => {
-      form = setupForm(`
+        const validator = Validator({
+          form,
+          rules: { code: 'between:2,5' }, // between 2 and 5 characters
+        });
+
+        expect(await validator.revalidate()).toBe(true);
+      });
+    });
+
+    describe('number inputs (numeric value)', () => {
+      beforeEach(() => {
+        form = setupForm(`
         <form id="myForm">
           <input name="age" type="number" id="age" />
           <input name="firstname" type="text" />
         </form>
       `);
-    });
-
-    test('min failure for too small number', async () => {
-      form.elements.age.value = '1';
-
-      const validator = Validator({
-        form,
-        rules: { age: 'min:2' }, // expects age >= 2
       });
 
-      expect(await validator.revalidate()).toBe(false);
-    });
+      test('min failure for too small number', async () => {
+        form.elements.age.value = '1';
 
-    test('max failure for too large number', async () => {
-      form.elements.age.value = '10';
+        const validator = Validator({
+          form,
+          rules: { age: 'min:2' }, // expects age >= 2
+        });
 
-      const validator = Validator({
-        form,
-        rules: { age: 'max:5' }, // expects age <= 5
+        expect(await validator.revalidate()).toBe(false);
       });
 
-      expect(await validator.revalidate()).toBe(false);
-    });
+      test('max failure for too large number', async () => {
+        form.elements.age.value = '10';
 
-    test('between pass for number in range', async () => {
-      form.elements.age.value = '3';
+        const validator = Validator({
+          form,
+          rules: { age: 'max:5' }, // expects age <= 5
+        });
 
-      const validator = Validator({
-        form,
-        rules: { age: 'between:2,5' }, // between 2 and 5
+        expect(await validator.revalidate()).toBe(false);
       });
 
-      expect(await validator.revalidate()).toBe(true);
+      test('between pass for number in range', async () => {
+        form.elements.age.value = '3';
+
+        const validator = Validator({
+          form,
+          rules: { age: 'between:2,5' }, // between 2 and 5
+        });
+
+        expect(await validator.revalidate()).toBe(true);
+      });
     });
   });
-});
-
 
   describe('rule:digits|digits_between', () => {
     let form;
@@ -722,7 +723,10 @@ describe('ValidatorTest', () => {
 
     test('regex', async () => {
       form.elements.age.value = 'abc123';
-      const validator = Validator({ form, rules: { age: 'regex:^[a-z0-9]+$' } });
+      const validator = Validator({
+        form,
+        rules: { age: 'regex:^[a-z0-9]+$' },
+      });
       expect(await validator.revalidate()).toBe(true);
     });
 
@@ -746,21 +750,30 @@ describe('ValidatorTest', () => {
     test('different', async () => {
       form.elements.age.value = '25';
       form.elements.confirm_age.value = '30';
-      const validator = Validator({ form, rules: { confirm_age: 'different:age' } });
+      const validator = Validator({
+        form,
+        rules: { confirm_age: 'different:age' },
+      });
       expect(await validator.revalidate()).toBe(true);
     });
 
     test('after', async () => {
       form.elements.start_date.value = '2024-01-01';
       form.elements.end_date.value = '2024-02-01';
-      const validator = Validator({ form, rules: { end_date: 'after:start_date' } });
+      const validator = Validator({
+        form,
+        rules: { end_date: 'after:start_date' },
+      });
       expect(await validator.revalidate()).toBe(true);
     });
 
     test('before', async () => {
       form.elements.start_date.value = '2024-01-01';
       form.elements.end_date.value = '2023-01-01';
-      const validator = Validator({ form, rules: { end_date: 'before:start_date' } });
+      const validator = Validator({
+        form,
+        rules: { end_date: 'before:start_date' },
+      });
       expect(await validator.revalidate()).toBe(true);
     });
 

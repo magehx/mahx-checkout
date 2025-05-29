@@ -6,6 +6,7 @@ namespace MageHx\MahxCheckout\Block;
 
 use Logicexception;
 use MageHx\MahxCheckout\Data\PaymentMethodData;
+use MageHx\MahxCheckout\Data\ValidationMapperData;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Element\Template;
@@ -55,7 +56,11 @@ class PaymentMethods extends Template
         $dataClass = $this->getDataClassByCode($selectedMethod->getMethod() ?? '');
         $paymentData = $dataClass::from(['code' => '']);
 
-        return $this->jsonSerializer->serialize($paymentData->rules());
+        return $this->jsonSerializer->serialize(ValidationMapperData::from([
+            'rules' => $paymentData->rules(),
+            'messages' => $paymentData->messages(),
+            'aliases' => $paymentData->aliases(),
+        ])->exportToJs());
     }
 
     public function isVirtualCart(): bool
