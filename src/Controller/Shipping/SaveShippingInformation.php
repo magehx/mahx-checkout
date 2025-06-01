@@ -30,7 +30,7 @@ class SaveShippingInformation extends ComponentAction
 
     public function execute(): ResultInterface
     {
-        $shippingInfo = $this->prepareShippingInfoService->execute($this->getRequest());
+        $shippingInfo = $this->prepareShippingInfoService->execute((array)$this->getRequest()->getPost());
 
         try {
             $shippingInfo->validate();

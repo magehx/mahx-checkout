@@ -35,7 +35,7 @@ class HtmxHeaderManager
         return $this->htmxHeaderReader->setResponseHeader(
             $response,
             HtmxResponseHeader::RESWAP,
-            HtmxSwapOption::NONE->value
+            HtmxSwapOption::none->value
         );
     }
 

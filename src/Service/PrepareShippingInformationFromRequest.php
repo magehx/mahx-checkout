@@ -18,9 +18,8 @@ class PrepareShippingInformationFromRequest
         private readonly NewShippingAddressManager $newShippingAddressManager,
     ) {}
 
-    public function execute(RequestInterface $request): ShippingInformation
+    public function execute(array $postData): ShippingInformation
     {
-        $postData = $request->getPost();
         $addressId = $postData['customer_address_id'] ?? null;
         $isNewAddress = $addressId === 'new';
 
@@ -41,17 +40,19 @@ class PrepareShippingInformationFromRequest
         $isBillingSame = !$isLoggedIn || !$this->customerAddressService->getCurrentCustomerDefaultBillingAddress();
 
         return ShippingInformation::from([
-            'firstname' => $data['firstname'] ?? '',
-            'lastname' => $data['lastname'] ?? '',
-            'street' => $street,
-            'city' => $data['city'] ?? '',
-            'country_id' => $data['country_id'] ?? '',
-            'postcode' => $data['postcode'] ?? '',
-            'telephone' => $data['telephone'] ?? '',
-            'region' => $region,
             'method' => $postData['method'] ?? '',
-            'same_as_billing' => $isBillingSame,
-            'save_in_address_book' => (int)($data['save_in_address_book'] ?? 0),
+            'address' => [
+                'firstname' => $data['firstname'] ?? '',
+                'lastname' => $data['lastname'] ?? '',
+                'street' => $street,
+                'city' => $data['city'] ?? '',
+                'country_id' => $data['country_id'] ?? '',
+                'postcode' => $data['postcode'] ?? '',
+                'telephone' => $data['telephone'] ?? '',
+                'region' => $region,
+                'same_as_billing' => $isBillingSame,
+                'save_in_address_book' => (int)($data['save_in_address_book'] ?? 0),
+            ],
         ]);
     }
 

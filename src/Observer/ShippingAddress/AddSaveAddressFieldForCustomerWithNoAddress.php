@@ -8,7 +8,7 @@ use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\DataObject;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 
 /**
@@ -39,11 +39,11 @@ class AddSaveAddressFieldForCustomerWithNoAddress implements ObserverInterface
 
     private function addSaveInAddressBookFieldToShippingAddressForm(Observer $observer): void
     {
-        /** @var AddressFieldAttributes[] $fields */
+        /** @var FormFieldConfig[] $fields */
         /** @var DataObject $transport */
         $transport = $observer->getData('transport');
         $fields = $transport->getData('fields');
-        $fields['save_in_address_book'] = new AddressFieldAttributes(
+        $fields['save_in_address_book'] = new FormFieldConfig(
             name: 'save_in_address_book',
             label: 'Save In Address Book',
             type: 'hidden',

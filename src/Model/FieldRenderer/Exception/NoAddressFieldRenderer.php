@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Model\FieldRenderer\Exception;
 
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 
 class NoAddressFieldRenderer extends \Exception
 {
-    public ?AddressFieldAttributes $fieldAttributes = null;
+    public ?FormFieldConfig $fieldAttributes = null;
 }

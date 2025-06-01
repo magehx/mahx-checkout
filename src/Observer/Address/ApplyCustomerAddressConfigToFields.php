@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Observer\Address;
 
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
-use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute as AFA;
+use MageHx\MahxCheckout\Data\FormField\MultilineFieldMeta;
+use MageHx\MahxCheckout\Data\FormField\SelectFieldMeta;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Enum\YesNo;
 use MageHx\MahxCheckout\Model\Config;
 use Magento\Framework\Event\Observer;
@@ -28,7 +29,7 @@ class ApplyCustomerAddressConfigToFields implements ObserverInterface
      */
     public function execute(Observer $observer): void
     {
-        /** @var AddressFieldAttributes[] $addressFields */
+        /** @var FormFieldConfig[] $addressFields */
         $addressFields = $observer->getData('transport')->getData('fields');
 
         try {
@@ -45,9 +46,13 @@ class ApplyCustomerAddressConfigToFields implements ObserverInterface
         }
     }
 
+    /**
+     * @param FormFieldConfig[] $addressFields
+     * @return void
+     */
     private function modifyStreetField(array &$addressFields): void
     {
-        $addressFields['street']->additionalData[AFA::MULTILINE_COUNT->value] = $this->config->getStreetLinesCount();
+        $addressFields['street']->meta = new MultilineFieldMeta($this->config->getStreetLinesCount());
     }
 
     private function modifyTelephoneField(array &$addressFields): void
@@ -100,12 +105,13 @@ class ApplyCustomerAddressConfigToFields implements ObserverInterface
             return;
         }
 
+        /** @var FormFieldConfig $field */
         $field = $addressFields[$fieldName];
         $field->required = $fieldConfig->show->isRequired();
 
         if (!empty($fieldConfig->options)) {
             $field->type = 'select';
-            $field->additionalData[AFA::OPTIONS->value] = $fieldConfig->getFieldOptions();
+            $field->meta = SelectFieldMeta::from(['optins' => $fieldConfig->getFieldOptions()]);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace MageHx\MahxCheckout\Observer\BillingAddress;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Quote\Model\Quote\Address;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Model\Config;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 
@@ -22,7 +22,7 @@ class PopulateBillingAddressFormValues implements ObserverInterface
 
     public function execute(Observer $observer): void
     {
-        /** @var AddressFieldAttributes[] $addressFields */
+        /** @var FormFieldConfig[] $addressFields */
         $addressFields = $observer->getData('fields');
         $address = $this->quote->isBillingSameAsShipping() ?
             $this->quote->getShippingAddress() : $this->quote->getBillingAddress();

@@ -15,7 +15,7 @@ class HxAttributesRenderer extends \MageHx\HtmxActions\ViewModel\HxAttributesRen
     {
         return $this->render([
             HtmxCoreAttributes::target->name => CheckoutHxAttributesData::TARGET_CHECKOUT_MAIN_CONTENT,
-            HtmxCoreAttributes::swap->name => HtmxSwapOption::OUTER_HTML->value,
+            HtmxCoreAttributes::swap->name => HtmxSwapOption::outerHTML,
             HtmxAdditionalAttributes::indicator->name => CheckoutHxAttributesData::INDICATOR_PAGE_LOADER,
             ...$hxAttributes
         ]);

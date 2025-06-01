@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Model\FieldRenderer;
 
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 
 interface FieldRendererInterface
 {
-    public function render(AddressFieldAttributes $attributes): string;
+    public function render(FormFieldConfig $attributes): string;
 
-    public function canRender(AddressFieldAttributes $attributes): bool;
+    public function canRender(FormFieldConfig $attributes): bool;
 }

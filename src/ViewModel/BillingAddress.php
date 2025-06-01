@@ -10,7 +10,7 @@ use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\DataObject;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 use MageHx\MahxCheckout\Model\EventDispatcher;
 use MageHx\MahxCheckout\Model\FormDataStorage;
@@ -67,7 +67,7 @@ class BillingAddress implements ArgumentInterface
     }
 
     /**
-    * @return AddressFieldAttributes[]
+    * @return FormFieldConfig[]
     */
     public function getAddressFields(): array
     {
@@ -82,28 +82,23 @@ class BillingAddress implements ArgumentInterface
         return $this->fields;
     }
 
-    public function renderField(AddressFieldAttributes $fieldAttributes): string
+    public function renderField(FormFieldConfig $fieldConfig): string
     {
-        $renderer = $this->addressFieldManager->getRenderForAddressField($fieldAttributes);
+        $renderer = $this->addressFieldManager->getRenderForAddressField($fieldConfig);
         $rendererData = new DataObject(['renderer' => $renderer]);
 
         $this->eventDispatcher->dispatchBillingAddressFieldRenderBefore(
-            ['field_attributes' => $fieldAttributes, 'renderer_data' => $rendererData]
+            ['field_config' => $fieldConfig, 'renderer_data' => $rendererData]
         );
 
-        $fieldHtml = $rendererData->getData('renderer')->render($fieldAttributes);
+        $fieldHtml = $rendererData->getData('renderer')->render($fieldConfig);
         $fieldHtmlDataObject = new DataObject(['html' => $fieldHtml]);
 
         $this->eventDispatcher->dispatchBillingAddressFieldRenderAfter(
-            ['field_attributes' => $fieldAttributes, 'fieldHtml' => $fieldHtmlDataObject]
+            ['field_config' => $fieldConfig, 'field_html' => $fieldHtmlDataObject]
         );
 
         return $fieldHtmlDataObject->getData('html');
-    }
-
-    public function getAddressFieldsJson(): string
-    {
-        return $this->addressFieldManager->prepareAddressFieldsDataForJs($this->getAddressFields());
     }
 
     public function canShowForm(): bool

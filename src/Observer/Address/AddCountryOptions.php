@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Observer\Address;
 
+use MageHx\MahxCheckout\Data\FormField\SelectFieldMeta;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Model\CountryProvider;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 
@@ -22,7 +23,7 @@ class AddCountryOptions implements ObserverInterface
 
     public function execute(Observer $observer): void
     {
-        /** @var AddressFieldAttributes[] $addressFields */
+        /** @var FormFieldConfig[] $addressFields */
         $addressFields = $observer->getData('transport')->getData('fields');
         $countryField = $this->findCountryField($addressFields);
 
@@ -33,15 +34,17 @@ class AddCountryOptions implements ObserverInterface
         $this->addCountryOptions($countryField);
     }
 
-    private function findCountryField(array &$addressFields): ?AddressFieldAttributes
+    private function findCountryField(array &$addressFields): ?FormFieldConfig
     {
         return current(array_filter($addressFields, fn($field) => $field->name === 'country_id')) ?: null;
     }
 
-    private function addCountryOptions(AddressFieldAttributes &$countryField): void
+    private function addCountryOptions(FormFieldConfig &$countryField): void
     {
-        $countryField->additionalData['options'] =
-            $this->countryProvider->getStoreAllowedCountriesOption($this->quote->getStoreId());
-        $countryField->additionalData['defaultOptionLabel'] = 'Please select your country';
+        $countryField->meta = SelectFieldMeta::from([
+            'options' => $this->countryProvider->getStoreAllowedCountriesOption($this->quote->getStoreId()),
+            'defaultOptionLabel' => __('Please select your country'),
+
+        ]);
     }
 }

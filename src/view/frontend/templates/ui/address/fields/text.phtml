@@ -7,9 +7,9 @@ use MageHx\MahxCheckout\Block\Address\FieldRenderer;
 /** @var Closure $eHtmlAttr */
 /** @var Closure $classNames */
 
-$fieldAttributes = $block->getFieldAttributes();
+$fieldConfig = $block->getFieldConfig();
 
-if (! $fieldAttributes) {
+if (! $fieldConfig) {
     return;
 }
 $wrapperClasses = $block->getWrapperElemExtraClasses();
@@ -19,20 +19,20 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
-    <label class="label" for="<?= $eHtmlAttr($fieldAttributes->getFieldId()) ?>">
+    <label class="label" for="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>">
         <span class="label-text">
-            <?= $eHtml($fieldAttributes->label) ?>
-            <?php if ($fieldAttributes->required): ?>
+            <?= $eHtml($fieldConfig->label) ?>
+            <?php if ($fieldConfig->required): ?>
                 <span class="text-red-500 ml-1" aria-hidden="true">*</span>
             <?php endif; ?>
         </span>
     </label>
     <input
         type="text"
-        id="<?= $eHtmlAttr($fieldAttributes->getFieldId()) ?>"
-        name="<?= $eHtmlAttr($fieldAttributes->name) ?>"
+        id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
+        name="<?= $eHtmlAttr($fieldConfig->name) ?>"
         class="input input-bordered input-sm w-full max-w-sm"
-        value="<?= $eHtmlAttr($fieldAttributes->value)  ?>"
+        value="<?= $eHtmlAttr($fieldConfig->value)  ?>"
         <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
     />
     <?= /** @noEscape */ $block->getAfterInputHtml() ?>

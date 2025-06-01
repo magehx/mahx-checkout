@@ -9,7 +9,7 @@ use MageHx\MahxCheckout\Data\ValidationMapperData;
 use Magento\Framework\DataObject;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 use MageHx\MahxCheckout\Model\EventDispatcher;
 use MageHx\MahxCheckout\Service\AddressFieldManager;
@@ -17,7 +17,7 @@ use MageHx\MahxCheckout\Service\AddressFieldManager;
 class ShippingAddress implements ArgumentInterface
 {
     /**
-     * @var AddressFieldAttributes[]
+     * @var FormFieldConfig[]
      */
     private ?array $fields = null;
 
@@ -43,28 +43,23 @@ class ShippingAddress implements ArgumentInterface
         return $this->fields;
     }
 
-    public function renderField(AddressFieldAttributes $fieldAttributes): string
+    public function renderField(FormFieldConfig $fieldConfig): string
     {
-        $renderer = $this->addressFieldManager->getRenderForAddressField($fieldAttributes);
+        $renderer = $this->addressFieldManager->getRenderForAddressField($fieldConfig);
         $rendererData = new DataObject(['renderer' => $renderer]);
 
         $this->eventDispatcher->dispatchShippingAddressFieldRenderBefore(
-            ['field_attributes' => $fieldAttributes, 'renderer_data' => $rendererData]
+            ['field_config' => $fieldConfig, 'renderer_data' => $rendererData]
         );
 
-        $fieldHtml = $rendererData->getData('renderer')->render($fieldAttributes);
+        $fieldHtml = $rendererData->getData('renderer')->render($fieldConfig);
         $fieldHtmlDataObject = new DataObject(['html' => $fieldHtml]);
 
         $this->eventDispatcher->dispatchShippingAddressFieldRenderAfter(
-            ['field_attributes' => $fieldAttributes, 'fieldHtml' => $fieldHtmlDataObject]
+            ['field_config' => $fieldConfig, 'field_html' => $fieldHtmlDataObject]
         );
 
         return $fieldHtmlDataObject->getData('html');
-    }
-
-    public function getAddressFieldsJson(): string
-    {
-        return $this->addressFieldManager->prepareAddressFieldsDataForJs($this->getAddressFields());
     }
 
     // @todo before after events to modify rules

@@ -4,7 +4,7 @@ namespace MageHx\MahxCheckout\Model\FieldRenderer\Renderer;
 
 use Magento\Framework\View\LayoutInterface;
 use MageHx\MahxCheckout\Block\Address\FieldRenderer;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Model\FieldRenderer\FieldRendererInterface;
 
 class MultilineRenderer implements FieldRendererInterface
@@ -13,17 +13,17 @@ class MultilineRenderer implements FieldRendererInterface
     {
     }
 
-    public function render(AddressFieldAttributes $attributes): string
+    public function render(FormFieldConfig $attributes): string
     {
         /** @var FieldRenderer $block */
         $block = $this->layout->createBlock(FieldRenderer::class)
             ->setTemplate('MageHx_MahxCheckout::ui/address/fields/multiline.phtml');
-        $block->setFieldAttributes($attributes);
+        $block->setFieldConfig($attributes);
 
         return $block->toHtml();
     }
 
-    public function canRender(AddressFieldAttributes $attributes): bool
+    public function canRender(FormFieldConfig $attributes): bool
     {
         return $attributes->type === 'multiline';
     }

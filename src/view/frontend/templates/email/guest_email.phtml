@@ -30,7 +30,7 @@ $hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
                 @change="validate" @keydown.enter.prevent="validate"
                 <?= $hxAttrRenderer->hxBuilder()
                         ->target('#guest-email-form-container')
-                        ->swap(HtmxSwapOption::OUTER_HTML->value)
+                        ->swap(HtmxSwapOption::outerHTML)
                         ->trigger('mahxcheckout-guest-email-form-validated from:body')
                         ->post('mahxcheckout/form/guestEmailPost')
                         ->render(); ?>

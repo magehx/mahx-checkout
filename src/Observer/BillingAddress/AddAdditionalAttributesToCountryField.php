@@ -6,15 +6,14 @@ namespace MageHx\MahxCheckout\Observer\BillingAddress;
 
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
-use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 
 class AddAdditionalAttributesToCountryField implements ObserverInterface
 {
 
     public function execute(Observer $observer): void
     {
-        /** @var AddressFieldAttributes $fields */
+        /** @var FormFieldConfig[] $fields */
         $fields = $observer->getData('fields');
         $countryField = $fields['country_id'] ?? null;
 
@@ -22,8 +21,6 @@ class AddAdditionalAttributesToCountryField implements ObserverInterface
             return;
         }
 
-        $countryField->additionalData[AdditionalFieldAttribute::INPUT_EXTRA_ATTRIBUTES->value] = [
-            '@change' => 'handleCountryChange'
-        ];
+        $countryField->meta->inputElementExtraAttributes = ['@change' => 'handleCountryChange'];
     }
 }

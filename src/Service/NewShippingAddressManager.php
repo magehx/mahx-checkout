@@ -38,7 +38,7 @@ class NewShippingAddressManager
 
     public function keepShippingAddressAsNew(ShippingInformation $shippingInformation): void
     {
-        if (!$shippingInformation->customer_address_id) {
+        if (!$shippingInformation->address->customer_address_id) {
             return;
         }
 

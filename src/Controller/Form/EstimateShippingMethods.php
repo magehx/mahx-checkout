@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace MageHx\MahxCheckout\Controller\Form;
 
 use Exception;
+use MageHx\HtmxActions\Enums\HtmxCoreAttributes;
 use Magento\Framework\Controller\ResultInterface;
 use MageHx\MahxCheckout\Controller\Form\ComponentAction\Context;
 use MageHx\MahxCheckout\Data\ShippingEstimateFieldsData;
-use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 use MageHx\MahxCheckout\Service\AddressFieldManager;
 use MageHx\MahxCheckout\Service\EstimateShippingMethodsService;
@@ -76,12 +76,8 @@ class EstimateShippingMethods extends ComponentAction
             country: $country,
             form: CheckoutForm::SHIPPING_ADDRESS->value
         );
+        $regionField->meta->wrapperElemExtraAttributes[HtmxCoreAttributes::swapOob->value] = 'true';
 
-        $wrapperExtraAttributes = AdditionalFieldAttribute::WRAPPER_ELEM_EXTRA_ATTRIBUTES->value;
-        $regionField->additionalData[$wrapperExtraAttributes]['hx-swap-oob'] = 'true';
-
-        return $this->addressFieldManager
-            ->getRenderForAddressField($regionField)
-            ->render($regionField);
+        return $this->addressFieldManager->getRenderForAddressField($regionField)->render($regionField);
     }
 }

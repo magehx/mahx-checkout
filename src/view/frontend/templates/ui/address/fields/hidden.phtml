@@ -5,14 +5,14 @@ use MageHx\MahxCheckout\Block\Address\FieldRenderer;
 /** @var FieldRenderer $block */
 /** @var Closure $eHtmlAttr */
 
-$fieldAttributes = $block->getFieldAttributes();
+$fieldConfig = $block->getFieldConfig();
 
-if (! $fieldAttributes) {
+if (! $fieldConfig) {
     return;
 }
 ?>
 <input
     type="hidden"
-    id="<?= $eHtmlAttr($fieldAttributes->getFieldId()) ?>"
-    name="<?= $eHtmlAttr($fieldAttributes->name) ?>"
-    value="<?= $eHtmlAttr($fieldAttributes->value)  ?>" />
+    id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
+    name="<?= $eHtmlAttr($fieldConfig->name) ?>"
+    value="<?= $eHtmlAttr($fieldConfig->value)  ?>" />

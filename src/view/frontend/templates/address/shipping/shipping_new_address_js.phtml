@@ -17,7 +17,6 @@ $viewModel = $viewModelProvider(ShippingAddress::class);
     document.addEventListener('alpine:init', () => {
         Alpine.data('NewAddressFormManager', () => {
             const newFormId = '<?= $eJs(CheckoutForm::NEW_ADDRESS->value) ?>';
-            const fieldsConfig = JSON.parse('<?= $eJs($viewModel->getAddressFieldsJson()) ?>');
 
             return {
                 form: null,
@@ -25,7 +24,6 @@ $viewModel = $viewModelProvider(ShippingAddress::class);
 
                 init() {
                     this.form = this.$el.querySelector('form');
-                    this.validator = window.mahxCheckout.validator(this.form);
                     this.modifyFormAfterRender();
                 },
 
@@ -57,7 +55,9 @@ $viewModel = $viewModelProvider(ShippingAddress::class);
                 },
 
                 applyValidation() {
-                    this.validator.createValidationRulesForFieldConfig(fieldsConfig);
+                    this.validator = mahxCheckout.validator(Object.assign({
+                        form: this.form,
+                    }, JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>')));
                     this.addValidatorToPageNavigation(this.form.id, this.validator);
                 },
             };

@@ -17,6 +17,7 @@ class AddressData extends Data
         public string $postcode,
         public ?string $telephone = '',
         public ?string $region = '',
+        public ?int $region_id = null,
         public ?string $customer_address_id = null,
         public ?bool $same_as_billing = false,
         public ?int $save_in_address_book = 0,

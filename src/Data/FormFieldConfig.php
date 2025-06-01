@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Data;
 
-use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute;
+use MageHx\MahxCheckout\Data\FormField\BaseFormFieldMeta;
 use Rkt\MageData\Data;
 
-class AddressFieldAttributes extends Data
+class FormFieldConfig extends Data
 {
     public function __construct(
         public string $name,
@@ -15,15 +15,18 @@ class AddressFieldAttributes extends Data
         public string $type,
         public bool $required,
         public string $form,
+        public ?string $id = null,
         public int|string|array $value = '',
-        public ?array $rules = null,
         public ?int $sortOrder = 100,
-        public ?array $additionalData = []
+        public ?BaseFormFieldMeta $meta = null,
     ) {
+        if ($this->meta === null) {
+            $this->meta = new BaseFormFieldMeta();
+        }
     }
 
     public function getFieldId(): string
     {
-        return $this->additionalData[AdditionalFieldAttribute::ID->value] ?? $this->form . '-' . $this->name;
+        return $this->id ?? $this->form . '-' . $this->name;
     }
 }

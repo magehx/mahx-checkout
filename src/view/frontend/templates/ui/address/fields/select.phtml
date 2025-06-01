@@ -1,19 +1,22 @@
 <?php
 
 use MageHx\MahxCheckout\Block\Address\FieldRenderer;
+use MageHx\MahxCheckout\Data\FormField\SelectFieldMeta;
 use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute as AFA;
 
 /** @var FieldRenderer $block */
 /** @var Closure $eHtml */
 /** @var Closure $eHtmlAttr */
 /** @var Closure $classNames */
+/** @var SelectFieldMeta $fieldMeta */
 
-$fieldAttributes = $block->getFieldAttributes();
+$fieldConfig = $block->getFieldConfig();
 
-if (! $fieldAttributes) {
+if (! $fieldConfig) {
     return;
 }
 
+$fieldMeta = $fieldConfig->meta;
 $wrapperClasses = $block->getWrapperElemExtraClasses();
 ?>
 <div
@@ -21,23 +24,23 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
-    <label class="label" for="<?= $eHtmlAttr($fieldAttributes->getFieldId()) ?>">
+    <label class="label" for="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>">
         <span class="label-text">
-            <?= $eHtml($fieldAttributes->label) ?>
-            <?php if ($fieldAttributes->required): ?>
+            <?= $eHtml($fieldConfig->label) ?>
+            <?php if ($fieldConfig->required): ?>
                 <span class="text-red-500 ml-1" aria-hidden="true">*</span>
             <?php endif; ?>
         </span>
     </label>
     <select
         class="select select-bordered select-sm"
-        id="<?= $eHtmlAttr($fieldAttributes->getFieldId()) ?>"
-        name="<?= $eHtmlAttr($fieldAttributes->name) ?>"
+        id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
+        name="<?= $eHtmlAttr($fieldConfig->name) ?>"
         <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
     >
-        <option value=""><?= $eHtml($fieldAttributes->additionalData[AFA::DEFAULT_OPTION_LABEL->value] ?? '') ?></option>
-        <?php foreach ($fieldAttributes->additionalData[AFA::OPTIONS->value] ?? [] as $value => $label): ?>
-            <option value="<?= $eHtmlAttr($value) ?>" <?= $fieldAttributes->value == $value ? 'selected' : '' ?>>
+        <option value=""><?= $eHtml($fieldMeta->defaultOptionLabel) ?></option>
+        <?php foreach ($fieldMeta->options as $value => $label): ?>
+            <option value="<?= $eHtmlAttr($value) ?>" <?= $fieldConfig->value == $value ? 'selected' : '' ?>>
                 <?= $eHtml($label) ?>
             </option>
         <?php endforeach; ?>

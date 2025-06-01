@@ -51,7 +51,9 @@ class ShippingAddressCards implements ArgumentInterface
 
     public function isNewAddressExists(): bool
     {
-        return $this->newShippingAddressManager->getNewAddress()?->validate() === true;
+        $newAddress = $this->newShippingAddressManager->getNewAddress();
+
+        return $newAddress && $newAddress->validate() === true;
     }
 
 
@@ -94,7 +96,7 @@ class ShippingAddressCards implements ArgumentInterface
         }
 
         if ($this->newShippingAddressManager->getNewAddress()->validate() !== true) {
-            return (string)$this->customerAddressService->getCurrentCustomerDefaultShippingAddress()->getId();
+            return (string)$this->customerAddressService->getCurrentCustomerDefaultShippingAddress()?->getId() ?? 'new';
         }
 
         return 'new';

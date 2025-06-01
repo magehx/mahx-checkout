@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Service;
 
+use MageHx\MahxCheckout\Data\FormField\BaseFormFieldMeta;
+use MageHx\MahxCheckout\Data\FormField\MultilineFieldMeta;
+use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute;
 use Magento\Customer\Model\Attribute;
 use Magento\Framework\Serialize\Serializer\Json;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Model\CustomerAddress;
 use MageHx\MahxCheckout\Model\EventDispatcher;
 use MageHx\MahxCheckout\Model\FieldRenderer\FieldRendererInterface;
@@ -24,7 +27,7 @@ class AddressFieldManager
     }
 
     /**
-     * @return AddressFieldAttributes[]
+     * @return FormFieldConfig[]
      */
     public function getAddressFieldList(string $form): array
     {
@@ -36,19 +39,19 @@ class AddressFieldManager
                 continue;
             }
 
-            $fields[$attribute->getAttributeCode()] = new AddressFieldAttributes(
+            $fields[$attribute->getAttributeCode()] = new FormFieldConfig(
                 name: $attribute->getAttributeCode(),
                 label: __($attribute->getStoreLabel())->render(),
                 type: $attribute->getFrontendInput(),
                 required: (bool) $attribute->getIsRequired(),
                 form: $form,
-                rules: $attribute->getValidateRules(),
-                sortOrder: (int) $attribute->getSortOrder()
+                sortOrder: (int) $attribute->getSortOrder(),
+                meta: new BaseFormFieldMeta(),
             );
 
             if ($attribute->getFrontendInput() === 'multiline') {
-                $fields[$attribute->getAttributeCode()]->additionalData['multilineCount'] =
-                    (int) $attribute->getMultilineCount();
+                $lineCount = (int) $attribute->getMultilineCount();
+                $fields[$attribute->getAttributeCode()]->meta = new MultilineFieldMeta($lineCount);
             }
         }
 
@@ -57,24 +60,8 @@ class AddressFieldManager
         return $transportFields->getData('fields');
     }
 
-    public function getRenderForAddressField(AddressFieldAttributes $fieldAttributes): FieldRendererInterface
+    public function getRenderForAddressField(FormFieldConfig $fieldAttributes): FieldRendererInterface
     {
         return $this->addressFieldRendererPool->getRenderer($fieldAttributes);
-    }
-
-    public function prepareAddressFieldsDataForJs(array $fields): string
-    {
-        $data = [];
-
-        foreach ($fields as $field) {
-            $data[$field->name] = [
-                'name' => $field->name,
-                'required' => $field->required,
-                'rules' => $field->rules,
-                'type' => $field->type,
-            ];
-        }
-
-        return $this->jsonSerializer->serialize($data);
     }
 }

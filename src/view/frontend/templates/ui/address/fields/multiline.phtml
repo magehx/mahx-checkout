@@ -1,18 +1,20 @@
 <?php
 
 use MageHx\MahxCheckout\Block\Address\FieldRenderer;
-use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute as AFA;
+use MageHx\MahxCheckout\Data\FormField\MultilineFieldMeta;
 
 /** @var FieldRenderer $block */
 /** @var Closure $eHtml */
 /** @var Closure $eHtmlAttr */
 /** @var Closure $classNames */
+/** @var MultilineFieldMeta $fieldMeta */
 
-$fieldAttributes = $block->getFieldAttributes();
+$fieldConfig = $block->getFieldConfig();
 
-if (! $fieldAttributes) {
+if (! $fieldConfig) {
     return;
 }
+$fieldMeta = $fieldConfig->meta;
 $wrapperClasses = $block->getWrapperElemExtraClasses();
 ?>
 <div
@@ -20,23 +22,23 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
-    <label class="label" for="<?= $eHtmlAttr($fieldAttributes->getFieldId() . '-0') ?>">
+    <label class="label" for="<?= $eHtmlAttr($fieldConfig->getFieldId() . '-0') ?>">
         <span class="label-text">
-            <?= $eHtml($fieldAttributes->label) ?>
-            <?php if ($fieldAttributes->required): ?>
+            <?= $eHtml($fieldConfig->label) ?>
+            <?php if ($fieldConfig->required): ?>
                 <span class="text-red-500 ml-1" aria-hidden="true">*</span>
             <?php endif; ?>
         </span>
     </label>
     <div class="space-y-2">
-        <?php foreach (range(0, ($fieldAttributes->additionalData[AFA::MULTILINE_COUNT->value] ?? 1) - 1) as $index): ?>
+        <?php foreach (range(0, ($fieldMeta->lineCount) - 1) as $index): ?>
             <?php if ($index === 0): ?><div><?php endif; ?>
             <input
                 type="text"
                 class="input input-bordered input-sm w-full max-w-sm"
-                id="<?= $eHtmlAttr($fieldAttributes->getFieldId() . '-' . $index) ?>"
-                name="<?= $eHtmlAttr($fieldAttributes->name) ?>[<?= $eHtmlAttr($index) ?>]"
-                value="<?= $eHtmlAttr($fieldAttributes->value[$index] ?? '')  ?>"
+                id="<?= $eHtmlAttr($fieldConfig->getFieldId() . '-' . $index) ?>"
+                name="<?= $eHtmlAttr($fieldConfig->name) ?>[<?= $eHtmlAttr($index) ?>]"
+                value="<?= $eHtmlAttr($fieldConfig->value[$index] ?? '')  ?>"
                 <?= /** @noEscape */ !$index ? $block->getInputAdditionalAttributes() : '' ?>
             />
             <?php if ($index === 0): ?></div><?php endif; ?>

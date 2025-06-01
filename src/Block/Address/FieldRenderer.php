@@ -4,64 +4,64 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Block\Address;
 
+use MageHx\HtmxActions\Model\HxAttributeRender\HxAttributesRenderer;
 use Magento\Framework\View\Element\Template;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
-use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 
 class FieldRenderer extends Template
 {
-    private ?AddressFieldAttributes $fieldAttributes = null;
+    private ?FormFieldConfig $fieldConfig = null;
 
     protected $_template = 'MageHx_MahxCheckout::ui/address/fields/text.phtml';
 
     public function __construct(
+        private readonly HxAttributesRenderer $hxAttributesRenderer,
         Template\Context $context,
         array $data = []
     ) {
         parent::__construct($context, $data);
     }
 
-    public function setFieldAttributes(AddressFieldAttributes $attributes): self
+    public function setFieldConfig(FormFieldConfig $fieldConfig): self
     {
-        $this->fieldAttributes = $attributes;
+        $this->fieldConfig = $fieldConfig;
 
         return $this;
     }
 
-    public function getFieldAttributes(): ?AddressFieldAttributes
+    public function getFieldConfig(): ?FormFieldConfig
     {
-        return $this->fieldAttributes;
+        return $this->fieldConfig;
     }
 
     public function getInputAdditionalAttributes(): string
     {
-        $inputAdditionalAttributes = $this->fieldAttributes
-            ->additionalData[AdditionalFieldAttribute::INPUT_EXTRA_ATTRIBUTES->value] ?? [];
+        $hxAttributes = $this->fieldConfig->meta->inputElementHxAttributes?->toArray() ?? [];
 
-        return $this->prepareHtmlAttributes($inputAdditionalAttributes);
+        return $this->prepareHtmlAttributes([
+            ...$this->fieldConfig->meta->inputElementExtraAttributes,
+            ...$this->hxAttributesRenderer->toArray($hxAttributes),
+        ]);
     }
 
     public function getWrapperAdditionalAttributes(): string
     {
-        $wrapperAdditionalAttributes = $this->fieldAttributes
-            ->additionalData[AdditionalFieldAttribute::WRAPPER_ELEM_EXTRA_ATTRIBUTES->value] ?? [];
-
-        return $this->prepareHtmlAttributes($wrapperAdditionalAttributes);
+        return $this->prepareHtmlAttributes($this->fieldConfig->meta->wrapperElemExtraAttributes);
     }
 
     public function getBeforeInputHtml(): string
     {
-        return $this->fieldAttributes->additionalData[AdditionalFieldAttribute::BEFORE_INPUT_HTML->value] ?? '';
+        return $this->fieldConfig->meta->beforeInputHtml;
     }
 
     public function getAfterInputHtml(): string
     {
-        return $this->fieldAttributes->additionalData[AdditionalFieldAttribute::AFTER_INPUT_HTML->value] ?? '';
+        return $this->fieldConfig->meta->afterInputHtml;
     }
 
     public function getWrapperElemExtraClasses(): string
     {
-        return $this->fieldAttributes->additionalData[AdditionalFieldAttribute::WRAPPER_ELEM_EXTRA_CLASS->value] ?? '';
+        return $this->fieldConfig->meta->wrapperElemExtraClasses;
     }
 
     private function prepareHtmlAttributes(?array $attributes): string
@@ -70,11 +70,12 @@ class FieldRenderer extends Template
             return '';
         }
 
-        return implode(' ', array_map(
-            fn($attributeName, $attributeValue) =>
-                sprintf('%s="%s"', $attributeName, htmlspecialchars($attributeValue, ENT_QUOTES, 'UTF-8')),
-            array_keys($attributes),
-            $attributes
-        ));
+        $attributesHtml = '';
+
+        foreach ($attributes as $attribute => $attributeValue) {
+            $attributesHtml .= " {$attribute}=\"{$attributeValue}\"";
+        }
+
+        return trim($attributesHtml);
     }
 }

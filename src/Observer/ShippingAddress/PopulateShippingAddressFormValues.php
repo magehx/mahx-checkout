@@ -7,7 +7,7 @@ namespace MageHx\MahxCheckout\Observer\ShippingAddress;
 use Magento\Framework\DataObject;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 use MageHx\MahxCheckout\Model\Config;
 use MageHx\MahxCheckout\Model\QuoteDetails;
@@ -25,7 +25,7 @@ class PopulateShippingAddressFormValues implements ObserverInterface
         /** @var DataObject $transport */
         $transport = $observer->getData('transport');
 
-        /** @var AddressFieldAttributes[] $addressFields */
+        /** @var FormFieldConfig[] $addressFields */
         $addressFields = $transport->getData('fields');
         $formId = $transport->getData('form_id');
 

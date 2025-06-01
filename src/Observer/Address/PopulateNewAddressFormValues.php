@@ -7,8 +7,7 @@ namespace MageHx\MahxCheckout\Observer\Address;
 use Magento\Framework\DataObject;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
-use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 use MageHx\MahxCheckout\Model\Config;
 use MageHx\MahxCheckout\Service\NewShippingAddressManager;
@@ -33,7 +32,7 @@ class PopulateNewAddressFormValues implements ObserverInterface
             return;
         }
 
-        /** @var AddressFieldAttributes[] $fields */
+        /** @var FormFieldConfig[] $fields */
         $fields = $transport->getData('fields') ?? [];
 
         $this->populateFieldValues($fields);
@@ -75,13 +74,16 @@ class PopulateNewAddressFormValues implements ObserverInterface
         }
     }
 
+    /**
+     * @param FormFieldConfig[] $fields
+     */
     private function addCountryFieldAttributes(array &$fields): void
     {
         if (empty($fields['country_id'])) {
             return;
         }
 
-        $fields['country_id']->additionalData[AdditionalFieldAttribute::INPUT_EXTRA_ATTRIBUTES->value] = [
+        $fields['country_id']->meta->inputElementExtraAttributes = [
             '@change' => 'handleCountryChange',
         ];
     }

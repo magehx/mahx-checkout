@@ -7,8 +7,7 @@ namespace MageHx\MahxCheckout\Observer\Address;
 use Magento\Framework\DataObject;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
-use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 use MageHx\MahxCheckout\Model\Config;
 use MageHx\MahxCheckout\Model\FormDataStorage;
@@ -37,8 +36,8 @@ class UpdateRegionFieldBasedOnCountry implements ObserverInterface
             return;
         }
 
-        /** @var AddressFieldAttributes $fieldAttributes */
-        $fieldAttributes = $observer->getData('field_attributes');
+        /** @var FormFieldConfig $fieldConfig */
+        $fieldConfig = $observer->getData('field_config');
         $formName = $observer->getData('form');
         $rendererData = $observer->getData('renderer_data');
 
@@ -48,16 +47,16 @@ class UpdateRegionFieldBasedOnCountry implements ObserverInterface
             return;
         }
 
-        $this->configureRegionField($fieldAttributes, $country);
-        $this->selectRenderer($rendererData, $fieldAttributes);
+        $this->configureRegionField($fieldConfig, $country);
+        $this->selectRenderer($rendererData, $fieldConfig);
     }
 
     private function isRegionFieldApplicable(Observer $observer): bool
     {
-        $field = $observer->getData('field_attributes');
+        $field = $observer->getData('field_config');
         $form = $observer->getData('form');
 
-        return $field instanceof AddressFieldAttributes
+        return $field instanceof FormFieldConfig
             && $field->name === 'region'
             && in_array($form, [
                 CheckoutForm::SHIPPING_ADDRESS->value,
@@ -78,23 +77,22 @@ class UpdateRegionFieldBasedOnCountry implements ObserverInterface
         return $this->quote->getBillingAddress()->getCountry() ?: $this->config->getDefaultBillingCountry();
     }
 
-    private function configureRegionField(AddressFieldAttributes &$regionField, string $countryCode): void
+    private function configureRegionField(FormFieldConfig &$regionField, string $countryCode): void
     {
         $regionField = $this->prepareRegionFieldAttributeService->execute($countryCode, regionField: $regionField);
 
-        $regionField->additionalData[AdditionalFieldAttribute::WRAPPER_ELEM_EXTRA_CLASS->value] = 'relative';
-
-        $regionField->additionalData[AdditionalFieldAttribute::WRAPPER_ELEM_EXTRA_ATTRIBUTES->value]['id'] =
-            "{$regionField->form}-region-section";
+        $regionField->meta->wrapperElemExtraAttributes['id'] = "{$regionField->form}-region-section";
+        $regionField->meta->wrapperElemExtraClasses = 'relative';
+        $regionField->value = (string) $this->resolveRegionValue($regionField);
 
         $loaderId = "{$regionField->form}-region-loader";
-        $regionField->additionalData[AdditionalFieldAttribute::AFTER_INPUT_HTML->value] =
-            $this->generateBlockHtmlService->getLoaderHtml($loaderId, 'estimate-shipping-loader');
-
-        $regionField->value = (string) $this->resolveRegionValue($regionField);
+        $regionField->meta->afterInputHtml = $this->generateBlockHtmlService->getLoaderHtml(
+            $loaderId,
+            'estimate-shipping-loader'
+        );
     }
 
-    private function resolveRegionValue(AddressFieldAttributes $regionField): ?string
+    private function resolveRegionValue(FormFieldConfig $regionField): ?string
     {
         if ($this->formDataStorage->hasData('country_id')) {
             return ''; // reset if form is being driven by form input, not quote
@@ -107,7 +105,7 @@ class UpdateRegionFieldBasedOnCountry implements ObserverInterface
         return $address->getRegionId() ?: $address->getRegion();
     }
 
-    private function selectRenderer(DataObject &$rendererData, AddressFieldAttributes $field): void
+    private function selectRenderer(DataObject &$rendererData, FormFieldConfig $field): void
     {
         $renderers = $rendererData->getData('renderer_list') ?? [];
 

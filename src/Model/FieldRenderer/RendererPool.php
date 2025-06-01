@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace MageHx\MahxCheckout\Model\FieldRenderer;
 
 use Magento\Framework\DataObject;
-use MageHx\MahxCheckout\Data\AddressFieldAttributes;
+use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Model\FieldRenderer\Exception\NoAddressFieldRenderer;
 use MageHx\MahxCheckout\Model\EventDispatcher;
 
@@ -25,21 +25,21 @@ class RendererPool
     /**
      * @throws NoAddressFieldRenderer
      */
-    public function getRenderer(AddressFieldAttributes $fieldAttributes): FieldRendererInterface
+    public function getRenderer(FormFieldConfig $fieldConfig): FieldRendererInterface
     {
         foreach ($this->rendererList as $renderer) {
-            if ($renderer->canRender($fieldAttributes)) {
+            if ($renderer->canRender($fieldConfig)) {
                 $rendererData = new DataObject(['renderer_list' => $this->rendererList, 'selected_renderer' => $renderer]);
                 $this->eventDispatcher->dispatchAddressFieldRendererSelected([
-                    'field_attributes' => $fieldAttributes,
-                    'form' => $fieldAttributes->form,
+                    'field_config' => $fieldConfig,
+                    'form' => $fieldConfig->form,
                     'renderer_data' => $rendererData
                 ]);
                 return $rendererData->getData('selected_renderer');
             }
         }
 
-        $this->throwRendererNotFoundException($fieldAttributes);
+        $this->throwRendererNotFoundException($fieldConfig);
     }
 
     private function prepareRendererList(): void
@@ -58,7 +58,7 @@ class RendererPool
         );
     }
 
-    private function throwRendererNotFoundException(AddressFieldAttributes $fieldAttributes)
+    private function throwRendererNotFoundException(FormFieldConfig $fieldAttributes)
     {
         $exception = new NoAddressFieldRenderer('No field renderer available for field: ' . $fieldAttributes->name);
         $exception->fieldAttributes = $fieldAttributes;
