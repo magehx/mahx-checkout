@@ -37,12 +37,11 @@ class SaveShippingInformation extends ComponentAction
             $this->newShippingAddressManager->keepShippingAddressAsNew($shippingInfo);
             $this->saveShippingInfoService->execute($this->quote->getId(), $shippingInfo);
             $this->proceedToNextStep();
-            $this->addSuccessMessage(__('Shipping information saved successfully.'));
             return $this->withCurrentStepPushUrlHeader($this->getCheckoutContentResponse());
         } catch (Exception $e) {
             $this->logger->error('MAHXCheckout::SaveShippingInformation::failed', ['exception' => $e]);
             $this->prepareErrorNotificationsWithFormData($shippingInfo->toArray(), $e);
-            return $this->getCheckoutContentResponse();
+            return $this->withNoReswapHeader($this->getNotificationsResponse());
         }
     }
 }

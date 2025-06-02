@@ -11,7 +11,6 @@ class ShippingInformation extends Data
     public function __construct(
         public AddressData $address,
         public string $method,
-        public ?int $customer_id = null,
     ) {
     }
 

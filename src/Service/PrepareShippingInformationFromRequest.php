@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Service;
 
+use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Model\Session as CustomerSession;
-use Magento\Framework\App\RequestInterface;
 use MageHx\MahxCheckout\Data\ShippingInformation;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 
 class PrepareShippingInformationFromRequest
 {
+    private ?array $postData = null;
+
     public function __construct(
         private readonly QuoteDetails $quote,
         private readonly CustomerSession $customerSession,
@@ -20,27 +22,35 @@ class PrepareShippingInformationFromRequest
 
     public function execute(array $postData): ShippingInformation
     {
-        $addressId = $postData['customer_address_id'] ?? null;
-        $isNewAddress = $addressId === 'new';
+        $this->postData = $postData;
 
-        if ($isNewAddress || !$this->customerSession->isLoggedIn()) {
-            return $this->prepareFromGuestOrNewAddress((array)$postData, $isNewAddress);
-        }
-
-        return $this->prepareFromExistingCustomerAddress((int)$addressId, $postData['method'] ?? null);
+        return $this->shouldUseExistingCustomerAddress()
+            ? $this->prepareFromExistingCustomerAddress()
+            : $this->prepareFromNewOrGuestAddress();
     }
 
-    private function prepareFromGuestOrNewAddress(array $postData, bool $isNewAddress): ShippingInformation
+    private function prepareFromNewOrGuestAddress(): ShippingInformation
     {
+        $isNewAddress = $this->isNewAddress();
         $isLoggedIn = $this->customerSession->isLoggedIn();
         $shippingAddress = $this->quote->getShippingAddress();
-        $data = $isNewAddress ? $this->newShippingAddressManager->getNewAddress() : $postData;
-        $street = $isNewAddress ? $shippingAddress->getStreet() : ($postData['street'] ?? []);
-        $region = $isNewAddress ? ($data['region_id'] ?? $data['region'] ?? '') : ($data['region'] ?? '');
-        $isBillingSame = !$isLoggedIn || !$this->customerAddressService->getCurrentCustomerDefaultBillingAddress();
+
+        $data = $isNewAddress
+            ? $this->newShippingAddressManager->getNewAddress()
+            : $this->postData;
+
+        $street = $isNewAddress
+            ? $shippingAddress->getStreet()
+            : ($data['street'] ?? []);
+
+        $region = $isNewAddress
+            ? ($data['region_id'] ?? $data['region'] ?? '')
+            : ($data['region'] ?? '');
+
+        $isBillingSame = !$isLoggedIn || !$this->hasDefaultBillingAddress();
 
         return ShippingInformation::from([
-            'method' => $postData['method'] ?? '',
+            'method' => $this->post('method', ''),
             'address' => [
                 'firstname' => $data['firstname'] ?? '',
                 'lastname' => $data['lastname'] ?? '',
@@ -56,26 +66,60 @@ class PrepareShippingInformationFromRequest
         ]);
     }
 
-    private function prepareFromExistingCustomerAddress(int $addressId, ?string $method): ShippingInformation
+    private function prepareFromExistingCustomerAddress(): ShippingInformation
     {
+        $addressId = (int) $this->postCustomerAddressId();
         $address = $this->customerAddressService->getCurrentCustomerAddressById($addressId);
-        $defaultBilling = $this->customerAddressService->getCurrentCustomerDefaultBillingAddress();
+        $billing = $this->getDefaultBillingAddress();
 
-        $sameAsBilling = $defaultBilling && ((int)$address->getId() === (int)$defaultBilling->getId());
+        $sameAsBilling = $billing && ((int) $address->getId() === (int) $billing->getId());
 
         return ShippingInformation::from([
-            'firstname' => $address->getFirstname(),
-            'lastname' => $address->getLastname(),
-            'street' => $address->getStreet(),
-            'city' => $address->getCity(),
-            'country_id' => $address->getCountryId(),
-            'postcode' => $address->getPostcode(),
-            'telephone' => $address->getTelephone(),
-            'region' => $address->getRegion()->getRegion(),
-            'method' => $method ?? '',
-            'customer_id' => (int)$this->customerSession->getCustomer()->getId(),
-            'customer_address_id' => $addressId,
-            'same_as_billing' => $sameAsBilling,
+            'method' => $this->post('method', ''),
+            'address' => [
+                'firstname' => $address->getFirstname(),
+                'lastname' => $address->getLastname(),
+                'street' => $address->getStreet(),
+                'city' => $address->getCity(),
+                'country_id' => $address->getCountryId(),
+                'postcode' => $address->getPostcode(),
+                'telephone' => $address->getTelephone(),
+                'region' => $address->getRegion()->getRegion(),
+                'customer_id' => (int) $address->getCustomerId(),
+                'customer_address_id' => $addressId,
+                'same_as_billing' => $sameAsBilling,
+            ],
         ]);
+    }
+
+    private function post(string $key, mixed $default = null): mixed
+    {
+        return $this->postData[$key] ?? $default;
+    }
+
+    private function postCustomerAddressId(): ?string
+    {
+        return $this->post('customer_address_id');
+    }
+
+    private function isNewAddress(): bool
+    {
+        return $this->postCustomerAddressId() === 'new';
+    }
+
+    private function shouldUseExistingCustomerAddress(): bool
+    {
+        $id = $this->postCustomerAddressId();
+        return $id !== 'new' && is_numeric($id);
+    }
+
+    private function getDefaultBillingAddress(): ?AddressInterface
+    {
+        return $this->customerAddressService->getCurrentCustomerDefaultBillingAddress();
+    }
+
+    private function hasDefaultBillingAddress(): bool
+    {
+        return (bool) $this->getDefaultBillingAddress();
     }
 }

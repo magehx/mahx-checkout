@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Observer\Layout;
 
+use MageHx\MahxCheckout\Service\CustomerAddressService;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -23,6 +24,7 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
 
     public function __construct(
         private readonly CustomerSession $customerSession,
+        private readonly CustomerAddressService $customerAddressService
     ) {}
 
     public function execute(Observer $observer): void
@@ -34,6 +36,7 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
         $this->layout = $observer->getData('layout');
 
         $this->addCustomerLoggedInHandles();
+        $this->addCustomerHasAddressesHandles();
     }
 
     /**
@@ -64,5 +67,16 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
     private function addLayoutHandle(string $handleName): void
     {
         $this->layout->getUpdate()->addHandle($handleName);
+    }
+
+    private function addCustomerHasAddressesHandles(): void
+    {
+        if (!$this->customerAddressService->isCurrentCustomerHoldsAddress()) {
+            return;
+        }
+
+        foreach ($this->layout->getUpdate()->getHandles() as $handle) {
+            $this->addLayoutHandle("{$handle}_customer_has_addresses");
+        }
     }
 }
