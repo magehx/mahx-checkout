@@ -56,6 +56,14 @@ class AddressData extends Data
             'telephone' => 'required',
         ];
     }
+
+    public function aliases(): array
+    {
+        return [
+            'street.0' => __('street'),
+            'country_id' => __('country'),
+        ];
+    }
 }
 ```
 
@@ -111,8 +119,8 @@ MahxCheckout uses the [JustValidate](https://just-validate.dev/) library for fro
 <form id="shipping-address" method="post" x-data="ShippingAddressForm">
   <input id="#firstname" name="firstname" placeholder="First Name">
   <input name="lastname" placeholder="Last Name">
-  <input name="street[]" placeholder="Street Line 1">
-  <input name="street[]" placeholder="Street Line 2">
+  <input name="street[0]" placeholder="Street Line 1">
+  <input name="street[1]" placeholder="Street Line 2">
   <input name="city" placeholder="City">
   <select name="country_id"><option value="">Select Country</option></select>
   <input name="postcode" placeholder="Postcode">
@@ -128,6 +136,10 @@ MahxCheckout uses the [JustValidate](https://just-validate.dev/) library for fro
       init() {
         window.mahxCheckout.validator({
           form: document.getElementById('shipping-address'),
+          aliases: {
+            'street.0': 'street',
+            country_id: 'country',
+          },
           rules: {
             firstname: 'required|alpha_spaces',
             lastname: 'required|alpha_spaces',
@@ -155,7 +167,7 @@ You can read more in [JustValidate documentation](https://just-validate.dev/).
 
 ---
 
-## No Duplication: Sync Backend Rules to Frontend
+## Sync Backend Validation to Frontend
 
 Avoid repeating validation logic by passing backend rules directly to JavaScript:
 
@@ -174,38 +186,26 @@ class ViewModel
 
     public function getValidationJson(): string
     {
-        // Static method to extract rules using example data
-        return $this->serializer->serialize(
-            AddressData::getValidationRules([
-                'firstname' => '',
-                'lastname' => '',
-                'street' => [],
-                'city' => '',
-                'country_id' => '',
-                'postcode' => '',
-                'telephone' => '',
-                'region' => '',
-            ])
-        );
+        $addressData = AddressData::from([
+            'firstname' => '',
+            'lastname' => '',
+            'street' => [],
+            'city' => '',
+            'country_id' => '',
+            'postcode' => '',
+            'telephone' => '',
+            'region' => '',
+        ]);
+        return $this->jsonSerializer->serialize(ValidationMapperData::from([
+            'rules' => $addressData->rules(),
+            'messages' => $addressData->messages(),
+            'aliases' => $addressData->aliases(),
+        ])->exportToJs());
     }
 }
 ```
 
-#### ➕ About `getValidationRules()`
-
-* A static method that builds and returns the rule array from the payload given.
-* Useful in templates where you don’t need a full object instance.
-
-#### 🔁 Alternative
-
-If you have an instance of the data object:
-
-```php
-$addressData = new AddressData(...);
-$rules = $addressData->rules();
-```
-
-Both give you the same rule format. Use whichever fits your use case.
+This method gives the frontend all validation rules, messages, and field names as JSON. It takes them from the backend `AddressData` class. This way, the frontend doesn’t need to define any validation rules on its own.
 
 ---
 
@@ -219,6 +219,8 @@ window.mahxCheckout.validator({
 ```
 
 This is the magic: **one definition — used everywhere.**
+
+With this change, validation rules, field aliases, and custom error messages are now available directly on the frontend. This is a powerful feature that allows you to manage all validation logic entirely in the backend, without having to worry about duplicating it or handling it separately on the frontend.
 
 ---
 

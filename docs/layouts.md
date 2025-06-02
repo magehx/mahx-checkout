@@ -14,6 +14,7 @@ view/frontend/layout/
 ├── mahxcheckout_components.xml
 ├── mahxcheckout_scripts.xml
 ├── mahxcheckout_step_shipping.xml
+├── mahxcheckout_step_shipping_customer_has_addresses.xml
 ├── mahxcheckout_step_shipping_customer_logged_in.xml
 ├── mahxcheckout_step_payment.xml
 └── mahxcheckout_step_payment_customer_logged_in.xml
@@ -136,7 +137,7 @@ If the user is logged in, Magento will also include:
 
 This allows:
 
-  - Logged-in flows to include shipping address book features, saved addresses, etc.
+  - Useful to modify customer logged-in checkout flow specific changes.
   - Guest flows to remain lightweight by excluding unnecessary components.
 
 ---
@@ -158,6 +159,35 @@ This allows:
   - Guest flows to remain lightweight by excluding unnecessary components.
 
 ---
+
+## 9. `mahxcheckout_step_shipping_customer_has_addresses.xml`
+
+**Handle:** Loaded only if the customer is **logged in**, holds **save addresses** and for the **Shipping** step.
+
+**Purpose:** Provides customer address cards for the logged-in customer.
+
+### 🔍 How it works
+
+MAHX Checkout dynamically includes additional handles ending with `_customer_has_addresses` when customer is logged-in and has saved addresses:
+
+Suppose current layout handles include:
+
+```text
+- default
+- mahxcheckout_step_shipping
+```
+
+If the user is logged in, Magento will also include:
+
+```text
+- default_customer_has_addresses
+- mahxcheckout_step_shipping_customer_has_addresses
+```
+
+This allows:
+
+  - Logged-in flows to include shipping address book features, saved addresses, etc.
+  - Guest flows to remain lightweight by excluding unnecessary components.
 
 ## 📌 Summary
 
