@@ -35,10 +35,13 @@ class ShippingAddress implements ArgumentInterface
 
         $formId = $formId ?? CheckoutForm::SHIPPING_ADDRESS->value;
         $this->fields = $this->addressFieldManager->getAddressFieldList($formId);
-
-        $transportFields = $this->eventDispatcher
-            ->dispatchShippingAddressFormFieldsPrepared(['fields' => $this->fields, 'form_id' => $formId]);
+        $transportFields = $this->eventDispatcher->dispatchShippingAddressFormFieldsPrepared([
+            'fields' => $this->fields,
+            'form_id' => $formId
+        ]);
         $this->fields = $transportFields->getData('fields');
+
+        $this->applySortingToFields();
 
         return $this->fields;
     }
@@ -80,5 +83,16 @@ class ShippingAddress implements ArgumentInterface
             'messages' => $addressData->messages(),
             'aliases' => $addressData->aliases(),
         ])->exportToJs());
+    }
+
+    private function applySortingToFields(): void
+    {
+        if (!$this->fields) {
+            return;
+        }
+
+        uasort($this->fields, function ($a, $b) {
+            return $a->sortOrder <=> $b->sortOrder;
+        });
     }
 }

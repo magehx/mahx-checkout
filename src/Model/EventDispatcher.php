@@ -45,9 +45,12 @@ class EventDispatcher
         return $transport;
     }
 
-    public function dispatchBillingAddressFormFieldsPrepared(array $eventData): void
+    public function dispatchBillingAddressFormFieldsPrepared(array $eventData): DataObject
     {
-        $this->eventManager->dispatch('mahxcheckout_billing_address_form_fields_prepared', $eventData);
+        $transport = new DataObject($eventData);
+        $this->eventManager->dispatch('mahxcheckout_billing_address_form_fields_prepared', ['transport' => $transport]);
+
+        return $transport;
     }
 
     public function dispatchStepsDataBuildBefore(array $eventData): DataObject

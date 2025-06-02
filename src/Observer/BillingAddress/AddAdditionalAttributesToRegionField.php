@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Observer\BillingAddress;
 
+use Magento\Framework\DataObject;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use MageHx\MahxCheckout\Data\FormFieldConfig;
@@ -22,7 +23,9 @@ class AddAdditionalAttributesToRegionField implements ObserverInterface
     public function execute(Observer $observer): void
     {
         /** @var FormFieldConfig $regionField */
-        $fields = $observer->getData('fields');
+        /** @var DataObject $transport */
+        $transport = $observer->getData('transport');
+        $fields = $transport->getData('fields');
         $regionField = $fields['region'] ?? null;
 
         if (!$regionField) {
@@ -30,5 +33,6 @@ class AddAdditionalAttributesToRegionField implements ObserverInterface
         }
 
         $this->prepareRegionFieldAttributeService->addAdditionalAttributesToRegion($regionField, $regionField->form);
+        $transport->setData('fields', $fields);
     }
 }

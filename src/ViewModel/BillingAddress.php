@@ -76,8 +76,10 @@ class BillingAddress implements ArgumentInterface
         }
 
         $this->fields = $this->addressFieldManager->getAddressFieldList(CheckoutForm::BILLING_ADDRESS->value);
+        $transport = $this->eventDispatcher->dispatchBillingAddressFormFieldsPrepared(['fields' => $this->fields]);
+        $this->fields = $transport->getData('fields');
 
-        $this->eventDispatcher->dispatchBillingAddressFormFieldsPrepared(['fields' => $this->fields]);
+        $this->applySortingToFields();
 
         return $this->fields;
     }
@@ -130,5 +132,16 @@ class BillingAddress implements ArgumentInterface
             'messages' => $addressData->messages(),
             'aliases' => $addressData->aliases(),
         ])->exportToJs());
+    }
+
+    private function applySortingToFields(): void
+    {
+        if (!$this->fields) {
+            return;
+        }
+
+        uasort($this->fields, function ($a, $b) {
+            return $a->sortOrder <=> $b->sortOrder;
+        });
     }
 }

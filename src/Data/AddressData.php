@@ -42,6 +42,7 @@ class AddressData extends Data
     {
         return [
             'street.0' => __('street'),
+            'country_id' => __('country'),
         ];
     }
 
