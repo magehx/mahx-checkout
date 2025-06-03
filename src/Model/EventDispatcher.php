@@ -98,4 +98,18 @@ class EventDispatcher
     {
         $this->eventManager->dispatch('mahxcheckout_totals_data_prepare_after', $eventData);
     }
+
+    public function dispatchPlaceOrderPaymentInformationPrepared(array $eventData): DataObject
+    {
+        $transport = new DataObject($eventData);
+        $this->eventManager->dispatch('mahxcheckout_place_order_payment_data_prepared', ['transport' => $transport]);
+        return $transport;
+    }
+
+    public function dispatchPlaceOrderSavePaymentBefore(array $eventData): DataObject
+    {
+        $transport = new DataObject($eventData);
+        $this->eventManager->dispatch('mahxcheckout_place_order_save_payment_before', ['transport' => $transport]);
+        return $transport;
+    }
 }

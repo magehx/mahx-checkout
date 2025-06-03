@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Controller\Checkout;
 
+use MageHx\MahxCheckout\Model\EventDispatcher;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Psr\Log\LoggerInterface;
@@ -15,9 +16,10 @@ use MageHx\MahxCheckout\Service\PlaceOrderService;
 class PlaceOrder extends ComponentAction
 {
     public function __construct(
-        Context $context,
         private readonly LoggerInterface $logger,
+        private readonly EventDispatcher $eventDispatcher,
         private readonly PlaceOrderService $placeOrderService,
+        Context $context,
     ) {
         parent::__construct($context);
     }
@@ -25,6 +27,7 @@ class PlaceOrder extends ComponentAction
     public function execute(): ResultInterface
     {
         $paymentInformation = $this->preparePaymentInformation();
+
         try {
             $paymentInformation->validate();
             $this->placeOrderService->execute($paymentInformation);
@@ -41,12 +44,19 @@ class PlaceOrder extends ComponentAction
         }
     }
 
-    private function preparePaymentInformation(): PaymentInformation
+    public function preparePaymentInformation(): PaymentInformation
     {
-        $paymentMethod = PaymentInformation\PaymentMethod::from([
-            'method' => $this->getPostData('payment_method'),
+        $paymentData = PaymentInformation::from([
+            'paymentMethod' => [
+                'method' => $this->getPostData('payment_method'),
+                'additionalData' => $this->getPostData('additionalData', []),
+            ]
         ]);
 
-        return PaymentInformation::from(['paymentMethod' => $paymentMethod]);
+        $transport = $this->eventDispatcher->dispatchPlaceOrderPaymentInformationPrepared([
+            'payment_info' => $paymentData
+        ]);
+
+        return $transport->getData('payment_info');
     }
 }

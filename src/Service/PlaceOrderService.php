@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Service;
 
+use MageHx\MahxCheckout\Model\EventDispatcher;
 use Magento\Checkout\Api\GuestPaymentInformationManagementInterface;
 use Magento\Checkout\Api\PaymentInformationManagementInterface;
 use Magento\Customer\Model\Session as CustomerSession;
@@ -16,6 +17,7 @@ class PlaceOrderService
 {
     public function __construct(
         private readonly QuoteDetails $quote,
+        private readonly EventDispatcher $eventDispatcher,
         private readonly CustomerSession $customerSession,
         private readonly QuoteIdMaskFactory $quoteIdMaskFactory,
         private readonly PaymentInformationManagementInterface $paymentInformationManagement,
@@ -25,6 +27,11 @@ class PlaceOrderService
     public function execute(PaymentInformation $paymentInformation): int
     {
         $payment = $this->preparePayment($paymentInformation);
+        $transport = $this->eventDispatcher->dispatchPlaceOrderSavePaymentBefore([
+            'payment' => $payment,
+            'payment_information' => $paymentInformation,
+        ]);
+        $payment = $transport->getData('payment');
 
         if ($this->customerSession->isLoggedIn()) {
             return $this->paymentInformationManagement->savePaymentInformationAndPlaceOrder(
@@ -40,14 +47,11 @@ class PlaceOrderService
         );
     }
 
-    private function preparePayment(PaymentInformation $paymentInformation): PaymentInterface
+    public function preparePayment(PaymentInformation $paymentInformation): PaymentInterface
     {
+        $paymentData = $paymentInformation->paymentMethod;
         $payment = $this->quote->getPaymentMethod();
-        $payment->setMethod($paymentInformation->paymentMethod->method);
-
-        foreach ($paymentInformation->paymentMethod->additionalData ?? [] as $key => $value) {
-            $payment->setAdditionalInformation($key, $value);
-        }
+        $payment->setMethod($paymentData->method);
 
         return $payment;
     }
