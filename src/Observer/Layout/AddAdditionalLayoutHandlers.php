@@ -15,7 +15,7 @@ use Magento\Framework\View\LayoutInterface;
  * Adds additional layout handles dynamically when MAHX Checkout is being rendered.
  *
  * Triggered on `layout_load_before`, it adds:
- * - A handle based on the active checkout theme (e.g. `mahxcheckout_default`)
+ * - A handle based on the active checkout theme (e.g. `mahxcheckout_theme_default`)
  * - A `_customer_logged_in` suffix for all handles if customer is logged in
  * - A `_customer_has_addresses` suffix if logged-in customer has saved addresses
  *
@@ -58,15 +58,13 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
 
     /**
      * Adds theme-based layout handles such as:
-     * - mahxcheckout_{themeCode}
-     * - mahxcheckout_{themeCode}_layout
+     * - mahxcheckout_theme_{themeCode}
      */
     private function addThemeLayoutHandles(): void
     {
         $themeCode = $this->activeThemeResolver->resolve()->getCode();
 
-        $this->addLayoutHandle("mahxcheckout_{$themeCode}");
-        $this->addLayoutHandle("mahxcheckout_{$themeCode}_layout");
+        $this->addLayoutHandle("mahxcheckout_theme_{$themeCode}");
     }
 
     /**

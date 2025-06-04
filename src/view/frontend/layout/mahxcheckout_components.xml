@@ -2,6 +2,8 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
+        <block name="checkout.step.navigation" template="MageHx_MahxCheckout::navigation/step_navigation.phtml" />
+
         <block name="shipping.address.form" template="MageHx_MahxCheckout::address/shipping_address.phtml">
             <block name="shipping.address.section.title" as="formTitle" template="MageHx_MahxCheckout::ui/section_title.phtml">
                 <arguments>
@@ -52,6 +54,10 @@
             </block>
         </block>
 
+        <block name="checkout.summary.cart.items" template="MageHx_MahxCheckout::summary/order_cart_items.phtml" />
+        <block name="checkout.navigation.action" template="MageHx_MahxCheckout::navigation/page_action.phtml" />
+        <block class="MageHx\MahxCheckout\Block\Notifications" name="checkout.notifications"
+               template="MageHx_MahxCheckout::notification/notifications.phtml" />
         <block name="checkout.step.auto.loader" template="MageHx_MahxCheckout::ui/common/step_loader.phtml" />
     </body>
 </page>
