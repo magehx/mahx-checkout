@@ -39,6 +39,7 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
 
         $this->layout = $observer->getData('layout');
 
+        $this->addCheckoutLayoutHandle();
         $this->addThemeLayoutHandles();
 
         if ($this->isCustomerLoggedIn()) {
@@ -106,5 +107,10 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
     private function addLayoutHandle(string $handleName): void
     {
         $this->layout->getUpdate()->addHandle($handleName);
+    }
+
+    private function addCheckoutLayoutHandle(): void
+    {
+        $this->addLayoutHandle('mahxcheckout_layout');
     }
 }
