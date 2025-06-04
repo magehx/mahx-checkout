@@ -11,13 +11,23 @@
             <label>General Configuration</label>
             <tab>mahxcheckout</tab>
             <resource>MageHx_MahxCheckout::config</resource>
+
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
                    showInStore="1">
                 <label>General Settings</label>
-                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+
+                <field id="enabled" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable MAHX Checkout</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>mahxcheckout/general/enabled</config_path>
+                </field>
+
+                <field id="theme" translate="label" type="select" sortOrder="20" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Checkout Theme</label>
+                    <source_model>MageHx\MahxCheckout\Model\Config\Source\CheckoutThemeSource</source_model>
+                    <config_path>mahxcheckout/general/theme</config_path>
                 </field>
             </group>
         </section>

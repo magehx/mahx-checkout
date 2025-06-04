@@ -6,6 +6,7 @@ namespace MageHx\MahxCheckout\Controller\Form;
 
 use Exception;
 use MageHx\HtmxActions\Controller\HtmxAction;
+use MageHx\MahxCheckout\Model\Theme\CheckoutThemeInterface;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -15,7 +16,6 @@ use Rkt\MageData\Exceptions\ValidationException;
 use MageHx\MahxCheckout\Block\Notifications as NotificationsBlock;
 use MageHx\MahxCheckout\Controller\Form\ComponentAction\Context;
 use MageHx\MahxCheckout\Model\FormDataStorage;
-use MageHx\MahxCheckout\Model\StepManager\CheckoutStepPool;
 use MageHx\MahxCheckout\Service\HtmxHeaderManager;
 use MageHx\MahxCheckout\Service\StepSessionManager;
 use MageHx\MahxCheckout\Service\StepValidationService;
@@ -27,20 +27,20 @@ abstract class ComponentAction extends HtmxAction
     protected RawFactory $rawFactory;
     protected FormDataStorage $formDataStorage;
     protected LayoutFactory $layoutFactory;
-    protected CheckoutStepPool $checkoutStepPool;
     protected StepValidationService $stepValidationService;
     protected StepSessionManager $stepSessionManager;
     protected HtmxHeaderManager $htmxHeaderManager;
+    private ?CheckoutThemeInterface $activeTheme;
 
     public function __construct(Context $context) {
         parent::__construct($context->htmxActionContext);
         $this->rawFactory = $context->rawFactory;
         $this->layoutFactory = $context->layoutFactory;
         $this->formDataStorage = $context->formDataStorage;
-        $this->checkoutStepPool = $context->checkoutStepPool;
         $this->htmxHeaderManager = $context->htmxHeaderManager;
         $this->stepSessionManager = $context->stepSessionManager;
         $this->stepValidationService = $context->stepValidationService;
+        $this->activeTheme = $context->activeTheme;
 
         $this->updateStepByRequest();
     }
@@ -113,8 +113,8 @@ abstract class ComponentAction extends HtmxAction
 
     protected function proceedToNextStep(): self
     {
-        $currentStep = $this->stepSessionManager->getStepData() ?? $this->checkoutStepPool->getDefaultStep();
-        $this->stepSessionManager->setStepData($this->checkoutStepPool->getNextStepOf($currentStep));
+        $currentStep = $this->stepSessionManager->getStepData() ?? $this->activeTheme->getInitialStep();
+        $this->stepSessionManager->setStepData($this->activeTheme->getStepAfter($currentStep));
 
         return $this;
     }
@@ -131,7 +131,7 @@ abstract class ComponentAction extends HtmxAction
 
     protected function getCurrentStepLayoutHandles(): array
     {
-        $step = $this->stepSessionManager->getStepData() ?? $this->checkoutStepPool->getDefaultStep();
+        $step = $this->stepSessionManager->getStepData() ?? $this->activeTheme->getInitialStep();
         $layoutHandle = $step?->layoutHandle;
 
         if (!$layoutHandle) {

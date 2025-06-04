@@ -4,26 +4,25 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Service;
 
-use Magento\Ui\Block\Component\StepsWizard\StepInterface;
+use MageHx\MahxCheckout\Model\Theme\ActiveCheckoutThemeResolver;
 use MageHx\MahxCheckout\Data\CheckoutStepData;
-use MageHx\MahxCheckout\Model\StepManager\CheckoutStepPool;
 
 class StepValidationService
 {
     public function __construct(
-        private readonly CheckoutStepPool $checkoutStepPool,
+        private readonly ActiveCheckoutThemeResolver $checkoutThemeResolver,
     ) {
     }
 
     public function getValidStepFor(?string $stepName = null): CheckoutStepData
     {
-        $steps = $this->checkoutStepPool->getCheckoutStepsData();
+        $theme = $this->checkoutThemeResolver->resolve();
 
         if ($stepName === null) {
-            return $this->checkoutStepPool->getDefaultStep();
+            return $theme->getInitialStep();
         }
 
-        foreach ($steps as $step) {
+        foreach ($theme->getSteps() as $step) {
             if (!$step->isValid) {
                 // If a previous step is invalid, then it means cannot load requested step
                 return $step;
@@ -36,6 +35,6 @@ class StepValidationService
         }
 
         // Default fallback if step not found
-        return $this->checkoutStepPool->getDefaultStep();
+        return $theme->getInitialStep();
     }
 }

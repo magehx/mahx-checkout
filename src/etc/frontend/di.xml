@@ -36,9 +36,11 @@
 
     <type name="MageHx\MahxCheckout\Model\StepManager\CheckoutStepPool">
         <arguments>
-            <argument name="steps" xsi:type="array">
-                <item name="shipping" xsi:type="object">MageHx\MahxCheckout\Model\StepManager\Step\ShippingStepVirtual</item>
-                <item name="payment" xsi:type="object">MageHx\MahxCheckout\Model\StepManager\Step\PaymentStepVirtual</item>
+            <argument name="themeSteps" xsi:type="array">
+                <item name="default" xsi:type="array">
+                    <item name="shipping" xsi:type="object">MageHx\MahxCheckout\Model\StepManager\Step\ShippingStepVirtual</item>
+                    <item name="payment" xsi:type="object">MageHx\MahxCheckout\Model\StepManager\Step\PaymentStepVirtual</item>
+                </item>
             </argument>
         </arguments>
     </type>

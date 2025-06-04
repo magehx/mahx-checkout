@@ -15,6 +15,7 @@ use Magento\Store\Model\ScopeInterface;
 class Config
 {
     const MAHXCHECKOUT_ENABLED_CONFIG_PATH = 'mahxcheckout/general/enabled';
+    const MAHXCHECKOUT_THEME_CONFIG_PATH = 'mahxcheckout/general/theme';
     const STREET_LINES_COUNT_CONFIG_PATH = 'customer/address/street_lines';
     const TELEPHONE_SHOW_CONFIG_PATH = 'customer/address/telephone_show';
     const PREFIX_SHOW_CONFIG_PATH = 'customer/address/prefix_show';
@@ -67,6 +68,11 @@ class Config
     public function isEnabled(): bool
     {
         return $this->isStoreSetFlag(self::MAHXCHECKOUT_ENABLED_CONFIG_PATH);
+    }
+
+    public function getActiveTheme(): string
+    {
+        return $this->getStoreConfig(self::MAHXCHECKOUT_THEME_CONFIG_PATH) ?? '';
     }
 
     public function getStreetLinesCount(): int
