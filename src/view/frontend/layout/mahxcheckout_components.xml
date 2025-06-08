@@ -40,7 +40,11 @@
                 </arguments>
             </block>
             <block name="billing.address.details"
-                   template="MageHx_MahxCheckout::address/billing/billing_address_details.phtml" />
+                   template="MageHx_MahxCheckout::address/billing/billing_address_details.phtml">
+                <block
+                    name="billing.address.billing.same" as="isBillingSame"
+                    template="MageHx_MahxCheckout::address/billing/is_billing_same.phtml" />
+            </block>
             <block name="billing.address.form" as="billingAddressForm"
                    template="MageHx_MahxCheckout::address/billing/billing_address_new_form.phtml">
                 <block name="billing.address.form.actions" as="actions"
@@ -55,6 +59,12 @@
         </block>
 
         <block name="checkout.summary.cart.items" template="MageHx_MahxCheckout::summary/order_cart_items.phtml" />
+        <block name="checkout.order.totals" template="MageHx_MahxCheckout::summary/order_totals.phtml"
+               before="checkout.summary.cart.items">
+            <arguments>
+                <argument name="view_model" xsi:type="object">MageHx\MahxCheckout\ViewModel\Totals</argument>
+            </arguments>
+        </block>
         <block name="checkout.navigation.action" template="MageHx_MahxCheckout::navigation/page_action.phtml" />
         <block class="MageHx\MahxCheckout\Block\Notifications" name="checkout.notifications"
                template="MageHx_MahxCheckout::notification/notifications.phtml" />

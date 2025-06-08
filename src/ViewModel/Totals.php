@@ -39,4 +39,11 @@ class Totals implements ArgumentInterface
     {
         return $this->priceCurrency->format($amount, false);
     }
+
+    public function getHtmxLoaderClasses(): array
+    {
+        return [
+            'save-shipping-loader'
+        ];
+    }
 }

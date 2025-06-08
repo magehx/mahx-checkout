@@ -6,11 +6,14 @@ namespace MageHx\MahxCheckout\Service;
 
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\LayoutInterface;
+use Magento\Framework\View\Result\LayoutFactory;
 
 class GenerateBlockHtml
 {
-    public function __construct(private readonly LayoutInterface $layout)
-    {
+    public function __construct(
+        private readonly LayoutFactory $layoutFactory,
+        private readonly LayoutInterface $layout,
+    ){
     }
 
     public function getLoaderHtml(?string $loaderId = null, ?string $extraClass = null): string
@@ -28,5 +31,38 @@ class GenerateBlockHtml
         }
 
         return $block->toHtml();
+    }
+
+    public function getComponentHtml(string $componentName, bool $withHtmxOob = false): string
+    {
+        $layout = $this->loadLayoutFromHandles(['mahxcheckout_components']);
+        $block = $layout->getBlock($componentName);
+
+        if ($withHtmxOob) {
+            $block?->setData('is_htmx_oob', true);
+        }
+
+        return $block->toHtml();
+    }
+
+    private function loadLayoutFromHandles(array $handles): LayoutInterface
+    {
+        $layout = $this->getLayout();
+
+        foreach ($handles as $handle) {
+            $layout->getUpdate()->addHandle($handle);
+        }
+
+        $layout->getUpdate()->load();
+        $layout->generateXml();
+        $layout->generateElements();
+
+        return $layout;
+    }
+
+    private function getLayout(): LayoutInterface
+    {
+        $layoutResult = $this->layoutFactory->create();
+        return $layoutResult->getLayout();
     }
 }

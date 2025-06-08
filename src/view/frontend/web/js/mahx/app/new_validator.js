@@ -346,5 +346,12 @@ export default function Validator({
     hasRuleExistForInput(input) {
       return Boolean(this.rules[getDotNameFromElement(input)]);
     },
+    async revalidateWithoutFocus() {
+      const origFocusInvalidField = this.globalConfig.focusInvalidField;
+      this.globalConfig.focusInvalidField = false;
+      const isValid = await this.revalidate();
+      this.globalConfig.focusInvalidField = origFocusInvalidField;
+      return isValid;
+    }
   });
 }

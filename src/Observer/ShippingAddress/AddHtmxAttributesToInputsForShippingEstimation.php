@@ -55,7 +55,7 @@ class AddHtmxAttributesToInputsForShippingEstimation implements ObserverInterfac
             'swap' => HtmxSwapOption::outerHTML,
             'trigger' => "mahxcheckout-{$formId}-{$fieldName}-validated from:body delay:300ms",
             'indicator' => $this->isCountryField($fieldName) ? ".estimate-shipping-loader" : "#shipping-loader",
-            'include' => '#guest-email-form',
+            'include' => ['#guest-email-form'],
             'post' => 'mahxcheckout/form/estimateShippingMethods',
         ]);
     }

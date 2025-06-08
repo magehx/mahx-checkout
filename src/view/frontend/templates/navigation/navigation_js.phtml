@@ -52,6 +52,10 @@ $viewModel = $viewModelProvider(StepManager::class);
                 const firstKey = Object.keys(this.steps)[0];
                 return this.steps[firstKey];
             },
+
+            getValidatorFor(validatorId) {
+                return this.validators[validatorId];
+            },
         });
 
         Alpine.data('PageNavigation', () => ({

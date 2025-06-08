@@ -6,8 +6,8 @@ namespace MageHx\MahxCheckout\Controller\Form;
 
 use Exception;
 use MageHx\HtmxActions\Controller\HtmxAction;
+use MageHx\HtmxActions\Controller\Result\HtmxRawFactory as HtmxRawResultFactory;
 use MageHx\MahxCheckout\Model\Theme\CheckoutThemeInterface;
-use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Phrase;
@@ -24,7 +24,7 @@ abstract class ComponentAction extends HtmxAction
 {
     protected array $layouts = [];
     protected array $components = [];
-    protected RawFactory $rawFactory;
+    protected HtmxRawResultFactory $rawFactory;
     protected FormDataStorage $formDataStorage;
     protected LayoutFactory $layoutFactory;
     protected StepValidationService $stepValidationService;
@@ -111,10 +111,17 @@ abstract class ComponentAction extends HtmxAction
         $this->formDataStorage->setData($formData);
     }
 
+    public function isStepSaveDataRequest(): bool
+    {
+        return $this->activeTheme->hasSaveDataUrl($this->getRequest()->getRequestUri());
+    }
+
     protected function proceedToNextStep(): self
     {
-        $currentStep = $this->stepSessionManager->getStepData() ?? $this->activeTheme->getInitialStep();
-        $this->stepSessionManager->setStepData($this->activeTheme->getStepAfter($currentStep));
+        $initialStep = $this->activeTheme->getInitialStep();
+        $currentStep = $this->stepSessionManager->getStepData() ?? $initialStep;
+        $nextStep = $this->activeTheme->getStepAfter($currentStep) ?? $initialStep;
+        $this->stepSessionManager->setStepData($nextStep);
 
         return $this;
     }

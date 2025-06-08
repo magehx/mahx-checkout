@@ -36,6 +36,11 @@ class SaveShippingInformation extends ComponentAction
             $shippingInfo->validate();
             $this->newShippingAddressManager->keepShippingAddressAsNew($shippingInfo);
             $this->saveShippingInfoService->execute($this->quote->getId(), $shippingInfo);
+
+            if (!$this->isStepSaveDataRequest()) {
+                return $this->getCheckoutContentResponse();
+            }
+
             $this->proceedToNextStep();
             return $this->withCurrentStepPushUrlHeader($this->getCheckoutContentResponse());
         } catch (Exception $e) {

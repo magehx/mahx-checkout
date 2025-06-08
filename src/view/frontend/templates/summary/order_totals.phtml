@@ -5,13 +5,20 @@ use MageHx\MahxCheckout\ViewModel\Totals;
 
 /** @var Template $block */
 /** @var Closure $eHtml */
+/** @var Closure $classNames */
 /** @var Totals $viewModel */
 
 $viewModel = $block->getData('view_model');
 $totals = $viewModel->getTotals();
 $grandTotal = $viewModel->getGrandTotal();
+$isHtmxOob = (bool)$block->getData('is_htmx_oob');
+$htmxLoaderClasses = implode(' ', $viewModel->getHtmxLoaderClasses());
 ?>
-<div id="checkout-totals-summary" x-cloak>
+<div
+    id="checkout-totals-summary"
+    class="relative"
+    <?= $isHtmxOob ? 'hx-swap-oob="true"' : '' ?>
+>
     <dl class="space-y-3">
         <?php foreach ($totals as $total): ?>
             <?php if ($total->code === 'grand_total') continue; ?>
@@ -33,4 +40,12 @@ $grandTotal = $viewModel->getGrandTotal();
             </div>
         <?php endif; ?>
     </dl>
+    <div
+        id="order-totals-loader"
+        class="<?= $classNames(['htmx-indicator checkout-loader', $htmxLoaderClasses => $htmxLoaderClasses]) ?>"
+    >
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
 </div>

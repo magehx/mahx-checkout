@@ -14,26 +14,7 @@ $viewModel = $viewModelProvider(BillingAddress::class);
 $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
 ?>
 <div id="billing-address-details">
-    <div class="form-control">
-        <label class="label cursor-pointer justify-start space-x-2">
-            <input
-                id="is-billing-same" type="checkbox" name="is_billing_same" class="checkbox" value="1"
-                <?= $isSameAsShipping ? 'checked' : '' ?>
-                hx-swap="outerHTML"
-                hx-indicator="#billing-address-section-loader"
-                hx-vals='{"show_form": <?= $eHtmlAttr((int)!$viewModel->isCustomerLoggedIn()) ?>}'
-                hx-target="<?= $eHtmlAttr($isSameAsShipping ? '#billing-address-section' : '#checkout-main-content') ?>"
-                <?php if ($isSameAsShipping): ?>
-                    hx-get="<?= $eUrl($block->getUrl('mahxcheckout/billing/editBilling')) ?>"
-                <?php else: ?>
-                    hx-include="[name=form_key]"
-                    hx-post="<?= $eUrl($block->getUrl('mahxcheckout/billing/billingAddressPost')) ?>"
-                    hx-on:afterSwap="dispatchBillingAddressSaved"
-                <?php endif; ?>
-            />
-            <span class="label-text"><?= $eHtml(__('My billing and shipping address are the same')) ?></span>
-        </label>
-    </div>
+    <?= $block->getChildHtml('isBillingSame') ?>
     <div id="billing-address-form-wrapper" class="relative">
         <?php if (!$viewModel->isEditing()): ?>
             <div class="collapse collapse-open">

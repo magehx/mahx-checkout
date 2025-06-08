@@ -70,4 +70,26 @@ abstract class CheckoutThemeAbstract implements CheckoutThemeInterface
 
         return $last && $stepName === $last->name;
     }
+
+    public function getStepsSaveDataUrlList(): array
+    {
+        $urls = [];
+
+        foreach ($this->getSteps() as $step) {
+            $urls[$step->name] = $step->saveDataUrl;
+        }
+
+        return $urls;
+    }
+
+    public function hasSaveDataUrl(string $url): bool
+    {
+        foreach ($this->getStepsSaveDataUrlList() as $saveUrl) {
+            if (str_contains($url, $saveUrl)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

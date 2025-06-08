@@ -12,8 +12,8 @@
         <remove src="MageHx_MahxCheckout::js/lib/alpine3-csp.min.js"/>
     </head>
     <body>
-        <referenceContainer name="content" htmlClass="bg-gray-50 min-h-screen text-gray-800 relative">
-            <referenceBlock name="checkout.main" template="MageHx_MahxCheckout::main.phtml"/>
-        </referenceContainer>
+<!--        <referenceContainer name="content" htmlClass="bg-gray-50 min-h-screen text-gray-800 relative">-->
+<!--            <referenceBlock name="checkout.main" template="MageHx_MahxCheckout::main.phtml"/>-->
+<!--        </referenceContainer>-->
     </body>
 </page>

@@ -27,6 +27,8 @@
             <block name="checkout.page.loader" template="MageHx_MahxCheckout::ui/page/loader.phtml" />
         </referenceContainer>
 
+        <move element="checkout.main.content" destination="checkout.main" />
+
         <referenceBlock name="logo" template="MageHx_MahxCheckout::html/header/logo.phtml" />
 
         <referenceBlock name="page.main.title" remove="true" />

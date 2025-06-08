@@ -18,4 +18,11 @@
             @apply mb-0;
         }
     }
+    .checkout-loader {
+        @apply absolute inset-0 flex items-center justify-center bg-white/50 pointer-events-none;
+    }
+
+    .checkout-loader span {
+        @apply loading loading-dots loading-md;
+    }
 }
