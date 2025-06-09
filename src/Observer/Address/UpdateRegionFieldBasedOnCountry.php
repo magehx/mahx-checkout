@@ -88,7 +88,7 @@ class UpdateRegionFieldBasedOnCountry implements ObserverInterface
         $loaderId = "{$regionField->form}-region-loader";
         $regionField->meta->afterInputHtml = $this->generateBlockHtmlService->getLoaderHtml(
             $loaderId,
-            'estimate-shipping-loader'
+            'est-shipping-country-loader'
         );
     }
 

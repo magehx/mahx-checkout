@@ -43,7 +43,9 @@ class Totals implements ArgumentInterface
     public function getHtmxLoaderClasses(): array
     {
         return [
-            'save-shipping-loader'
+            'save-shipping-loader',
+            'est-shipping-loader',
+            'est-shipping-country-loader'
         ];
     }
 }
