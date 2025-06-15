@@ -69,14 +69,9 @@ abstract class ComponentAction extends HtmxAction
 
     public function getMultiComponentResponse(array $componentNames): ResultInterface
     {
-        $html = '';
         $this->setHandles($this->getCurrentStepLayoutHandles());
 
-        foreach ($componentNames as $componentName) {
-            $html .= $this->renderBlockToHtml($componentName);
-        }
-
-        return $this->getEmptyResponse()->setContents($html);
+        return $this->getMultiBlockResponse($componentNames);
     }
 
     public function getNotificationsResponse(): ResultInterface

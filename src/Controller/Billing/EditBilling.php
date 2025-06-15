@@ -9,7 +9,6 @@ use MageHx\MahxCheckout\Controller\Form\ComponentAction;
 
 class EditBilling extends ComponentAction
 {
-
     public function execute(): ResultInterface
     {
         $isBillingSame = (bool) $this->getRequest()->getParam('is_billing_same');

@@ -73,7 +73,7 @@ class PrepareRegionFieldAttribute
             'swap'      => HtmxSwapOption::outerHTML,
             'target'    => 'closest .form-control',
             'trigger'   => "mahxcheckout-{$formId}-country_id-changed from:window",
-            'include'   => "#{$formId}-country_id",
+            'include'   => ["#{$formId}-country_id"],
             'vals'      =>  ['form' => $formId],
             'indicator' => "#{$formId}-region-loader",
         ]);

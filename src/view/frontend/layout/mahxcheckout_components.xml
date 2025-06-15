@@ -54,6 +54,7 @@
                    template="MageHx_MahxCheckout::ui/common/section_loader.phtml">
                 <arguments>
                     <argument name="id" xsi:type="string">billing-address-section-loader</argument>
+                    <argument name="extra_class" xsi:type="string">save-billing-loader</argument>
                 </arguments>
             </block>
         </block>

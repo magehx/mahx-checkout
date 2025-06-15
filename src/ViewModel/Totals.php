@@ -45,7 +45,9 @@ class Totals implements ArgumentInterface
         return [
             'save-shipping-loader',
             'est-shipping-loader',
-            'est-shipping-country-loader'
+            'est-shipping-country-loader',
+            'save-payment-loader',
+            'save-billing-loader',
         ];
     }
 }

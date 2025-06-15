@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MageHx\MahxCheckout\Controller\Billing;
 
 use Exception;
+use MageHx\MahxCheckout\Service\GenerateBlockHtml;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\ResultInterface;
 use MageHx\MahxCheckout\Controller\Form\ComponentAction;
@@ -18,6 +19,7 @@ class BillingAddressPost extends ComponentAction
     public function __construct(
         Context $context,
         private readonly QuoteDetails $quote,
+        private readonly GenerateBlockHtml $generateBlockHtml,
         private readonly SaveBillingAddress $saveBillingAddressService,
     ) {
         parent::__construct($context);
@@ -32,7 +34,8 @@ class BillingAddressPost extends ComponentAction
                 $billingAddressData->validate();
             }
             $this->saveBillingAddressService->execute($billingAddressData);
-            return $this->getCheckoutContentResponse();
+            $totals = $this->generateBlockHtml->getComponentHtml('checkout.order.totals', withHtmxOob: true);
+            return $this->getComponentResponse('billing.address.section', additionalHtml: $totals);
         } catch (Exception $e) {
             $this->prepareErrorNotificationsWithFormData($billingAddressData->toArray(), $e);
             return $this->getNotificationsResponse()->setHeader('HX-Reswap', 'none');
