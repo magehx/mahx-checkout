@@ -16,7 +16,9 @@ $viewModel = $viewModelProvider(BillingAddressFormActions::class);
 <div class="flex items-center justify-end space-x-4">
     <button
         class="btn btn-ghost" type="button"
+        @click="handleBillingCancel"
         hx-target="#billing-address-section"
+        hx-trigger="mahxcheckout-billing-canceled"
         hx-indicator="#billing-address-section-loader"
         hx-include="#is-billing-same"
         hx-vals='{"show_form": 0, "is_edit": <?= $eHtmlAttr((int)$viewModel->isCustomerLoggedIn()) ?> }'

@@ -9,7 +9,7 @@ use Rkt\MageData\Data;
 class AddressData extends Data
 {
     public function __construct(
-        public string $firstname,
+        public ?string $firstname,
         public string $lastname,
         public array $street,
         public string $city,

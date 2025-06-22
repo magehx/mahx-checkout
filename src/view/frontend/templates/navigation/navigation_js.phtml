@@ -40,6 +40,9 @@ $viewModel = $viewModelProvider(StepManager::class);
             /** @type {CheckoutStepsMap} */
             steps: JSON.parse('<?= $eJs($viewModel->getStepsJson()) ?>'),
             validators: {},
+            actionButton: {
+                isDisabled: false,
+            },
 
             findStepBy(prop, value) {
                 const key = Object.keys(this.steps).find(
@@ -59,6 +62,12 @@ $viewModel = $viewModelProvider(StepManager::class);
         });
 
         Alpine.data('PageNavigation', () => ({
+            isStepValid: false,
+
+            get isStepInvalid() {
+                return !this.isStepValid;
+            },
+
             init() {
                 this.calculateCurrentStep();
                 this.addEventListeners();
@@ -80,23 +89,15 @@ $viewModel = $viewModelProvider(StepManager::class);
                 delete this.stepStore.validators[componentId];
             },
 
-            async handleStepAction() {
-                if (!this.currentStep) {
-                    return;
-                }
+            getStepButtonDisabledClass() {
+                return this.isStepValid ? '' : 'btn-disabled';
+            },
 
+            async handleStepAction() {
                 this.$dispatch('mahxcheckout-step-validation-before', { currentStep: this.currentStep });
 
-                const validationResults = await Promise.all(
-                    Object.keys(this.currentStep.formComponents).map((componentId) => {
-                        const form = document.getElementById(componentId);
-                        const validator = this.stepStore.validators[componentId];
-
-                        return this.prepareValidationPromiseForForm(form, validator)
-                    })
-                );
-
-                const isAllValid = validationResults.every((result) => result === true);
+                const showErrors = true;
+                const isAllValid = await this.validateStepForms(showErrors);
 
                 if (isAllValid) {
                     this.$dispatch('mahxcheckout-step-validation-success', { currentStep: this.currentStep });
@@ -104,17 +105,33 @@ $viewModel = $viewModelProvider(StepManager::class);
                 }
             },
 
-            prepareValidationPromiseForForm(form, validator) {
+            prepareValidationPromiseForForm(form, validator, showErrors = false) {
                 if (!form || !validator) {
                     return Promise.resolve(true);
                 }
 
                 return validator.revalidate().then((isValid) => {
-                    if (!isValid) {
+                    if (!isValid && showErrors) {
                         form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
                     }
                     return isValid;
                 });
+            },
+
+            async validateStepForms(showErrors = false) {
+                if (!this.currentStep) {
+                    return false;
+                }
+                const validationResults = await Promise.all(
+                    Object.keys(this.currentStep.formComponents).map((componentId) => {
+                        const form = document.getElementById(componentId);
+                        const validator = this.stepStore.validators[componentId];
+
+                        return this.prepareValidationPromiseForForm(form, validator, showErrors)
+                    })
+                );
+
+                return validationResults.every((result) => result === true);
             },
 
             addEventListeners() {
@@ -190,6 +207,18 @@ $viewModel = $viewModelProvider(StepManager::class);
             get stepStore() {
                 return this.$store.checkoutStepStorage;
             },
-        }))
+        }));
+
+        Alpine.data('PageAction', () => ({
+            get buttonLabel() {
+                return this.stepStore.currentStep.buttonLabel;
+            },
+            get buttonDisabled() {
+                return this.stepStore.actionButton.isDisabled;
+            },
+            get stepStore() {
+                return this.$store.checkoutStepStorage;
+            },
+        }));
     });
 </script>

@@ -6,6 +6,7 @@ namespace MageHx\MahxCheckout\ViewModel;
 
 use MageHx\MahxCheckout\Data\AddressData;
 use MageHx\MahxCheckout\Data\ValidationMapperData;
+use MageHx\MahxCheckout\Service\PrepareBillingAddressData;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\DataObject;
 use Magento\Framework\Serialize\Serializer\Json;
@@ -17,6 +18,7 @@ use MageHx\MahxCheckout\Model\FormDataStorage;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 use MageHx\MahxCheckout\Service\AddressFieldManager;
 use MageHx\MahxCheckout\Service\PrepareAddressLines;
+use Throwable;
 
 class BillingAddress implements ArgumentInterface
 {
@@ -30,12 +32,13 @@ class BillingAddress implements ArgumentInterface
         private readonly FormDataStorage $formDataStorage,
         private readonly AddressFieldManager $addressFieldManager,
         private readonly PrepareAddressLines $prepareAddressLinesService,
+        private readonly PrepareBillingAddressData $prepareBillingAddressData,
     ) {
     }
 
     public function isBillingSameAsShipping(): bool
     {
-        return $this->quote->isBillingSameAsShipping();
+        return !$this->isValidAddress() || $this->quote->isBillingSameAsShipping();
     }
 
     public function getBillingSameAsShippingValue(): bool
@@ -114,19 +117,29 @@ class BillingAddress implements ArgumentInterface
         return (bool)$showForm;
     }
 
+    public function getAddressData(): AddressData
+    {
+        $billingAddress = $this->quote->getBillingAddress();
+        return $this->prepareBillingAddressData->prepare([
+            ...$billingAddress->getData(),
+            'street' => $billingAddress->getStreet(),
+        ]);
+    }
+
+    public function isValidAddress(): bool
+    {
+        try {
+            $this->getAddressData()->validate();
+            return true;
+        } catch (Throwable) {
+            return false;
+        }
+    }
+
     // @todo before after events to modify rules
     public function getValidationJson(): string
     {
-        $addressData = AddressData::from([
-            'firstname' => '',
-            'lastname' => '',
-            'street' => [],
-            'city' => '',
-            'country_id' => '',
-            'postcode' => '',
-            'telephone' => '',
-            'region' => '',
-        ]);
+        $addressData = $this->getAddressData();
         return $this->jsonSerializer->serialize(ValidationMapperData::from([
             'rules' => $addressData->rules(),
             'messages' => $addressData->messages(),

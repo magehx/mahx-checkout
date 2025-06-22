@@ -352,6 +352,6 @@ export default function Validator({
       const isValid = await this.revalidate();
       this.globalConfig.focusInvalidField = origFocusInvalidField;
       return isValid;
-    }
+    },
   });
 }

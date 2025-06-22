@@ -6,6 +6,7 @@ namespace MageHx\MahxCheckout\Controller\Billing;
 
 use Exception;
 use MageHx\MahxCheckout\Service\GenerateBlockHtml;
+use MageHx\MahxCheckout\Service\PrepareBillingAddressData;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\ResultInterface;
 use MageHx\MahxCheckout\Controller\Form\ComponentAction;
@@ -21,6 +22,7 @@ class BillingAddressPost extends ComponentAction
         private readonly QuoteDetails $quote,
         private readonly GenerateBlockHtml $generateBlockHtml,
         private readonly SaveBillingAddress $saveBillingAddressService,
+        private readonly PrepareBillingAddressData $prepareBillingAddressData,
     ) {
         parent::__construct($context);
     }
@@ -49,16 +51,6 @@ class BillingAddressPost extends ComponentAction
         $data = $isSameAsShipping ? $shippingAddress->getData() : (array)$this->getRequest()->getPost();
         $data['street'] = $isSameAsShipping ? $shippingAddress->getStreet() : ($data['street'] ?? []);
 
-        return AddressData::from([
-            'firstname' => $data['firstname'] ?? '',
-            'lastname' => $data['lastname'] ?? '',
-            'street' => $data['street'] ?? [],
-            'city' => $data['city'] ?? '',
-            'country_id' => $data['country_id'] ?? '',
-            'postcode' => $data['postcode'] ?? '',
-            'telephone' => $data['telephone'] ?? '',
-            'region' => $data['region'] ?? '',
-            'same_as_billing' => $isSameAsShipping,
-        ]);
+        return $this->prepareBillingAddressData->prepare($data, $isSameAsShipping);
     }
 }

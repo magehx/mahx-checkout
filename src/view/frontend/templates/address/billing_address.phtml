@@ -11,7 +11,7 @@ use Magento\Framework\View\Element\Template;
 $viewModel = $viewModelProvider(BillingAddress::class);
 ?>
 <div
-    id="billing-address-section" x-data="BillingAddressSection"
+    id="billing-address-section"
     class="<?= $classNames(['relative', $viewModel->isVirtualCart() ? 'mt-8' : 'mt-12']) ?>"
 >
     <?= $block->getChildHtml() ?>

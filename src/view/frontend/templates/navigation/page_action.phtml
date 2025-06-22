@@ -13,13 +13,13 @@ use MageHx\MahxCheckout\ViewModel\StepManager;
 $viewModel = $viewModelProvider(StepManager::class);
 $currentStep = $viewModel->getCurrentStep();
 ?>
-<div id="page-actions" class="h-24 w-full mt-12">
+<div id="page-actions" class="h-24 w-full mt-12" x-data="PageAction">
     <div class="flex items-center justify-center">
         <button
             id="step-navigation-button"
             type="button"
             class="btn btn-primary btn-lg"
-            x-text="currentStep.buttonLabel"
+            x-text="buttonLabel"
             @click="handleStepAction"
             hx-post="<?= $eUrl($block->getUrl($currentStep?->saveDataUrl)) ?>"
             hx-include="<?= $eHtmlAttr($viewModel->getHtmxIncludesForCurrentStep()) ?>"
@@ -28,7 +28,6 @@ $currentStep = $viewModel->getCurrentStep();
             hx-trigger="mahxcheckout-step-validated from:body"
             hx-target="#checkout-main-content"
             hx-indicator="#checkout-page-loader"
-            hx-on:afterSwap="dispatchPageActionCompleted"
         >
             <?= $eHtml(__('Continue')) ?>
         </button>

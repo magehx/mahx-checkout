@@ -20,13 +20,20 @@ $viewModel = $viewModelProvider(BillingAddress::class);
             init() {
                 this.form = this.$el;
                 this.modifyFormAfterRender();
+                this.stepStore.actionButton.isDisabled = true;
             },
 
             async handleBillingUpdate() {
                 const isValid = await this.validator.revalidate();
                 if (isValid) {
-                    htmx.trigger(document.body, 'mahxcheckout-billing-address-form-validated')
+                    this.stepStore.actionButton.isDisabled = false;
+                    htmx.trigger(document.body, 'mahxcheckout-billing-validated')
                 }
+            },
+
+            handleBillingCancel(event) {
+                htmx.trigger(event.target, 'mahxcheckout-billing-canceled')
+                this.stepStore.actionButton.isDisabled = false;
             },
 
             handleCountryChange(event) {
@@ -50,16 +57,10 @@ $viewModel = $viewModelProvider(BillingAddress::class);
                 }, JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>')))
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
-        }));
 
-        Alpine.data('BillingAddressSection', () => ({
-            dispatchBillingAddressSavedById(event) {
-                this.$dispatch('mahxcheckout-billing-saved-by-id', { htmxEvent: event });
+            get stepStore() {
+                return this.$store.checkoutStepStorage;
             },
-
-            dispatchBillingAddressSaved(event) {
-                this.$dispatch('mahxcheckout-billing-saved', { htmxEvent: event });
-            }
-        }))
+        }));
     });
 </script>

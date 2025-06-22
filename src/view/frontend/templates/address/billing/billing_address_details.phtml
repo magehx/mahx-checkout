@@ -16,7 +16,7 @@ $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
 <div id="billing-address-details">
     <?= $block->getChildHtml('isBillingSame') ?>
     <div id="billing-address-form-wrapper" class="relative">
-        <?php if (!$viewModel->isEditing()): ?>
+        <?php if (!$viewModel->isEditing() && $viewModel->isValidAddress()): ?>
             <div class="collapse collapse-open">
                 <div class="collapse-content pt-4">
                     <div class="space-y-1 italic text-sm pl-6">
