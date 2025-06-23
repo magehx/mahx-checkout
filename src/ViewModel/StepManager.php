@@ -49,7 +49,7 @@ class StepManager implements ArgumentInterface
             return '';
         }
 
-        $includes = ['#current-step'];
+        $includes = ['#current-step', '#is-billing-same'];
         foreach ($step->formComponents as $formComponent) {
             $includes[] = "#{$formComponent->name}";
         }

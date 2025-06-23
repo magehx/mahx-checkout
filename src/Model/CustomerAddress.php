@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Model;
 
-use Magento\Catalog\Block\Adminhtml\Product\Attribute\Set\Main\Formattribute;
 use Magento\Customer\Model\AttributeMetadataDataProvider as CustomerAttributeMetaDataProvider;
 use Magento\Customer\Model\ResourceModel\Form\Attribute\Collection as FormAttributeCollection;
 use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;

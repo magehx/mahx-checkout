@@ -6,20 +6,16 @@ namespace MageHx\MahxCheckout\Service;
 
 use MageHx\MahxCheckout\Data\FormField\BaseFormFieldMeta;
 use MageHx\MahxCheckout\Data\FormField\MultilineFieldMeta;
-use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute;
 use Magento\Customer\Model\Attribute;
-use Magento\Framework\Serialize\Serializer\Json;
 use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Model\CustomerAddress;
 use MageHx\MahxCheckout\Model\EventDispatcher;
 use MageHx\MahxCheckout\Model\FieldRenderer\FieldRendererInterface;
 use MageHx\MahxCheckout\Model\FieldRenderer\RendererPool as AddressFieldRendererPool;
-use MageHx\MahxCheckout\Model\ShippingAddressForm;
 
 class AddressFieldManager
 {
     public function __construct(
-        private readonly Json $jsonSerializer,
         private readonly EventDispatcher $eventDispatcher,
         private readonly CustomerAddress $customerAddress,
         private readonly AddressFieldRendererPool $addressFieldRendererPool,

@@ -1,5 +1,7 @@
 <?php
 
+use MageHx\HtmxActions\Model\HxAttributeRender\HxAttributeBuilder;
+use MageHx\HtmxActions\Model\HxAttributeRender\HxAttributesRenderer;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\StepManager;
 
@@ -9,8 +11,10 @@ use MageHx\MahxCheckout\ViewModel\StepManager;
 /** @var Closure $eUrl */
 /** @var Closure $viewModelProvider */
 /** @var StepManager $viewModel */
+/** @var HxAttributesRenderer $hxRenderer */
 
 $viewModel = $viewModelProvider(StepManager::class);
+$hxRenderer = $viewModelProvider(HxAttributesRenderer::class);
 $currentStep = $viewModel->getCurrentStep();
 ?>
 <div id="page-actions" class="h-24 w-full mt-12" x-data="PageAction">
@@ -21,13 +25,16 @@ $currentStep = $viewModel->getCurrentStep();
             class="btn btn-primary btn-lg"
             x-text="buttonLabel"
             @click="handleStepAction"
-            hx-post="<?= $eUrl($block->getUrl($currentStep?->saveDataUrl)) ?>"
-            hx-include="<?= $eHtmlAttr($viewModel->getHtmxIncludesForCurrentStep()) ?>"
-            hx-swap="<?= $viewModel->isOnLastStep() ? 'none' : 'outerHTML' ?>"
-            hx-target="<?= $viewModel->isOnLastStep() ? null : '#checkout-main-content' ?>"
-            hx-trigger="mahxcheckout-step-validated from:body"
-            hx-target="#checkout-main-content"
-            hx-indicator="#checkout-page-loader"
+            <?= $hxRenderer->hxBuilder()
+                ->post($currentStep?->saveDataUrl)
+                ->include($viewModel->getHtmxIncludesForCurrentStep())
+                ->trigger('mahxcheckout-step-validated from:body')
+                ->indicator('#checkout-page-loader')
+                ->when($viewModel->isOnLastStep(), fn (HxAttributeBuilder $hx) => $hx->swapNone())
+                ->when(!$viewModel->isOnLastStep(), fn (HxAttributeBuilder $hx) =>
+                $hx->target('#checkout-main-content')->swapOuterHTML()
+                )->render()
+            ?>
         >
             <?= $eHtml(__('Continue')) ?>
         </button>
