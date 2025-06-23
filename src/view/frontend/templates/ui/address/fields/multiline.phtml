@@ -18,7 +18,7 @@ $fieldMeta = $fieldConfig->meta;
 $wrapperClasses = $block->getWrapperElemExtraClasses();
 ?>
 <div
-    class="<?= $classNames(['form-control w-full max-w-sm', $wrapperClasses => $wrapperClasses]) ?>"
+    class="<?= $classNames(['form-control w-full max-w-lg', $wrapperClasses => $wrapperClasses]) ?>"
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
@@ -35,7 +35,7 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
             <?php if ($index === 0): ?><div><?php endif; ?>
             <input
                 type="text"
-                class="input input-bordered input-sm w-full max-w-sm"
+                class="input input-bordered input-sm md:input-md w-full max-w-lg"
                 id="<?= $eHtmlAttr($fieldConfig->getFieldId() . '-' . $index) ?>"
                 name="<?= $eHtmlAttr($fieldConfig->name) ?>[<?= $eHtmlAttr($index) ?>]"
                 value="<?= $eHtmlAttr($fieldConfig->value[$index] ?? '')  ?>"

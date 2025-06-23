@@ -20,7 +20,7 @@ $fieldMeta = $fieldConfig->meta;
 $wrapperClasses = $block->getWrapperElemExtraClasses();
 ?>
 <div
-    class="<?= $classNames(['form-control w-full max-w-sm', $wrapperClasses => $wrapperClasses]) ?>"
+    class="<?= $classNames(['form-control w-full max-w-lg', $wrapperClasses => $wrapperClasses]) ?>"
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
@@ -33,7 +33,7 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
         </span>
     </label>
     <select
-        class="select select-bordered select-sm"
+        class="select select-bordered select-sm md:select-md"
         id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
         name="<?= $eHtmlAttr($fieldConfig->name) ?>"
         <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>

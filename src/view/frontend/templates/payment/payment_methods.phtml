@@ -16,9 +16,11 @@ use MageHx\MahxCheckout\Block\PaymentMethods;
             data-validation="<?= $eHtmlAttr($block->getValidationJson()) ?>"
         >
             <?= $formKey ?>
-            <?php foreach ($block->getPaymentMethods() as $method): ?>
-                <?= $block->getPaymentHtml($method) ?>
-            <?php endforeach; ?>
+            <div class="space-y-2">
+                <?php foreach ($block->getPaymentMethods() as $method): ?>
+                    <?= $block->getPaymentHtml($method) ?>
+                <?php endforeach; ?>
+            </div>
         </form>
     </div>
     <div id="payment-loader" class="htmx-indicator checkout-loader save-payment-loader">
