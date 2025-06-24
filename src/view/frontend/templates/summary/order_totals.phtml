@@ -6,9 +6,10 @@ use MageHx\MahxCheckout\ViewModel\Totals;
 /** @var Template $block */
 /** @var Closure $eHtml */
 /** @var Closure $classNames */
+/** @var Closure $viewModelProvider */
 /** @var Totals $viewModel */
 
-$viewModel = $block->getData('view_model');
+$viewModel = $viewModelProvider(Totals::class);
 $totals = $viewModel->getTotals();
 $grandTotal = $viewModel->getGrandTotal();
 $isHtmxOob = (bool)$block->getData('is_htmx_oob');

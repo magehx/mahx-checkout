@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      layout="checkout"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="mahxcheckout_theme_default_layout" />
+    <body>
+        <referenceContainer name="content" htmlClass="bg-gray-50 min-h-screen text-gray-800 relative">
+            <referenceBlock name="checkout.main" template="MageHx_MahxCheckout::main.phtml"/>
+        </referenceContainer>
+        <move element="checkout.step.navigation" destination="checkout.main" before="-"/>
+        <move element="checkout.main.content" destination="checkout.main" after="checkout.step.navigation"/>
+        <move element="checkout.step.auto.loader" destination="checkout.main.section" before="-" />
+        <move element="checkout.notifications" destination="checkout.main.section" after="-"/>
+        <move element="checkout.summary.cart.items" destination="checkout.summary.section" after="checkout.summary.title"/>
+        <move element="checkout.navigation.action" destination="checkout.right.section" after="checkout.summary.section"/>
+    </body>
+</page>

@@ -38,7 +38,7 @@ class StepManager implements ArgumentInterface
 
     public function getCurrentStep(): ?CheckoutStepData
     {
-        return $this->checkoutSession->getMahxCheckoutCurrentStep();
+        return $this->checkoutSession->getMahxCheckoutCurrentStep() ?? $this->checkoutTheme->getInitialStep();
     }
 
     public function getHtmxIncludesForCurrentStep(): string

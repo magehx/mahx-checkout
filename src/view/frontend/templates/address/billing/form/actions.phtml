@@ -28,9 +28,9 @@ $viewModel = $viewModelProvider(BillingAddressFormActions::class);
     </button>
     <button class="btn btn-neutral" type="button" @click="handleBillingUpdate"
             hx-swap="outerHTML"
-            hx-indicator="#checkout-page-loader"
-            hx-target="#checkout-main-content"
-            hx-trigger="mahxcheckout-billing-address-form-validated from:body"
+            hx-indicator=".save-billing-loader"
+            hx-target="#billing-address-section"
+            hx-trigger="mahxcheckout-billing-validated from:body"
             hx-post="<?= $eUrl($block->getUrl('mahxcheckout/billing/billingAddressPost')) ?>"
     >
         <?= $eHtml(__('Update')) ?>

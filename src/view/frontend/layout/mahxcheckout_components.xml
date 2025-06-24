@@ -61,11 +61,7 @@
 
         <block name="checkout.summary.cart.items" template="MageHx_MahxCheckout::summary/order_cart_items.phtml" />
         <block name="checkout.order.totals" template="MageHx_MahxCheckout::summary/order_totals.phtml"
-               before="checkout.summary.cart.items">
-            <arguments>
-                <argument name="view_model" xsi:type="object">MageHx\MahxCheckout\ViewModel\Totals</argument>
-            </arguments>
-        </block>
+               before="checkout.summary.cart.items"/>
         <block name="checkout.navigation.action" template="MageHx_MahxCheckout::navigation/page_action.phtml" />
         <block class="MageHx\MahxCheckout\Block\Notifications" name="checkout.notifications"
                template="MageHx_MahxCheckout::notification/notifications.phtml" />

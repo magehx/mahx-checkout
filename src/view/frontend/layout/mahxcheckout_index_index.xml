@@ -14,6 +14,7 @@
         <remove src="requirejs/require.js"/>
 
         <!-- Our essential css and js libs -->
+        <!-- TODO update: need to move below script to base_step theme -->
         <css src="MageHx_MahxCheckout::css/luma-checkout-overrides.css" />
         <css src="MageHx_MahxCheckout::css/mahxcheckout-styles.css" />
         <script src="MageHx_MahxCheckout::js/lib/htmx.min.js" defer="true" crossorigin="anonymous" />

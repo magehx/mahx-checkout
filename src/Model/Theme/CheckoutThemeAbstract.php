@@ -85,7 +85,7 @@ abstract class CheckoutThemeAbstract implements CheckoutThemeInterface
     public function hasSaveDataUrl(string $url): bool
     {
         foreach ($this->getStepsSaveDataUrlList() as $saveUrl) {
-            if (str_contains($url, $saveUrl)) {
+            if (str_contains($saveUrl, $url)) {
                 return true;
             }
         }

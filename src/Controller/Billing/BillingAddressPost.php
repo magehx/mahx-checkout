@@ -31,6 +31,7 @@ class BillingAddressPost extends ComponentAction
     {
         // prepare billing address data and validate
         $billingAddressData = $this->getBillingAddressData();
+
         try {
             if (!$billingAddressData->same_as_billing) {
                 $billingAddressData->validate();

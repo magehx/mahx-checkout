@@ -38,7 +38,7 @@ class SaveShippingInformation extends ComponentAction
             $this->saveShippingInfoService->execute($this->quote->getId(), $shippingInfo);
 
             if (!$this->isStepSaveDataRequest()) {
-                return $this->getCheckoutContentResponse();
+                return $this->getComponentResponse('shipping.methods.form');
             }
 
             $this->proceedToNextStep();

@@ -42,20 +42,9 @@ $newAddressFormName = CheckoutForm::NEW_ADDRESS->value;
                 hx-indicator="#shipping-address-cards-loader"
                 hx-trigger="mahxcheckout-new-shipping-address-created from:body"
                 hx-post="<?= $block->getUrl("mahxcheckout/form/saveNewShippingAddress") ?>"
-                hx-on:afterSwap="dispatchShippingAddressSaved"
             >
                 <?= $eHtml($viewModel->isNewAddressExists() ? __('Ship Here') : __('Update')) ?>
             </button>
         </div>
     </form>
-    <?php if (!$viewModel->isNewAddressExists()): ?>
-        <button
-            type="button" class="btn btn-outline btn-md"
-            hx-target="#shipping-address-form-section"
-            hx-indicator="#shipping-address-cards-loader"
-            hx-get="<?= $block->getUrl("mahxcheckout/shipping/getNewAddressForm") ?>"
-        >
-            + <?= $eHtml(__('New Address')) ?>
-        </button>
-    <?php endif; ?>
 </div>

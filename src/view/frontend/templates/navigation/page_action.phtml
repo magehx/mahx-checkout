@@ -1,7 +1,7 @@
 <?php
 
 use MageHx\HtmxActions\Model\HxAttributeRender\HxAttributeBuilder;
-use MageHx\HtmxActions\Model\HxAttributeRender\HxAttributesRenderer;
+use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\StepManager;
 
@@ -26,7 +26,7 @@ $currentStep = $viewModel->getCurrentStep();
             x-text="buttonLabel"
             @click="handleStepAction"
             <?= $hxRenderer->hxBuilder()
-                ->post($currentStep?->saveDataUrl)
+                ->post($currentStep->saveDataUrl)
                 ->include($viewModel->getHtmxIncludesForCurrentStep())
                 ->trigger('mahxcheckout-step-validated from:body')
                 ->indicator('#checkout-page-loader')
