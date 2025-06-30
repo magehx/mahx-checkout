@@ -3,8 +3,8 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceBlock name="checkout.main.content">
-            <container name="checkout.main.section" htmlTag="section" htmlClass="md:col-span-2 p-6" before="-" />
-            <container name="checkout.right.section" htmlTag="section" htmlClass="self-start">
+            <referenceContainer name="checkout.main.section" htmlClass="md:col-span-2 p-6" />
+            <referenceContainer name="checkout.right.section" htmlClass="self-start">
                 <container name="checkout.summary.section" htmlTag="div" htmlClass="bg-white shadow rounded p-6 space-y-4">
                     <block name="checkout.summary.title" template="MageHx_MahxCheckout::ui/section_title.phtml">
                         <arguments>
@@ -12,7 +12,7 @@
                         </arguments>
                     </block>
                 </container>
-            </container>
+            </referenceContainer>
         </referenceBlock>
     </body>
 </page>

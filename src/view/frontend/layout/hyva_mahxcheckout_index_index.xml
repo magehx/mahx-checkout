@@ -11,6 +11,4 @@
 <!--        <remove src="MageHx_MahxCheckout::css/mahxcheckout-styles.css"/>-->
         <remove src="MageHx_MahxCheckout::js/lib/alpine3-csp.min.js"/>
     </head>
-    <body>
-    </body>
 </page>

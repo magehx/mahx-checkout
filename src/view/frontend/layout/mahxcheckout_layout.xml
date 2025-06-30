@@ -3,6 +3,9 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="mahxcheckout_components" />
     <body>
-        <block name="checkout.main.content" template="MageHx_MahxCheckout::layout/main_content.phtml" />
+        <block name="checkout.main.content" template="MageHx_MahxCheckout::layout/main_content.phtml">
+            <container name="checkout.main.section" htmlTag="section" before="-"/>
+            <container name="checkout.right.section" htmlTag="section"/>
+        </block>
     </body>
 </page>
