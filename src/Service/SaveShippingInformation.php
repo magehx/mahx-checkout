@@ -30,7 +30,7 @@ class SaveShippingInformation
         $shippingInformation = $this->shippingInformationFactory->create();
         $shippingInformation->setShippingAddress($address);
 
-        if ($shippingData->address->same_as_billing) {
+        if ($shippingData->address->same_as_billing || $this->customerSession->isLoggedIn()) {
             $shippingInformation->setBillingAddress($this->createBillingAddress($shippingData));
         }
 
