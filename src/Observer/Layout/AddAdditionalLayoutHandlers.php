@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace MageHx\MahxCheckout\Observer\Layout;
 
 use MageHx\MahxCheckout\Model\Theme\ActiveCheckoutThemeResolver;
+use MageHx\MahxCheckout\Model\Theme\CheckoutThemeInterface;
+use MageHx\MahxCheckout\Service\CurrentDesignTheme;
 use MageHx\MahxCheckout\Service\CustomerAddressService;
+use MageHx\MahxCheckout\Service\StepSessionManager;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -24,11 +27,14 @@ use Magento\Framework\View\LayoutInterface;
 class AddAdditionalLayoutHandlers implements ObserverInterface
 {
     private ?LayoutInterface $layout = null;
+    private ?CheckoutThemeInterface $activeTheme = null;
 
     public function __construct(
-        private readonly CustomerSession $customerSession,
+        private readonly CustomerSession             $customerSession,
         private readonly ActiveCheckoutThemeResolver $activeThemeResolver,
-        private readonly CustomerAddressService $customerAddressService,
+        private readonly CustomerAddressService      $customerAddressService,
+        private readonly StepSessionManager          $stepSessionManager,
+        private readonly CurrentDesignTheme          $currentTheme,
     ) {}
 
     public function execute(Observer $observer): void
@@ -37,14 +43,18 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
             return;
         }
 
+        $this->activeTheme = $this->activeThemeResolver->resolve();
         $this->layout = $observer->getData('layout');
 
         $this->addCheckoutLayoutHandle();
         $this->addThemeLayoutHandles();
+        $this->addCurrentStepLayoutHandle();
+
+        $handles = $this->layout->getUpdate()->getHandles();
 
         if ($this->isCustomerLoggedIn()) {
-            $this->addCustomerLoggedInHandles();
-            $this->addCustomerHasAddressesHandles();
+            $this->addCustomerLoggedInHandles($handles);
+            $this->addCustomerHasAddressesHandles($handles);
         }
     }
 
@@ -63,17 +73,19 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
      */
     private function addThemeLayoutHandles(): void
     {
-        $themeCode = $this->activeThemeResolver->resolve()->getCode();
+        $themeCode = $this->activeTheme->getCode();
+        $handle = "mahxcheckout_theme_{$themeCode}";
 
-        $this->addLayoutHandle("mahxcheckout_theme_{$themeCode}");
+        $this->addLayoutHandle($handle);
+        $this->addHyvaLayoutHandle($handle);
     }
 
     /**
      * Adds additional handles with `_customer_logged_in` suffix for each existing handle.
      */
-    private function addCustomerLoggedInHandles(): void
+    private function addCustomerLoggedInHandles(array $handles): void
     {
-        foreach ($this->layout->getUpdate()->getHandles() as $handle) {
+        foreach ($handles as $handle) {
             $this->addLayoutHandle("{$handle}_customer_logged_in");
         }
     }
@@ -82,13 +94,13 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
      * Adds additional handles with `_customer_has_addresses` suffix
      * if customer has one or more saved addresses.
      */
-    private function addCustomerHasAddressesHandles(): void
+    private function addCustomerHasAddressesHandles(array $handles): void
     {
         if (!$this->customerAddressService->isCurrentCustomerHoldsAddress()) {
             return;
         }
 
-        foreach ($this->layout->getUpdate()->getHandles() as $handle) {
+        foreach ($handles as $handle) {
             $this->addLayoutHandle("{$handle}_customer_has_addresses");
         }
     }
@@ -111,6 +123,30 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
 
     private function addCheckoutLayoutHandle(): void
     {
-        $this->addLayoutHandle('mahxcheckout_layout');
+        $handle = 'mahxcheckout_layout';
+        $this->addLayoutHandle($handle);
+        $this->addHyvaLayoutHandle($handle);
+    }
+
+    private function addCurrentStepLayoutHandle(): void
+    {
+        $step = $this->stepSessionManager->getStepData() ?? $this->activeTheme->getInitialStep();
+
+        if (!$step?->layoutHandle) {
+            return;
+        }
+
+        $this->layout->getUpdate()->removeHandle($step->layoutHandle);
+        $this->addLayoutHandle($step->layoutHandle);
+        $this->addHyvaLayoutHandle($step->layoutHandle);
+    }
+
+    private function addHyvaLayoutHandle(string $layoutHandle): void
+    {
+        if (!$this->currentTheme->isHyva()) {
+            return;
+        }
+
+        $this->addLayoutHandle("hyva_{$layoutHandle}");
     }
 }

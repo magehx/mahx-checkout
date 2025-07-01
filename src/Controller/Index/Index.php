@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Controller\Index;
 
+use MageHx\MahxCheckout\Service\StepSessionManager;
+use MageHx\MahxCheckout\Service\StepValidationService;
 use Magento\Backend\Model\View\Result\Page;
 use Magento\Checkout\Controller\Action;
 use Magento\Checkout\Helper\Data as CheckoutHelper;
@@ -23,6 +25,8 @@ class Index extends Action implements HttpGetActionInterface
         CustomerRepositoryInterface $customerRepository,
         AccountManagementInterface $accountManagement,
         private readonly CheckoutHelper $checkoutHelper,
+        private readonly StepSessionManager $stepSessionManager,
+        private readonly StepValidationService $stepValidationService,
     ) {
         parent::__construct(
             $context,
@@ -58,11 +62,24 @@ class Index extends Action implements HttpGetActionInterface
         }
 
         $this->_customerSession->regenerateId();
+        $this->updateSessionStepInfo();
 
         /** @var Page $resultPage */
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
         $resultPage->getConfig()->getTitle()->set(__('Checkout'));
 
         return $resultPage;
+    }
+
+    private function updateSessionStepInfo(): void
+    {
+        $step = $this->stepSessionManager->getStepData();
+        $validStep = $this->stepValidationService->getValidStepFor($step?->name);
+
+        if ($step && $step->name === $validStep->name) {
+            return;
+        }
+
+        $this->stepSessionManager->setStepData($validStep);
     }
 }
