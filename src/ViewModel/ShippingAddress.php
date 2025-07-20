@@ -68,16 +68,7 @@ class ShippingAddress implements ArgumentInterface
     // @todo before after events to modify rules
     public function getValidationJson(): string
     {
-        $addressData = AddressData::from([
-            'firstname' => '',
-            'lastname' => '',
-            'street' => [],
-            'city' => '',
-            'country_id' => '',
-            'postcode' => '',
-            'telephone' => '',
-            'region' => '',
-        ]);
+        $addressData = AddressData::fromDefaults();
         return $this->jsonSerializer->serialize(ValidationMapperData::from([
             'rules' => $addressData->rules(),
             'messages' => $addressData->messages(),

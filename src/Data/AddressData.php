@@ -62,4 +62,18 @@ class AddressData extends Data
             'customer_address_id' => $this->customer_address_id,
         ];
     }
+
+    public static function defaultValues(): array
+    {
+        return [
+            'firstname' => '',
+            'lastname' => '',
+            'street' => [],
+            'city' => '',
+            'country_id' => '',
+            'postcode' => '',
+            'telephone' => '',
+            'region' => '',
+        ];
+    }
 }
