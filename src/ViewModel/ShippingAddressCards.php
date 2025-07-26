@@ -34,19 +34,24 @@ class ShippingAddressCards implements ArgumentInterface
         );
     }
 
-    public function getNewAddressEstimatePropsJson(): string
+    public function getNewAddressEstimationProps(): array
     {
         $newAddress = $this->newShippingAddressManager->getNewAddress();
 
         if (!$newAddress) {
-            return '';
+            return [];
         }
 
-        return json_encode([
+        return [
             'postcode' => $newAddress->getPostcode(),
             'country_id' => $newAddress->getCountryId(),
             'region' => $newAddress->getRegionId() ?: $newAddress->getRegion(),
-        ]);
+        ];
+    }
+
+    public function getNewAddressEstimatePropsJson(): string
+    {
+        return json_encode($this->getNewAddressEstimationProps());
     }
 
     public function isNewAddressExists(): bool

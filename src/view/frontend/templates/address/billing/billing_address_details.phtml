@@ -1,5 +1,6 @@
 <?php
 
+use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddress;
 
@@ -10,13 +11,16 @@ use MageHx\MahxCheckout\ViewModel\BillingAddress;
 /** @var string $formKey */
 /** @var Closure $viewModelProvider */
 /** @var BillingAddress $viewModel */
+/** @var ShowBillingForm $showFormViewModel */
+
 $viewModel = $viewModelProvider(BillingAddress::class);
+$showFormViewModel = $viewModelProvider(ShowBillingForm::class);
 $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
 ?>
 <div id="billing-address-details">
     <?= $block->getChildHtml('isBillingSame') ?>
     <div id="billing-address-form-wrapper" class="relative">
-        <?php if (!$viewModel->isEditing() && $viewModel->isValidAddress()): ?>
+        <?php if (!$showFormViewModel->isEditing() && $viewModel->isValidAddress()): ?>
             <div class="collapse collapse-open">
                 <div class="collapse-content pt-4">
                     <div class="space-y-1 italic text-sm pl-6">

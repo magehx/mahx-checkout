@@ -46,11 +46,6 @@ class BillingAddress implements ArgumentInterface
         return (bool)($this->formDataStorage->getData('is_billing_same') ?? $this->isBillingSameAsShipping());
     }
 
-    public function isEditing(): bool
-    {
-        return (bool)$this->formDataStorage->getData('is_edit');
-    }
-
     public function isCustomerLoggedIn(): bool
     {
         return $this->customerSession->isLoggedIn();

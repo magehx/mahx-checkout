@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\ViewModel;
 
-use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Quote\Model\Quote\Address;
-use MageHx\MahxCheckout\Model\FormDataStorage;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 use MageHx\MahxCheckout\Service\CustomerAddressService;
 use MageHx\MahxCheckout\Service\PrepareAddressLines;
@@ -16,7 +14,6 @@ class BillingAddressCards implements ArgumentInterface
 {
     public function __construct(
         private readonly QuoteDetails $quote,
-        private readonly FormDataStorage $formDataStorage,
         private readonly CustomerAddressService $customerAddressService,
         private readonly PrepareAddressLines $prepareAddressLinesService,
     ) {}
@@ -68,15 +65,5 @@ class BillingAddressCards implements ArgumentInterface
             'isSelected' => (int)$address->getId() === $addressId,
             'label' => $label,
         ];
-    }
-
-    public function canShowCards(): bool
-    {
-        return (bool)$this->formDataStorage->getData('is_edit');
-    }
-
-    public function canShowForm(): bool
-    {
-        return (bool)$this->formDataStorage->getData('show_form');
     }
 }

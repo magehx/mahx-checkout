@@ -1,5 +1,6 @@
 <?php
 
+use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddress;
 
@@ -10,19 +11,23 @@ use MageHx\MahxCheckout\ViewModel\BillingAddress;
 /** @var string $formKey */
 /** @var Closure $viewModelProvider */
 /** @var BillingAddress $viewModel */
+/** @var ShowBillingForm $showFormViewModel */
 
 $viewModel = $viewModelProvider(BillingAddress::class);
+$showFormViewModel = $viewModelProvider(ShowBillingForm::class);
 $isSameAsShipping = $viewModel->isBillingSameAsShipping();
+
+if (!$showFormViewModel->canShowForm()) {
+    return;
+}
 ?>
-<?php if ($viewModel->canShowForm()): ?>
-    <form id="billing-address-form" x-data="BillingAddressForm">
-        <?= $formKey ?>
-        <div id="billing-address-details">
-            <?php foreach ($viewModel->getAddressFields() as $field): ?>
-                <?= $viewModel->renderField($field) ?>
-            <?php endforeach; ?>
-            <?= $block->getChildHtml('actions') ?>
-        </div>
-    </form>
-    <?= $block->getChildHtml('loader') ?>
-<?php endif; ?>
+<form id="billing-address-form" x-data="BillingAddressForm">
+    <?= $formKey ?>
+    <div id="billing-address-details">
+        <?php foreach ($viewModel->getAddressFields() as $field): ?>
+            <?= $viewModel->renderField($field) ?>
+        <?php endforeach; ?>
+        <?= $block->getChildHtml('actions') ?>
+    </div>
+</form>
+<?= $block->getChildHtml('loader') ?>

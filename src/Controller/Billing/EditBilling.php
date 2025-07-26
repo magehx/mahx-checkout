@@ -13,15 +13,13 @@ class EditBilling extends ComponentAction
     {
         $isBillingSame = (bool) $this->getRequest()->getParam('is_billing_same');
         $showForm = (bool) $this->getRequest()->getParam('show_form');
-        $isEdit = (bool) ($this->getRequest()->getParam('is_edit', true));
+        $showCards = (bool) ($this->getRequest()->getParam('show_cards'));
 
-        if ($isEdit) {
-            $this->formDataStorage->setData([
-                'is_billing_same' => $isBillingSame,
-                'is_edit' => true,
-                'show_form' => $showForm
-            ]);
-        }
+        $this->formDataStorage->setData([
+            'is_billing_same' => $isBillingSame,
+            'show_cards' => $showCards,
+            'show_form' => $showForm
+        ]);
 
         return $this->getComponentResponse('billing.address.section');
     }
