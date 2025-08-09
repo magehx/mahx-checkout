@@ -78,6 +78,5 @@ class NewShippingAddressManager
         }
 
         return null;
-
     }
 }

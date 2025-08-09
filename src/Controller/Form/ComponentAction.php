@@ -15,7 +15,7 @@ use Magento\Framework\View\Result\LayoutFactory;
 use Rkt\MageData\Exceptions\ValidationException;
 use MageHx\MahxCheckout\Block\Notifications as NotificationsBlock;
 use MageHx\MahxCheckout\Controller\Form\ComponentAction\Context;
-use MageHx\MahxCheckout\Model\FormDataStorage;
+use MageHx\MahxCheckout\Model\CheckoutDataStorage;
 use MageHx\MahxCheckout\Service\HtmxHeaderManager;
 use MageHx\MahxCheckout\Service\StepSessionManager;
 use MageHx\MahxCheckout\Service\StepValidationService;
@@ -25,7 +25,7 @@ abstract class ComponentAction extends HtmxAction
     protected array $layouts = [];
     protected array $components = [];
     protected HtmxRawResultFactory $rawFactory;
-    protected FormDataStorage $formDataStorage;
+    protected CheckoutDataStorage $checkoutDataStorage;
     protected LayoutFactory $layoutFactory;
     protected StepValidationService $stepValidationService;
     protected StepSessionManager $stepSessionManager;
@@ -36,7 +36,7 @@ abstract class ComponentAction extends HtmxAction
         parent::__construct($context->htmxActionContext);
         $this->rawFactory = $context->rawFactory;
         $this->layoutFactory = $context->layoutFactory;
-        $this->formDataStorage = $context->formDataStorage;
+        $this->checkoutDataStorage = $context->checkoutDataStorage;
         $this->htmxHeaderManager = $context->htmxHeaderManager;
         $this->stepSessionManager = $context->stepSessionManager;
         $this->stepValidationService = $context->stepValidationService;
@@ -103,7 +103,7 @@ abstract class ComponentAction extends HtmxAction
             $this->addGenericErrorMessage($exception->getMessage());
         }
 
-        $this->formDataStorage->setData($formData);
+        $this->checkoutDataStorage->setData($formData);
     }
 
     public function isStepSaveDataRequest(): bool

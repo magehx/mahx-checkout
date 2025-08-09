@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\ViewModel;
 
+use MageHx\MahxCheckout\Data\Address\CardData;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Quote\Model\Quote\Address;
 use MageHx\MahxCheckout\Model\QuoteDetails;
@@ -18,6 +19,9 @@ class BillingAddressCards implements ArgumentInterface
         private readonly PrepareAddressLines $prepareAddressLinesService,
     ) {}
 
+    /**
+     * @return array<int, CardData>
+     */
     public function getAddressCards(): array
     {
         return array_map(fn ($address) => $this->buildCardData($address), $this->getAllBillingCandidates());
@@ -27,43 +31,40 @@ class BillingAddressCards implements ArgumentInterface
     {
         $customerAddresses = $this->customerAddressService->getCurrentCustomerAddressList();
         $billingAddress = $this->quote->getBillingAddress();
-        $shippingAddress = $this->quote->getShippingAddress();
+        $newAddresses = $this->getNewAddresses();
 
         $additional = [];
-
-        if (!$shippingAddress->getCustomerAddressId() && !$shippingAddress->getSameAsBilling()) {
-            $additional[] = $shippingAddress;
-        }
 
         if (!$billingAddress->getCustomerAddressId()) {
             $additional[] = $billingAddress;
         }
 
+        if (!empty($newAddresses)) {
+            $additional = array_merge($additional, $newAddresses);
+        }
+
         return [...$customerAddresses, ...$additional];
     }
 
-    private function buildCardData(mixed $address): array
+    private function buildCardData(mixed $address): CardData
     {
         $billingAddress = $this->quote->getBillingAddress();
         $addressLines = $this->prepareAddressLinesService->getLinesOfAddress($address);
         $isNewAddress = $address instanceof Address;
         $addressId = (int)($isNewAddress ? $billingAddress->getId() : $billingAddress->getCustomerAddressId());
 
-        $label = sprintf(
-            '%s, %s, %s %s, %s, %s: %s',
-            $addressLines['name'],
-            $addressLines['line_1'],
-            $addressLines['line_2'],
-            $addressLines['postcode'],
-            $addressLines['country'],
-            __('Phone'),
-            $addressLines['telephone']
-        );
-
-        return [
-            'id' => $isNewAddress ? $address->getAddressType() : (string)$address->getId(),
+        return CardData::from([
+            'addressId' => $isNewAddress ? $address->getAddressType() : (string)$address->getId(),
             'isSelected' => (int)$address->getId() === $addressId,
-            'label' => $label,
-        ];
+            'addressLines' => $addressLines,
+        ]);
+    }
+
+    private function getNewAddresses(): array
+    {
+        return array_filter(
+            $this->quote->getAllAddresses(),
+            static fn (Address $address) => $address->getAddressType() === 'new' && $address->validate() === true
+        );
     }
 }

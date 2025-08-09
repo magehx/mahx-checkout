@@ -15,7 +15,7 @@ class EditBilling extends ComponentAction
         $showForm = (bool) $this->getRequest()->getParam('show_form');
         $showCards = (bool) ($this->getRequest()->getParam('show_cards'));
 
-        $this->formDataStorage->setData([
+        $this->checkoutDataStorage->setData([
             'is_billing_same' => $isBillingSame,
             'show_cards' => $showCards,
             'show_form' => $showForm

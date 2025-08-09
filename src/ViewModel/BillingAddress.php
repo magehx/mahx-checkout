@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\ViewModel;
 
+use MageHx\MahxCheckout\Data\Address\AddressLinesData;
 use MageHx\MahxCheckout\Data\AddressData;
 use MageHx\MahxCheckout\Data\ValidationMapperData;
 use MageHx\MahxCheckout\Service\PrepareBillingAddressData;
@@ -14,7 +15,7 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 use MageHx\MahxCheckout\Model\EventDispatcher;
-use MageHx\MahxCheckout\Model\FormDataStorage;
+use MageHx\MahxCheckout\Model\CheckoutDataStorage;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 use MageHx\MahxCheckout\Service\AddressFieldManager;
 use MageHx\MahxCheckout\Service\PrepareAddressLines;
@@ -29,7 +30,7 @@ class BillingAddress implements ArgumentInterface
         private readonly Json $jsonSerializer,
         private readonly CustomerSession $customerSession,
         private readonly EventDispatcher $eventDispatcher,
-        private readonly FormDataStorage $formDataStorage,
+        private readonly CheckoutDataStorage $checkoutDataStorage,
         private readonly AddressFieldManager $addressFieldManager,
         private readonly PrepareAddressLines $prepareAddressLinesService,
         private readonly PrepareBillingAddressData $prepareBillingAddressData,
@@ -43,7 +44,7 @@ class BillingAddress implements ArgumentInterface
 
     public function getBillingSameAsShippingValue(): bool
     {
-        return (bool)($this->formDataStorage->getData('is_billing_same') ?? $this->isBillingSameAsShipping());
+        return (bool)($this->checkoutDataStorage->getData('is_billing_same') ?? $this->isBillingSameAsShipping());
     }
 
     public function isCustomerLoggedIn(): bool
@@ -56,12 +57,11 @@ class BillingAddress implements ArgumentInterface
         return $this->quote->isVirtualQuote();
     }
 
-    public function getBillingAddressLines(): array
+    public function getBillingAddressLines(): AddressLinesData
     {
-        $address = $this->isBillingSameAsShipping() ?
-            $this->quote->getShippingAddress() : $this->quote->getBillingAddress();
-
-        return $this->prepareAddressLinesService->getLinesOfAddress($address);
+        return AddressLinesData::from($this->prepareAddressLinesService->getLinesOfAddress(
+            $this->quote->getBillingAddress())
+        );
     }
 
     /**
@@ -99,17 +99,6 @@ class BillingAddress implements ArgumentInterface
         );
 
         return $fieldHtmlDataObject->getData('html');
-    }
-
-    public function canShowForm(): bool
-    {
-        $showForm = $this->formDataStorage->getData('show_form');
-
-        if ($showForm === null) {
-            return $this->quote->isVirtualQuote();
-        }
-
-        return (bool)$showForm;
     }
 
     public function getAddressData(): AddressData

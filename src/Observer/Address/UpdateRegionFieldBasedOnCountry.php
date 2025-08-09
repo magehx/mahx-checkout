@@ -10,7 +10,7 @@ use Magento\Framework\Event\ObserverInterface;
 use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 use MageHx\MahxCheckout\Model\Config;
-use MageHx\MahxCheckout\Model\FormDataStorage;
+use MageHx\MahxCheckout\Model\CheckoutDataStorage;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 use MageHx\MahxCheckout\Service\GenerateBlockHtml;
 use MageHx\MahxCheckout\Service\PrepareRegionFieldAttribute;
@@ -25,7 +25,7 @@ class UpdateRegionFieldBasedOnCountry implements ObserverInterface
     public function __construct(
         private readonly Config $config,
         private readonly QuoteDetails $quote,
-        private readonly FormDataStorage $formDataStorage,
+        private readonly CheckoutDataStorage $formDataStorage,
         private readonly GenerateBlockHtml $generateBlockHtmlService,
         private readonly PrepareRegionFieldAttribute $prepareRegionFieldAttributeService,
     ) {}

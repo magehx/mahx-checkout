@@ -17,7 +17,7 @@ class GetStepContent extends ComponentAction
             $stepToLoad = $this->stepValidationService->getValidStepFor($requestedStep);
             $this->stepSessionManager->setStepData($stepToLoad);
             return $this->withCurrentStepPushUrlHeader($this->getCheckoutContentResponse());
-        } catch (Exception) {
+        } catch (Exception $e) {
             return $this->withNoReswapHeader($this->getEmptyResponse());
         }
     }

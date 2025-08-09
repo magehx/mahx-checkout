@@ -15,8 +15,8 @@ $viewModel = $viewModelProvider(StepManager::class);
 
 <div
     id="auto-step-content-loader"
-    hx-get="<?= $eUrl($block->getUrl('mahxcheckout/step/getStepContent')) ?>"
-    hx-include="#current-step"
+    hx-post="<?= $eUrl($block->getUrl('mahxcheckout/step/getStepContent')) ?>"
+    hx-include="#current-step,[name=form_key]"
     hx-trigger="load"
     hx-target="#checkout-main-content"
     hx-swap="outerHTML"
@@ -36,9 +36,9 @@ $viewModel = $viewModelProvider(StepManager::class);
                     hx-trigger="click"
                     hx-target="#checkout-main-content"
                     hx-swap="outerHTML"
+                    hx-include="[name=form_key]"
                     hx-indicator="#checkout-page-loader"
-                    hx-get="<?= $eUrl($block->getUrl('mahxcheckout/step/getStepContent', ['step' => $step->name])) ?>"
-                    hx-on:afterSwap="dispatchNavStepChanged"
+                    hx-post="<?= $eUrl($block->getUrl('mahxcheckout/step/getStepContent', ['step' => $step->name])) ?>"
                 >
                     <?= $eHtml($step->label) ?>
                 </li>

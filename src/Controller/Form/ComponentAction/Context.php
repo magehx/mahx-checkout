@@ -10,7 +10,7 @@ use MageHx\MahxCheckout\Model\Theme\ActiveCheckoutThemeResolver;
 use MageHx\MahxCheckout\Model\Theme\CheckoutThemeInterface;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\View\Result\LayoutFactory;
-use MageHx\MahxCheckout\Model\FormDataStorage;
+use MageHx\MahxCheckout\Model\CheckoutDataStorage;
 use MageHx\MahxCheckout\Service\HtmxHeaderManager;
 use MageHx\MahxCheckout\Service\StepSessionManager;
 use MageHx\MahxCheckout\Service\StepValidationService;
@@ -23,10 +23,10 @@ class Context
         public readonly HtmxActionContext $htmxActionContext,
         public readonly HtmxRawResultFactory $rawFactory,
         public readonly LayoutFactory $layoutFactory,
-        public readonly FormDataStorage $formDataStorage,
         public readonly CheckoutSession $checkoutSession,
         public readonly HtmxHeaderManager $htmxHeaderManager,
         public readonly StepSessionManager $stepSessionManager,
+        public readonly CheckoutDataStorage $checkoutDataStorage,
         public readonly StepValidationService $stepValidationService,
         private readonly ActiveCheckoutThemeResolver $activeCheckoutThemeResolver,
     ) {

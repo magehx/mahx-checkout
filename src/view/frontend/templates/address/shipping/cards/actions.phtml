@@ -1,0 +1,57 @@
+<?php declare(strict_types=1);
+
+use MageHx\MahxCheckout\Data\Address\CardData;
+use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
+use MageHx\MahxCheckout\ViewModel\ShippingAddressCards;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Closure $eHtml */
+/** @var Closure $eHtmlAttr */
+/** @var Closure $eUrl */
+/** @var Closure $viewModelProvider */
+/** @var ShippingAddressCards $viewModel */
+/** @var HxAttributesRenderer $hxAttributeRenderer */
+/** @var CardData $addressCard */
+
+$viewModel = $viewModelProvider(ShippingAddressCards::class);
+$hxAttributeRenderer = $viewModelProvider(HxAttributesRenderer::class);
+$addressCard = $block->getData('address_card');
+
+if (!$addressCard) {
+    return;
+}
+?>
+<div class="actions flex items-center min-h-[2.5rem]">
+    <?php if ($addressCard->isNew()): ?>
+        <button
+            class="btn btn-ghost mt-4 text-primary" type="button"
+            hx-target="#shipping-address-form-section"
+            hx-indicator="#shipping-address-cards-loader"
+            hx-get="<?= $block->getUrl("mahxcheckout/shipping/getNewAddressForm") ?>"
+        >
+            <?= $eHtml(__('Edit')) ?>
+        </button>
+    <?php endif; ?>
+    <div class="action-item ml-auto">
+        <button
+            type="button" class="btn btn-sm mt-4 btn-outline"
+            data-id="<?= $eHtmlAttr($addressCard->addressId) ?>"
+            x-cloak
+            x-show="isNotSelected"
+            @click="setShipToAddress"
+            <?= $hxAttributeRenderer->hxBuilder()
+                ->post($viewModel->getEstimateShippingByAddressIdUrl($addressCard->addressId))
+                ->trigger("mahxcheckout-customer-address-{$addressCard->addressId}-selected from:window")
+                ->target('#shipping-methods-section')
+                ->swapOuterHTML()
+                ->indicator('#shipping-loader')
+                ->include('[name=form_key]')
+                ->when($addressCard->isNew(), fn ($hx) => $hx->vals($viewModel->getNewAddressEstimationProps()))
+                ->render()
+            ?>
+        >
+            <?= $eHtml(__('Ship Here')) ?>
+        </button>
+    </div>
+</div>

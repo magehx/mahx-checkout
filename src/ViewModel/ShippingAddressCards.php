@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\ViewModel;
 
+use MageHx\MahxCheckout\Data\Address\AddressLinesData;
+use MageHx\MahxCheckout\Data\Address\CardData;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Quote\Model\Quote\Address;
@@ -61,32 +63,38 @@ class ShippingAddressCards implements ArgumentInterface
         return $newAddress && $newAddress->validate() === true;
     }
 
-
-    public function getShippingAddressLines(): array
+    public function isCurrentCustomerHaveAddresses(): bool
     {
-        return $this->prepareAddressLinesService->getLinesOfAddress(
-            $this->quote->getShippingAddress()
-        );
+        return $this->customerAddressService->isCurrentCustomerHoldsAddress();
     }
 
+    public function getShippingAddressLines(): AddressLinesData
+    {
+        return AddressLinesData::from($this->prepareAddressLinesService->getLinesOfAddress(
+            $this->quote->getShippingAddress()
+        ));
+    }
+
+    /**
+     * @return array<int|string, CardData>
+     */
     public function getCustomerAddressCards(): array
     {
         $shippingAddress = $this->quote->getShippingAddress();
         $customerAddresses = $this->customerAddressService->getCurrentCustomerAddressList();
         $allAddresses = $this->buildAddressList($customerAddresses);
-
-        $selectedShippingAddressId = (int)$shippingAddress->getId();
-
+        $selectedAddressId = (int)$shippingAddress->getId();
         $cards = [];
+
         foreach ($allAddresses as $address) {
             $isNew = $address instanceof Address;
             $addressId = $isNew ? 'new' : (string) $address->getId();
 
-            $cards[$addressId] = [
+            $cards[$addressId] = CardData::from([
                 'addressId' => $addressId,
-                'isSelected' => $selectedShippingAddressId === (int)$address->getId(),
+                'isSelected' => $selectedAddressId === (int)$address->getId(),
                 'addressLines' => $this->prepareAddressLinesService->getLinesOfAddress($address),
-            ];
+            ]);
         }
 
         return $cards;

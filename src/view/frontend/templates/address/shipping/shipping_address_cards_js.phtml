@@ -11,6 +11,10 @@ use MageHx\MahxCheckout\ViewModel\ShippingAddressCards;
 /** @var Closure $viewModelProvider */
 /** @var ShippingAddressCards $viewModel */
 $viewModel = $viewModelProvider(ShippingAddressCards::class);
+
+if (!$viewModel->isCurrentCustomerHaveAddresses()) {
+    return;
+}
 ?>
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
     document.addEventListener('alpine:init', () => {

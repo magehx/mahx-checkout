@@ -25,12 +25,12 @@ $isHtmxOob = (bool)$block->getData('is_htmx_oob');
                 <?php foreach ($block->getShippingMethods() as $method): ?>
                     <?php
                         $methodValue = $viewModel->getInputValueFromMethod($method);
-                        $id = "shipping-methods-form-method-{$methodValue}";
+                        $id = "shipping-method-{$methodValue}";
                     ?>
                     <tr>
                         <th class="w-12">
                             <input
-                                id="<?= $eHtmlAttr($id) ?>" type="radio" class="radio" name="method"
+                                id="<?= $eHtmlAttr($id) ?>" type="radio" class="radio" name="shipping_method"
                                 value="<?= $eHtmlAttr($methodValue) ?>"
                                 <?= $methodValue === $viewModel->getSelectedMethod() ? 'checked': '' ?>/>
                         </th>

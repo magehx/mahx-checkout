@@ -26,7 +26,7 @@ class GetRegionInput extends ComponentAction
         try {
             $input = $this->getValidatedInput();
 
-            $this->formDataStorage->setData(['country_id' => $input->country]);
+            $this->checkoutDataStorage->setData(['country_id' => $input->country]);
 
             $html = $this->renderRegionField($input->country, $input->form);
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use MageHx\MahxCheckout\Block\PaymentMethods;
 
@@ -23,9 +23,5 @@ use MageHx\MahxCheckout\Block\PaymentMethods;
             </div>
         </form>
     </div>
-    <div id="payment-loader" class="htmx-indicator checkout-loader save-payment-loader">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
+    <?= $block->getChildHtml('loader') ?>
 </div>

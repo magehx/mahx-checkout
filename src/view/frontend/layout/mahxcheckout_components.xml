@@ -31,6 +31,13 @@
             </block>
             <block name="payment.method.renderer.default" as="default" class="MageHx\MahxCheckout\Block\PaymentRenderer"
                 template="MageHx_MahxCheckout::payment/renderer/default.phtml" />
+            <block name="payment.methods.loader" as="loader"
+                   template="MageHx_MahxCheckout::ui/common/section_loader.phtml">
+                <arguments>
+                    <argument name="id" xsi:type="string">payment-loader</argument>
+                    <argument name="extra_class" xsi:type="string">checkout-loader save-payment-loader</argument>
+                </arguments>
+            </block>
         </block>
 
         <block name="billing.address.section" template="MageHx_MahxCheckout::address/billing_address.phtml">
@@ -55,6 +62,24 @@
                 <arguments>
                     <argument name="id" xsi:type="string">billing-address-section-loader</argument>
                     <argument name="extra_class" xsi:type="string">save-billing-loader</argument>
+                </arguments>
+            </block>
+        </block>
+
+        <block name="shipping.address.cards" template="MageHx_MahxCheckout::address/shipping/shipping_address_cards.phtml">
+            <block name="shipping.address.cards.title" as="formTitle" template="MageHx_MahxCheckout::ui/section_title.phtml">
+                <arguments>
+                    <argument name="title" xsi:type="string">Shipping Address</argument>
+                </arguments>
+            </block>
+            <block name="shipping.address.cards.form.actions" as="actions"
+                   template="MageHx_MahxCheckout::address/shipping/cards/actions.phtml"/>
+            <block name="shipping.address.cards.form"
+                   template="MageHx_MahxCheckout::address/shipping/shipping_new_address_form.phtml" />
+            <block name="shipping.address.cards.loader" as="loader"
+                   template="MageHx_MahxCheckout::ui/common/section_loader.phtml">
+                <arguments>
+                    <argument name="id" xsi:type="string">shipping-address-cards-loader</argument>
                 </arguments>
             </block>
         </block>

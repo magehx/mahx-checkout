@@ -1,5 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
 use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddress;
@@ -12,8 +13,10 @@ use MageHx\MahxCheckout\ViewModel\BillingAddress;
 /** @var Closure $viewModelProvider */
 /** @var BillingAddress $viewModel */
 /** @var ShowBillingForm $showFormViewModel */
+/** @var HxAttributesRenderer $hxAttributesRenderer */
 
 $viewModel = $viewModelProvider(BillingAddress::class);
+$hxAttributesRenderer = $viewModelProvider(HxAttributesRenderer::class);
 $showFormViewModel = $viewModelProvider(ShowBillingForm::class);
 $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
 ?>
@@ -32,11 +35,15 @@ $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
                         <div class="mt-4 px-4">
                             <button
                                 type="button" class="btn btn-sm btn-neutral"
-                                hx-target="#billing-address-section"
-                                hx-indicator="#billing-address-section-loader"
-                                hx-include="#is-billing-same"
-                                hx-vals='{"show_form": <?= $eHtmlAttr((int)!$viewModel->isCustomerLoggedIn()) ?>}'
-                                hx-get="<?= $block->getUrl('mahxcheckout/billing/editBilling') ?>"
+                                <?= $hxAttributesRenderer->hxBuilder()
+                                    ->post('mahxcheckout/billing/editBilling')
+                                    ->target('#billing-address-section')
+                                    ->swapOuterHTML()
+                                    ->include(['#is-billing-same', '[name=form_key]'])
+                                    ->vals($showFormViewModel->editFormRequestParams())
+                                    ->indicator('#billing-address-section-loader')
+                                    ->render()
+                                ?>
                             >
                                 <?= $eHtml(__('Edit')) ?>
                             </button>

@@ -2,16 +2,6 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <block name="shipping.address.cards" template="MageHx_MahxCheckout::address/shipping/shipping_address_cards.phtml">
-            <block name="shipping.address.list.title" as="formTitle" template="MageHx_MahxCheckout::ui/section_title.phtml">
-                <arguments>
-                    <argument name="title" xsi:type="string">Shipping Address</argument>
-                </arguments>
-            </block>
-            <block name="shipping.address.cards.form"
-                   template="MageHx_MahxCheckout::address/shipping/shipping_new_address_form.phtml" />
-        </block>
-
         <referenceBlock name="shipping.address.form" remove="true" />
 
         <move element="shipping.address.cards" destination="checkout.main.section" before="-" />

@@ -15,14 +15,15 @@ $viewModel = $viewModelProvider(ShippingAddressCards::class);
     <div class="text-xl font-medium border-b collapse-title">
         <div class="flex items-center justify-between">
             <h3><?= $eHtml(__('Ship To:')) ?></h3>
-            <?php // Hero Solid Pencil Svg icon ?>
             <button
                 type="button" class="btn-edit-pencil"
                 hx-target="#checkout-main-content"
                 hx-swap="outerHTML"
                 hx-indicator="#checkout-page-loader"
-                hx-get="<?= $eUrl($block->getUrl('mahxcheckout/step/getStepContent', ['step' => 'shipping'])) ?>"
+                hx-include="[name=form_key]"
+                hx-post="<?= $eUrl($block->getUrl('mahxcheckout/step/getStepContent', ['step' => 'shipping'])) ?>"
             >
+                <?php // Hero Solid Pencil Svg icon ?>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                     <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
                 </svg>
@@ -31,9 +32,13 @@ $viewModel = $viewModelProvider(ShippingAddressCards::class);
     </div>
     <div class="pt-4 collapse-content">
         <div class="space-y-2 text-base italic font-normal">
-            <?php foreach ($viewModel->getShippingAddressLines() as $addressLine): ?>
-                <p><?= $eHtml($addressLine) ?></p>
-            <?php endforeach; ?>
+            <?php $addressLines = $viewModel->getShippingAddressLines(); ?>
+            <p class="font-semibold"><?= $eHtml($addressLines->name) ?></p>
+            <p><?= $eHtml($addressLines->streetLine1 ?? '') ?></p>
+            <p><?= $eHtml($addressLines->streetLine2 ?? '') ?></p>
+            <p><?= $eHtml($addressLines->postcode ?? '') ?></p>
+            <p><?= $eHtml($addressLines->country ?? '') ?></p>
+            <p class="text-blue-600 mt-1"><?= $eHtml($addressLines->telephone ?? '') ?></p>
         </div>
     </div>
 </div>

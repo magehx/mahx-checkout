@@ -1,5 +1,5 @@
 {
-    "name": "magehx/mahx-checkout",
+    "name": "magehx/mahx-checkout-local",
     "description": "Lightweight, fast, and Magento-native checkout solution for Magento 2, built with HTMX, AlpineJS",
     "type": "magento2-module",
     "version": "1.0.0-beta.1",
@@ -14,7 +14,7 @@
         "rkt/magento-data-local": "*",
         "magehx/htmx-actions-local": "*",
         "magehx/mahx-checkout-virtual-local": "*",
-        "magehx/mage-template-utils": "^1.0.0"
+        "magehx/mage-template-utils-local": "*"
     },
     "autoload": {
         "files": [

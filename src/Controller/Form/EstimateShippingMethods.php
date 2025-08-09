@@ -64,7 +64,7 @@ class EstimateShippingMethods extends ComponentAction
 
     private function respondWithRegionAndShipping(ShippingEstimateFieldsData $addressData): ResultInterface
     {
-        $this->formDataStorage->setData(['country_id' => $addressData->country]);
+        $this->checkoutDataStorage->setData(['country_id' => $addressData->country]);
         $regionFieldHtml = $this->renderUpdatedRegionField($addressData->country);
 
         return $this->getComponentResponse('shipping.methods.form', additionalHtml: $regionFieldHtml);

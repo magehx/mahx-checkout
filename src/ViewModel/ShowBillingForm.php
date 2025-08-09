@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\ViewModel;
 
-use MageHx\MahxCheckout\Model\FormDataStorage;
+use MageHx\MahxCheckout\Model\CheckoutDataStorage;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 use MageHx\MahxCheckout\Service\CustomerAddressService;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -13,27 +13,40 @@ class ShowBillingForm implements ArgumentInterface
 {
     public function __construct(
         private readonly QuoteDetails $quote,
-        private readonly FormDataStorage $formDataStorage,
+        private readonly CheckoutDataStorage $checkoutDataStorage,
         private readonly CustomerAddressService $customerAddressService,
     ) {}
 
     public function canShowForm(): bool
     {
-        if ($this->quote->isVirtualQuote()) {
-            return true;
+        if ($this->hasShowFormData()) {
+            return (bool) $this->getShowFormData();
         }
 
-        return (bool) $this->getShowFormValue();
+        if ($this->quote->isBillingSameAsShipping()) {
+            return false;
+        }
+
+        return !$this->customerAddressService->isCurrentCustomerHoldsAddress();
+
     }
 
     public function canShowCards(): bool
     {
-        return (bool)$this->getShowCardsValue();
+        if ($this->hasShowCardsData()) {
+            return (bool)$this->getShowCardsData();
+        }
+
+        if ($this->quote->isBillingSameAsShipping()) {
+            return false;
+        }
+
+        return !$this->canShowForm();
     }
 
     public function isEditing(): bool
     {
-        return $this->getShowCardsValue() || $this->getShowFormValue();
+        return $this->getShowCardsData() || $this->getShowFormData();
     }
 
     public function editFormRequestParams(): array
@@ -41,28 +54,28 @@ class ShowBillingForm implements ArgumentInterface
         $customerHasAddress = (int)$this->customerAddressService->isCurrentCustomerHoldsAddress();
 
         return [
-            'show_form' => $this->hasShowFormValue() ? $this->getShowFormValue() : (int)!$customerHasAddress ,
-            'show_cards' => $this->hasShowCardsValue() ? $this->getShowCardsValue() : $customerHasAddress,
+            'show_form' => $this->hasShowFormData() ? $this->getShowFormData() : (int)!$customerHasAddress ,
+            'show_cards' => $this->hasShowCardsData() ? $this->getShowCardsData() : $customerHasAddress,
         ];
     }
 
-    public function getShowFormValue(): int
+    public function getShowFormData(): int
     {
-        return (int) ($this->formDataStorage->getData('show_form') ?? 0);
+        return (int) ($this->checkoutDataStorage->getData('show_form') ?? 0);
     }
 
-    public function getShowCardsValue(): int
+    public function getShowCardsData(): int
     {
-        return (int) ($this->formDataStorage->getData('show_cards') ?? 0);
+        return (int) ($this->checkoutDataStorage->getData('show_cards') ?? 0);
     }
 
-    private function hasShowFormValue(): bool
+    private function hasShowFormData(): bool
     {
-        return $this->formDataStorage->hasData('show_form');
+        return $this->checkoutDataStorage->hasData('show_form');
     }
 
-    private function hasShowCardsValue(): bool
+    private function hasShowCardsData(): bool
     {
-        return $this->formDataStorage->hasData('show_cards');
+        return $this->checkoutDataStorage->hasData('show_cards');
     }
 }

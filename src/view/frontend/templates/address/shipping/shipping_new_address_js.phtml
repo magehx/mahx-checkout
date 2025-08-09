@@ -31,18 +31,6 @@ $viewModel = $viewModelProvider(ShippingAddress::class);
                     this.$dispatch(`mahxcheckout-${newFormId}-country_id-changed`, { country: event.target.value })
                 },
 
-                async updateNewShippingAddress() {
-                    try {
-                        if (!await this.validator.revalidate()) {
-                            return;
-                        }
-
-                        htmx.trigger(document.body, 'mahxcheckout-new-shipping-address-created');
-                    } catch (e) {
-                        console.error('NewShippingAddress::update', e);
-                    }
-                },
-
                 modifyFormAfterRender() {
                     this.$nextTick(() => {
                         this.focusOnFirstname();
