@@ -18,7 +18,11 @@ $fieldMeta = $fieldConfig->meta;
 $wrapperClasses = $block->getWrapperElemExtraClasses();
 ?>
 <div
-    class="<?= $classNames(['form-control w-full max-w-lg', $wrapperClasses => $wrapperClasses]) ?>"
+    class="<?= $classNames([
+        'field form-control w-full max-w-lg',
+        '_required' => $fieldConfig->required,
+        $wrapperClasses => $wrapperClasses
+    ]) ?>"
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
@@ -30,18 +34,21 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
             <?php endif; ?>
         </span>
     </label>
-    <div class="space-y-2">
+    <div class="control space-y-2">
         <?php foreach (range(0, ($fieldMeta->lineCount) - 1) as $index): ?>
-            <?php if ($index === 0): ?><div><?php endif; ?>
-            <input
-                type="text"
-                class="input input-bordered input-sm md:input-md w-full max-w-lg"
-                id="<?= $eHtmlAttr($fieldConfig->getFieldId() . '-' . $index) ?>"
-                name="<?= $eHtmlAttr($fieldConfig->name) ?>[<?= $eHtmlAttr($index) ?>]"
-                value="<?= $eHtmlAttr($fieldConfig->value[$index] ?? '')  ?>"
-                <?= /** @noEscape */ !$index ? $block->getInputAdditionalAttributes() : '' ?>
-            />
-            <?php if ($index === 0): ?></div><?php endif; ?>
+            <div class="<?= $classNames([
+                    'field', '_required' => $fieldConfig->required, 'additional' => $index > 0
+                ]) ?>"
+            >
+                <input
+                    type="text"
+                    class="input-text input input-bordered input-sm md:input-md w-full max-w-lg"
+                    id="<?= $eHtmlAttr($fieldConfig->getFieldId() . '-' . $index) ?>"
+                    name="<?= $eHtmlAttr($fieldConfig->name) ?>[<?= $eHtmlAttr($index) ?>]"
+                    value="<?= $eHtmlAttr($fieldConfig->value[$index] ?? '')  ?>"
+                    <?= /** @noEscape */ !$index ? $block->getInputAdditionalAttributes() : '' ?>
+                />
+            </div>
         <?php endforeach; ?>
     </div>
     <?= /** @noEscape */ $block->getAfterInputHtml() ?>

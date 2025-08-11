@@ -37,4 +37,16 @@ class CurrentDesignTheme
         }
         return false;
     }
+
+    public function isCore(): bool
+    {
+        $theme = $this->viewDesign->getDesignTheme();
+        while ($theme) {
+            if (strpos($theme->getCode(), 'Magento/') === 0) {
+                return true;
+            }
+            $theme = $theme->getParentTheme();
+        }
+        return false;
+    }
 }

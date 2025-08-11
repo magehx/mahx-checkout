@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\ShippingAddress;
@@ -9,17 +9,19 @@ use MageHx\MahxCheckout\ViewModel\ShippingAddress;
 /** @var string $formKey */
 /** @var Closure $viewModelProvider */
 /** @var ShippingAddress $viewModel */
+
 $viewModel = $viewModelProvider(ShippingAddress::class);
-$addOOBAttribute = $block->getData('add_oob_attribute');
 ?>
-<div id="shipping-address-form-container" <?= $addOOBAttribute ? 'hx-swap-oob="true"' : '' ?>>
+<div id="shipping-address-form-container" class="checkout-shipping-address">
     <?= $block->getChildHtml('formTitle') ?>
     <?= $block->getChildHtml('guestEmailForm') ?>
 
-    <form id="shipping-address-form" class="space-y-2" x-data="ShippingAddressForm">
-        <?php foreach ($viewModel->getAddressFields() as $field): ?>
-            <?= $viewModel->renderField($field) ?>
-        <?php endforeach; ?>
-        <?= $formKey ?>
+    <form id="shipping-address-form" class="form form-shipping-address" x-data="ShippingAddressForm">
+        <fieldset class="fieldset address space-y-2">
+            <?php foreach ($viewModel->getAddressFields() as $field): ?>
+                <?= $viewModel->renderField($field) ?>
+            <?php endforeach; ?>
+            <?= $formKey ?>
+        </FIELDSET>
     </form>
 </div>

@@ -20,7 +20,11 @@ $fieldMeta = $fieldConfig->meta;
 $wrapperClasses = $block->getWrapperElemExtraClasses();
 ?>
 <div
-    class="<?= $classNames(['form-control w-full max-w-lg', $wrapperClasses => $wrapperClasses]) ?>"
+    class="<?= $classNames([
+        'field form-control w-full max-w-lg',
+        '_required' => $fieldConfig->required,
+        $wrapperClasses => $wrapperClasses
+    ]) ?>"
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
@@ -32,18 +36,20 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
             <?php endif; ?>
         </span>
     </label>
-    <select
-        class="select select-bordered select-sm md:select-md"
-        id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
-        name="<?= $eHtmlAttr($fieldConfig->name) ?>"
-        <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
-    >
-        <option value=""><?= $eHtml($fieldMeta->defaultOptionLabel) ?></option>
-        <?php foreach ($fieldMeta->options as $value => $label): ?>
-            <option value="<?= $eHtmlAttr($value) ?>" <?= $fieldConfig->value == $value ? 'selected' : '' ?>>
-                <?= $eHtml($label) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+    <div class="control">
+        <select
+            class="select select-bordered select-sm w-full md:select-md"
+            id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
+            name="<?= $eHtmlAttr($fieldConfig->name) ?>"
+            <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
+        >
+            <option value=""><?= $eHtml($fieldMeta->defaultOptionLabel) ?></option>
+            <?php foreach ($fieldMeta->options as $value => $label): ?>
+                <option value="<?= $eHtmlAttr($value) ?>" <?= $fieldConfig->value == $value ? 'selected' : '' ?>>
+                    <?= $eHtml($label) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
     <?= /** @noEscape */ $block->getAfterInputHtml() ?>
 </div>

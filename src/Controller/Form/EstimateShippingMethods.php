@@ -76,7 +76,7 @@ class EstimateShippingMethods extends ComponentAction
             country: $country,
             form: CheckoutForm::SHIPPING_ADDRESS->value
         );
-        $regionField->meta->wrapperElemExtraAttributes[HtmxCoreAttributes::swapOob->value] = 'true';
+        $regionField->meta->wrapperElemExtraAttributes[HtmxCoreAttributes::swapOOB->value] = 'true';
 
         return $this->addressFieldManager->getRenderForAddressField($regionField)->render($regionField);
     }

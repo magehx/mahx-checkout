@@ -1,5 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use MageHx\MahxCheckout\ViewModel\GuestEmail;
 use Magento\Framework\View\Element\Template;
 
@@ -9,36 +10,22 @@ use Magento\Framework\View\Element\Template;
 /** @var Closure $eJs */
 /** @var Closure $viewModelProvider */
 /** @var GuestEmail $viewModel */
+/** @var DesignThemeInfo $themeInfo */
 
 $viewModel = $viewModelProvider(GuestEmail::class);
+$themeInfo = $viewModelProvider(DesignThemeInfo::class);
 ?>
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('GuestEmailForm', () => ({
+    'use strict';
+
+    function GuestEmailForm(form) {
+        return {
             form: null,
             validator: null,
 
             init() {
-                this.form = this.$el;
+                this.form = form || this.$el;
                 this.addValidationToForm();
-            },
-
-            <?php
-            /**
-             * Email field directly triggers htmx post request as it is bind directly.
-             * However, we want to apply frontend validation first and then only need to trigger htmx post request.
-             * This is how it is performed
-             */
-            ?>
-            async validate() {
-                const isValid = await this.validator.revalidate();
-                if (isValid) {
-                    htmx.trigger(document.body, 'mahxcheckout-guest-email-form-validated')
-                }
-            },
-
-            dispatchEmailSavedEvent(event) {
-                this.$dispatch('mahxcheckout-email-saved', { htmxEvent: event, form: form });
             },
 
             addValidationToForm() {
@@ -47,6 +34,11 @@ $viewModel = $viewModelProvider(GuestEmail::class);
                 }, JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>')));
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
-        }));
+        };
+    }
+    <?php if ($themeInfo->isHyvaTheme()): ?>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('GuestEmailForm', GuestEmailForm);
     });
+    <?php endif; ?>
 </script>

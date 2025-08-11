@@ -1,5 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\ShippingAddress;
 
@@ -10,50 +11,29 @@ use MageHx\MahxCheckout\ViewModel\ShippingAddress;
 /** @var Closure $eUrl */
 /** @var Closure $viewModelProvider */
 /** @var ShippingAddress $viewModel */
+/** @var DesignThemeInfo $themeInfo */
+
 $viewModel = $viewModelProvider(ShippingAddress::class);
+$themeInfo = $viewModelProvider(DesignThemeInfo::class);
 ?>
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
+    function ShippingAddressForm(form) {
+        return {
+            form: null,
+            validator: null,
+
+            init() {
+                this.form = form || this.$el ;
+                this.validator = mahxCheckout.validator(Object.assign({
+                    form: this.form,
+                }, JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>')));
+                this.addValidatorToPageNavigation(this.form.id, this.validator);
+            },
+        };
+    }
+    <?php if($themeInfo->isHyvaTheme()): ?>
     document.addEventListener('alpine:init', () => {
-        Alpine.data('ShippingAddressForm', () => {
-            return {
-                form: null,
-                validator: null,
-
-                init() {
-                    this.form = this.$el;
-                    this.validator = mahxCheckout.validator(Object.assign({
-                        form: this.form,
-                    }, JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>')));
-                    this.addValidatorToPageNavigation(this.form.id, this.validator);
-                },
-
-                async estimateShippingMethods(event) {
-                    const inputElement = event.target;
-                    const inputName = inputElement.name;
-
-                    if (await this.validateInput(inputElement)) {
-                        htmx.trigger(document.body, `mahxcheckout-${this.form.id}-${inputName}-validated`);
-                    }
-                },
-
-                async validateInput(input) {
-                    <?php // If no validation exists for this field, consider it valid ?>
-                    if (!this.validator.hasRuleExistForInput(input)) {
-                        return true;
-                    }
-
-                    try {
-                        return await this.validator.revalidateField(input);
-                    } catch (error) {
-                        console.error("Validation error:", error);
-                        return false;
-                    }
-                },
-
-                dispatchShippingAddressSaved(event) {
-                    this.$dispatch('mahxcheckout-shipping-address-saved', { htmxEvent: event });
-                },
-            };
-        });
+        Alpine.data('ShippingAddressForm', ShippingAddressForm);
     });
+    <?php endif; ?>
 </script>

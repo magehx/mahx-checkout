@@ -11,7 +11,7 @@ use MageHx\MahxCheckout\ViewModel\OrderCartItems;
 $viewModel = $viewModelProvider(OrderCartItems::class);
 ?>
 <?php // CART ITEMS ?>
-<div id="cart-items-section" class="collapse collapse-arrow" x-data="OrderSummary" :class="cartItemsCollapseClass">
+<div id="cart-items-section" class="block items-in-cart collapse collapse-arrow" x-data="OrderSummary" :class="cartItemsCollapseClass">
     <div
         class="px-0 text-xl font-normal border-b cursor-pointer collapse-title border-base-300"
         @click="toggleCartItemsVisibility"

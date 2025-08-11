@@ -1,5 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\StepManager;
 
@@ -10,7 +11,10 @@ use MageHx\MahxCheckout\ViewModel\StepManager;
 /** @var Closure $eUrl */
 /** @var Closure $viewModelProvider */
 /** @var StepManager $viewModel */
+/** @var DesignThemeInfo $themeInfo */
+
 $viewModel = $viewModelProvider(StepManager::class);
+$themeInfo = $viewModelProvider(DesignThemeInfo::class);
 ?>
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
     /**
@@ -30,38 +34,145 @@ $viewModel = $viewModelProvider(StepManager::class);
      * @property {Object.<string, FormComponentData>} formComponents - Keyed list of form components.
      */
 
-    /**
-     * @typedef {Object.<string, CheckoutStepData>} CheckoutStepsMap
-     * A map of step names to their step data.
-     */
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('checkoutStepStorage', {
-            currentStep: null,
-            /** @type {CheckoutStepsMap} */
-            steps: JSON.parse('<?= $eJs($viewModel->getStepsJson()) ?>'),
-            validators: {},
-            actionButton: {
-                isDisabled: false,
+    const CheckoutStepStorage = {
+        currentStep: null,
+        /** @type {CheckoutStepsMap} */
+        steps: JSON.parse('<?= $eJs($viewModel->getStepsJson()) ?>'),
+        validators: {},
+        actionButton: {
+            isDisabled: false,
+        },
+
+        findStepBy(prop, value) {
+            const key = Object.keys(this.steps).find(
+                (stepKey) => this.steps[stepKey][prop] === value
+            );
+            return key ? this.steps[key] : null;
+        },
+
+        getFirstStep() {
+            const firstKey = Object.keys(this.steps)[0];
+            return this.steps[firstKey];
+        },
+
+        getValidatorFor(validatorId) {
+            return this.validators[validatorId];
+        },
+    };
+
+    function NavItem() {
+        return {
+            stepName: null,
+            step: null,
+
+            init() {
+                this.stepName = this.$el.dataset.stepName;
+                this.step = this.stepStore.findStepBy('name', this.stepName);
             },
 
-            findStepBy(prop, value) {
-                const key = Object.keys(this.steps).find(
-                    (stepKey) => this.steps[stepKey][prop] === value
+            get isStepCompleted() {
+                const currentStep = this.stepStore.currentStep;
+
+                return currentStep && this.step && this.step.order <= currentStep.order;
+            },
+
+            get stepExtraClass() {
+                return this.isStepCompleted ? 'step-success font-extrabold': ''
+            },
+
+            get stepDataContent() {
+                return this.isStepCompleted ? '✓' : this.step?.order;
+            },
+
+            get stepStore() {
+                return this.$store.checkoutStepStorage;
+            },
+        };
+    }
+
+    function PageAction(rootElem) {
+        return {
+            root: null,
+            init() {
+                this.root = rootElem || this.$el;
+                this.addEventListeners();
+            },
+
+            addEventListeners() {
+                const pageNavButton = this.root.querySelector("button[data-role='opc-continue']");
+                if (pageNavButton) {
+                    pageNavButton.addEventListener('click', this.handleStepAction.bind(this));
+                }
+            },
+
+            async handleStepAction(event) {
+                event.target.dispatchEvent(
+                    new CustomEvent('mahxcheckout-step-validation-before', {
+                        detail: { currentStep: this.currentStep },
+                        bubbles: true
+                    })
                 );
-                return key ? this.steps[key] : null;
+
+                const showErrors = true;
+                const isAllValid = await this.validateStepForms(showErrors);
+
+                if (isAllValid) {
+                    event.target.dispatchEvent(
+                        new CustomEvent('mahxcheckout-step-validation-success', {
+                            detail: { currentStep: this.currentStep },
+                            bubbles: true
+                        })
+                    );
+                } else {
+                    event.preventDefault();
+                }
             },
 
-            getFirstStep() {
-                const firstKey = Object.keys(this.steps)[0];
-                return this.steps[firstKey];
+            async validateStepForms(showErrors = false) {
+                if (!this.currentStep) {
+                    return false;
+                }
+                const validationResults = await Promise.all(
+                    Object.keys(this.currentStep.formComponents).map((componentId) => {
+                        const form = document.getElementById(componentId);
+                        const validator = this.stepStore.validators[componentId];
+
+                        return this.prepareValidationPromiseForForm(form, validator, showErrors)
+                    })
+                );
+
+                return validationResults.every((result) => result === true);
             },
 
-            getValidatorFor(validatorId) {
-                return this.validators[validatorId];
-            },
-        });
+            prepareValidationPromiseForForm(form, validator, showErrors = false) {
+                if (!form || !validator) {
+                    return Promise.resolve(true);
+                }
 
-        Alpine.data('PageNavigation', () => ({
+                return validator.revalidate().then((isValid) => {
+                    if (!isValid && showErrors) {
+                        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                    }
+                    return isValid;
+                });
+            },
+
+            get buttonLabel() {
+                return this.stepStore?.currentStep?.buttonLabel;
+            },
+            get buttonDisabled() {
+                return this.stepStore?.actionButton?.isDisabled;
+            },
+            <?php if($themeInfo->isHyvaTheme()): ?>
+            get stepStore() {
+                return this.$store.checkoutStepStorage;
+            },
+            <?php endif; ?>
+        }
+    }
+
+    function PageNavigation() {
+        return {
             isStepValid: false,
 
             get isStepInvalid() {
@@ -93,50 +204,14 @@ $viewModel = $viewModelProvider(StepManager::class);
                 return this.isStepValid ? '' : 'btn-disabled';
             },
 
-            async handleStepAction() {
-                this.$dispatch('mahxcheckout-step-validation-before', { currentStep: this.currentStep });
-
-                const showErrors = true;
-                const isAllValid = await this.validateStepForms(showErrors);
-
-                if (isAllValid) {
-                    this.$dispatch('mahxcheckout-step-validation-success', { currentStep: this.currentStep });
-                    htmx.trigger(document.body, 'mahxcheckout-step-validated');
-                }
-            },
-
-            prepareValidationPromiseForForm(form, validator, showErrors = false) {
-                if (!form || !validator) {
-                    return Promise.resolve(true);
-                }
-
-                return validator.revalidate().then((isValid) => {
-                    if (!isValid && showErrors) {
-                        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-                    }
-                    return isValid;
-                });
-            },
-
-            async validateStepForms(showErrors = false) {
-                if (!this.currentStep) {
-                    return false;
-                }
-                const validationResults = await Promise.all(
-                    Object.keys(this.currentStep.formComponents).map((componentId) => {
-                        const form = document.getElementById(componentId);
-                        const validator = this.stepStore.validators[componentId];
-
-                        return this.prepareValidationPromiseForForm(form, validator, showErrors)
-                    })
-                );
-
-                return validationResults.every((result) => result === true);
-            },
-
             addEventListeners() {
                 document.addEventListener('htmx:afterSwap', (event) => {
                     const pushUrl = event.detail.xhr.getResponseHeader('HX-Push-Url') || '';
+
+                    if (!pushUrl) {
+                        return;
+                    }
+
                     const newStepName = pushUrl.split('#')[1] || '';
                     const prevStepName = this.currentStep.name;
                     const newStep = this.stepStore.findStepBy('urlHash', newStepName);
@@ -145,27 +220,17 @@ $viewModel = $viewModelProvider(StepManager::class);
                         this.stepStore.currentStep = newStep;
                     }
 
-                    this.$dispatch('mahxcheckout-step-changed', {
-                        htmxEvent: event,
-                        prevStep: this.stepStore.findStepBy('urlHash', prevStepName),
-                        newStep: this.currentStep
-                    });
+                    const checkoutMainElem = document.getElementById('checkout');
+
+                    checkoutMainElem.dispatchEvent(new CustomEvent('mahxcheckout-step-changed', {
+                        detail: {
+                            htmxEvent: event,
+                            prevStep: this.stepStore.findStepBy('urlHash', prevStepName),
+                            newStep: this.currentStep
+                        },
+                        bubbles: true
+                    }));
                 });
-
-                document.body.addEventListener('htmx:configRequest', function(evt) {
-                    if (evt.detail.parameters && evt.detail.parameters['step']) {
-                        return;
-                    }
-
-                    const stepInput = document.querySelector('#current-step');
-                    if (stepInput) {
-                        evt.detail.parameters['step'] = stepInput.value;
-                    }
-                });
-            },
-
-            dispatchPageActionCompleted(event) {
-                this.$dispatch('mahxcheckout-page-action-completed', { htmxEvent: event });
             },
 
             get stepStore() {
@@ -175,50 +240,14 @@ $viewModel = $viewModelProvider(StepManager::class);
             get currentStep() {
                 return this.stepStore.currentStep;
             },
-        }));
-
-        Alpine.data('NavItem', () => ({
-            stepName: null,
-            step: null,
-
-            init() {
-                this.stepName = this.$el.dataset.stepName;
-                this.step = this.stepStore.findStepBy('name', this.stepName);
-            },
-
-            get isStepCompleted() {
-                const currentStep = this.stepStore.currentStep;
-
-                return currentStep && this.step && this.step.order <= currentStep.order;
-            },
-
-            get stepExtraClass() {
-                return this.isStepCompleted ? 'step-success font-extrabold': ''
-            },
-
-            get stepDataContent() {
-                return this.isStepCompleted ? '✓' : this.step.order;
-            },
-
-            dispatchNavStepChanged(event) {
-                this.$dispatch('mahxcheckout-step-nav-changed', { htmxEvent: event, step: this.stepName });
-            },
-
-            get stepStore() {
-                return this.$store.checkoutStepStorage;
-            },
-        }));
-
-        Alpine.data('PageAction', () => ({
-            get buttonLabel() {
-                return this.stepStore.currentStep.buttonLabel;
-            },
-            get buttonDisabled() {
-                return this.stepStore.actionButton.isDisabled;
-            },
-            get stepStore() {
-                return this.$store.checkoutStepStorage;
-            },
-        }));
+        };
+    }
+    <?php if ($themeInfo->isHyvaTheme()): ?>
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('checkoutStepStorage', CheckoutStepStorage);
+        Alpine.data('PageNavigation', PageNavigation);
+        Alpine.data('NavItem', NavItem);
+        Alpine.data('PageAction', PageAction);
     });
+    <?php endif; ?>
 </script>

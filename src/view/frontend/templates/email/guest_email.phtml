@@ -17,26 +17,29 @@ $viewModel = $viewModelProvider(GuestEmail::class);
 $hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
 ?>
 <div id="guest-email-form-container">
-    <form id="guest-email-form" novalidate="novalidate" x-data="GuestEmailForm">
-        <div class="form-control w-full max-w-lg">
-            <label class="label" for="gef-email">
-                <span class="label-text">
-                    <?= $eHtml(__('Email Address')) ?>
-                    <span class="text-red-500 ml-1" aria-hidden="true">*</span>
-                </span>
-            </label>
-            <input
-                id="gef-email" type="text" name="email" placeholder="joe@example.com"
-                class="input input-bordered input-sm md:input-md w-full max-w-lg" value="<?= $eHtmlAttr($viewModel->getEmail()) ?>"
-                @change="validate" @keydown.enter.prevent="validate"
-                <?= $hxAttrRenderer->hxBuilder()
-                        ->target('#guest-email-form-container')
-                        ->swap(HtmxSwapOption::outerHTML)
-                        ->trigger('mahxcheckout-guest-email-form-validated from:body')
-                        ->post('mahxcheckout/form/guestEmailPost')
-                        ->render(); ?>
-            />
-        </div>
+    <form id="guest-email-form" class="form form-login" novalidate="novalidate" x-data="GuestEmailForm">
+        <fieldset id="customer-email-fieldset" class="fieldset">
+            <div class="field _required form-control w-full max-w-lg">
+                <label class="label" for="gef-email">
+                    <span class="label-text">
+                        <?= $eHtml(__('Email Address')) ?>
+                        <span class="text-red-500 ml-1" aria-hidden="true">*</span>
+                    </span>
+                </label>
+                <div class="control">
+                    <input
+                        id="gef-email" type="text" name="email" placeholder="joe@example.com"
+                        class="input-text input input-bordered input-sm md:input-md w-full max-w-lg"
+                        value="<?= $eHtmlAttr($viewModel->getEmail()) ?>"
+                        <?= $hxAttrRenderer->hxBuilder()
+                            ->post('mahxcheckout/form/guestEmailPost')
+                            ->swapNone()
+                            ->validate()
+                            ->render(); ?>
+                    />
+                </div>
+            </div>
+        </fieldset>
         <?= $formKey ?>
     </form>
 

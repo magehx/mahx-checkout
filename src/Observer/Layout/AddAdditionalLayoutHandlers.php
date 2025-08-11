@@ -30,11 +30,11 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
     private ?CheckoutThemeInterface $activeTheme = null;
 
     public function __construct(
-        private readonly CustomerSession             $customerSession,
+        private readonly CustomerSession $customerSession,
+        private readonly CurrentDesignTheme $currentTheme,
+        private readonly StepSessionManager $stepSessionManager,
+        private readonly CustomerAddressService $customerAddressService,
         private readonly ActiveCheckoutThemeResolver $activeThemeResolver,
-        private readonly CustomerAddressService      $customerAddressService,
-        private readonly StepSessionManager          $stepSessionManager,
-        private readonly CurrentDesignTheme          $currentTheme,
     ) {}
 
     public function execute(Observer $observer): void

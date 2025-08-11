@@ -3,6 +3,7 @@
       layout="checkout"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
+                <css src="MageHx_MahxCheckout::css/mahxcheckout-styles.css" />
         <remove src="MageHx_MahxCheckout::css/luma-checkout-overrides.css"/>
         <!--
             Uncomment this line if you decided to include checkout styles in the theme stylesheet itself
@@ -11,4 +12,7 @@
 <!--        <remove src="MageHx_MahxCheckout::css/mahxcheckout-styles.css"/>-->
         <remove src="MageHx_MahxCheckout::js/lib/alpine3-csp.min.js"/>
     </head>
+    <body>
+        <referenceBlock name="checkout.luma.js" remove="true" />
+    </body>
 </page>

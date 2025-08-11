@@ -24,11 +24,38 @@ export default function Validator({
   const defaultConfig = { errorFieldCssClass: ['input-error'] };
   const jv = new JustValidate(form, { ...defaultConfig, ...globalConfig });
 
-  const getElementValue = (name) => form.elements[name].value;
+
+    const getElementValue = (name) => form.elements[name].value;
   const isAll = (fields, predicate) =>
     fields.every((field) => predicate(getElementValue(field)));
   const isAny = (fields, predicate) =>
     fields.some((field) => predicate(getElementValue(field)));
+
+    /**
+     * When an input contains hx-validate="true", then we want to trigger htmx request only after validating the input.
+     * Here we are applying that logic to the input.
+     */
+  function applyHtmxValidation(field) {
+      if (!field.hasAttribute('hx-validate')) {
+          return;
+      }
+
+      field.addEventListener('htmx:confirm', function(event) {
+          if (event.detail.elt !== field) {
+              return;
+          }
+
+          // Stop sending htmx request immediately.
+          event.preventDefault();
+
+          jv.revalidateField(field).then((isValid) => {
+              if (isValid) {
+                  // Proceed with htmx request.
+                  event.detail.issueRequest();
+              }
+          });
+      });
+  }
 
   Object.entries(rules).forEach(([name, ruleString]) => {
     const input = getElementByDotName(form, name);
@@ -336,6 +363,7 @@ export default function Validator({
 
     if (jRules.length > 0) {
       jv.addField(input, jRules);
+      applyHtmxValidation(input);
     }
   });
 
@@ -343,9 +371,21 @@ export default function Validator({
     rules,
     messages,
     aliases,
-    hasRuleExistForInput(input) {
+    fieldHasRules(input) {
       return Boolean(this.rules[getDotNameFromElement(input)]);
     },
+      async validateFieldFor(input) {
+          // If no validation exists for this field, consider it as valid.
+          if (!this.fieldHasRules(input)) {
+              return true;
+          }
+
+          try {
+              return await this.revalidateField(input);
+          } catch (error) {
+              return false;
+          }
+      },
     async revalidateWithoutFocus() {
       const origFocusInvalidField = this.globalConfig.focusInvalidField;
       this.globalConfig.focusInvalidField = false;

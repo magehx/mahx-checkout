@@ -15,7 +15,11 @@ if (! $fieldConfig) {
 $wrapperClasses = $block->getWrapperElemExtraClasses();
 ?>
 <div
-    class="<?= $classNames(['form-control w-full max-w-lg', $wrapperClasses => $wrapperClasses]) ?>"
+    class="<?= $classNames([
+        'field form-control w-full max-w-lg',
+        '_required' => $fieldConfig->required,
+        $wrapperClasses => $wrapperClasses
+    ]) ?>"
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
@@ -27,13 +31,15 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
             <?php endif; ?>
         </span>
     </label>
-    <input
-        type="text"
-        id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
-        name="<?= $eHtmlAttr($fieldConfig->name) ?>"
-        class="input input-bordered input-sm md:input-md w-full max-w-lg"
-        value="<?= $eHtmlAttr($fieldConfig->value)  ?>"
-        <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
-    />
+   <div class="control">
+       <input
+           type="text"
+           id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
+           name="<?= $eHtmlAttr($fieldConfig->name) ?>"
+           class="input-text input input-bordered input-sm md:input-md w-full max-w-lg"
+           value="<?= $eHtmlAttr($fieldConfig->value)  ?>"
+           <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
+       />
+   </div>
     <?= /** @noEscape */ $block->getAfterInputHtml() ?>
 </div>

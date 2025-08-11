@@ -17,18 +17,16 @@ $viewModel = $viewModelProvider(StepManager::class);
 $hxRenderer = $viewModelProvider(HxAttributesRenderer::class);
 $currentStep = $viewModel->getCurrentStep();
 ?>
-<div id="page-actions" class="h-24 w-full mt-12" x-data="PageAction">
+<div id="page-actions" class="h-24 w-full mt-12" x-data="PageAction" <?= $hxRenderer->renderHxSwapOOB($block) ?>>
     <div class="flex items-center justify-center">
         <button
             id="step-navigation-button"
             type="button"
             class="btn btn-primary btn-lg"
-            x-text="buttonLabel"
-            @click="handleStepAction"
+            data-role="opc-continue"
             <?= $hxRenderer->hxBuilder()
                 ->post($currentStep->saveDataUrl)
                 ->include($viewModel->getHtmxIncludesForCurrentStep())
-                ->trigger('mahxcheckout-step-validated from:body')
                 ->indicator('#checkout-page-loader')
                 ->when($viewModel->isOnLastStep(), fn (HxAttributeBuilder $hx) => $hx->swapNone())
                 ->when(!$viewModel->isOnLastStep(), fn (HxAttributeBuilder $hx) =>
@@ -36,7 +34,7 @@ $currentStep = $viewModel->getCurrentStep();
                 )->render()
             ?>
         >
-            <?= $eHtml(__('Continue')) ?>
+            <?= $eHtml($viewModel->getCurrentStep()->buttonLabel) ?>
         </button>
     </div>
 </div>

@@ -36,6 +36,11 @@
         <observer name="MageHx_MahxCheckout::add_additional_layout_handlers"
                   instance="MageHx\MahxCheckout\Observer\Layout\AddAdditionalLayoutHandlers" />
     </event>
+    <event name="hxactions_block_response_before">
+        <observer
+            name="MageHx_MahxCheckout::include_navigation_content_in_response"
+            instance="MageHx\MahxCheckout\Observer\Controller\IncludeNavContentInResponse"/>
+    </event>
     <!-- This includes checkout styles in the theme stylesheet in the case of Hyvä Themes -->
     <!--
         We are not adding the checkout specific styles to the theme stylesheet because those styles are

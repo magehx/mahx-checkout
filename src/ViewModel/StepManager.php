@@ -6,6 +6,7 @@ namespace MageHx\MahxCheckout\ViewModel;
 
 use MageHx\MahxCheckout\Model\Theme\ActiveCheckoutThemeResolver;
 use MageHx\MahxCheckout\Model\Theme\CheckoutThemeInterface;
+use MageHx\MahxCheckout\Service\StepSessionManager;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
@@ -18,6 +19,7 @@ class StepManager implements ArgumentInterface
     public function __construct(
         private readonly Json $jsonSerializer,
         private readonly CheckoutSession $checkoutSession,
+        private readonly StepSessionManager $stepSessionManager,
         private readonly ActiveCheckoutThemeResolver $checkoutThemeResolver,
     ) {
         $this->checkoutTheme = $this->checkoutThemeResolver->resolve();
@@ -38,7 +40,17 @@ class StepManager implements ArgumentInterface
 
     public function getCurrentStep(): ?CheckoutStepData
     {
-        return $this->checkoutSession->getMahxCheckoutCurrentStep() ?? $this->checkoutTheme->getInitialStep();
+        return $this->stepSessionManager->getStepData() ?? $this->checkoutTheme->getInitialStep();
+    }
+
+    public function isCurrentStep(CheckoutStepData $step): bool
+    {
+        return $step->name === $this->getCurrentStep()->name;
+    }
+
+    public function isStepCompleted(CheckoutStepData $step): bool
+    {
+        return $step->order <= $this->getCurrentStep()->order;
     }
 
     public function getHtmxIncludesForCurrentStep(): string
@@ -49,7 +61,7 @@ class StepManager implements ArgumentInterface
             return '';
         }
 
-        $includes = ['#current-step', '#is-billing-same'];
+        $includes = ['#is-billing-same'];
         foreach ($step->formComponents as $formComponent) {
             $includes[] = "#{$formComponent->name}";
         }

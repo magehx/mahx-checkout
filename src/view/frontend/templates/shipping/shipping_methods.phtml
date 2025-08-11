@@ -19,32 +19,32 @@ $isHtmxOob = (bool)$block->getData('is_htmx_oob');
 >
     <?= $block->getChildHtml('formTitle') ?>
     <div class="overflow-x-auto">
-        <form id="shipping-methods-form" x-data="ShippingMethodsForm">
-            <table class="table md:max-w-lg">
+        <form id="shipping-methods-form" class="form methods-shipping" x-data="ShippingMethodsForm">
+            <table class="table-checkout-shipping-method table md:max-w-lg">
                 <tbody>
                 <?php foreach ($block->getShippingMethods() as $method): ?>
                     <?php
                         $methodValue = $viewModel->getInputValueFromMethod($method);
                         $id = "shipping-method-{$methodValue}";
                     ?>
-                    <tr>
-                        <th class="w-12">
+                    <tr class="row">
+                        <td class="col col-method w-12">
                             <input
                                 id="<?= $eHtmlAttr($id) ?>" type="radio" class="radio" name="shipping_method"
                                 value="<?= $eHtmlAttr($methodValue) ?>"
                                 <?= $methodValue === $viewModel->getSelectedMethod() ? 'checked': '' ?>/>
-                        </th>
-                        <td class="font-bold">
-                            <label for="<?= $eHtmlAttr($id) ?>" class="cursor-pointer">
-                                <?= /** @noEscape */ $viewModel->getMethodPriceHtml($method) ?>
+                        </td>
+                        <td class="col col-price font-bold">
+                            <label for="<?= $eHtmlAttr($id) ?>" class="price cursor-pointer">
+                                <span class="price"><?= /** @noEscape */ $viewModel->getMethodPriceHtml($method) ?></span>
                             </label>
                         </td>
-                        <td>
+                        <td class="col col-method">
                             <label for="<?= $eHtmlAttr($id) ?>" class="cursor-pointer">
                                 <?= $eHtml($method->getMethodTitle()) ?>
                             </label>
                         </td>
-                        <td>
+                        <td class="col col-method">
                             <label for="<?= $eHtmlAttr($id) ?>" class="cursor-pointer">
                                 <?= $eHtml($method->getCarrierTitle()) ?>
                             </label>

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MageHx\MahxCheckout\Controller\Form;
 
 use Exception;
-use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\ResultInterface;
 use MageHx\MahxCheckout\Controller\Form\ComponentAction\Context;
 use MageHx\MahxCheckout\Data\GuestEmailData;
@@ -27,10 +26,10 @@ class GuestEmailPost extends ComponentAction
         try {
             $guestEmailData->validate();
             $this->saveGuestEmailService->execute($guestEmailData);
-            return $this->getComponentResponse('guest.email.form');
+            return $this->withNoReswapHeader($this->getEmptyResponse());
         } catch (Exception $e) {
             $this->prepareErrorNotificationsWithFormData($guestEmailData->toArray(), $e);
-            return $this->getComponentResponse('guest.email.form', withNotification: true);
+            return $this->getNotificationsResponse();
         }
     }
 }

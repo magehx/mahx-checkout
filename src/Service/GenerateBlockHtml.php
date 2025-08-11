@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Service;
 
+use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\LayoutInterface;
 use Magento\Framework\View\Result\LayoutFactory;
@@ -39,7 +40,7 @@ class GenerateBlockHtml
         $block = $layout->getBlock($componentName);
 
         if ($withHtmxOob) {
-            $block?->setData('is_htmx_oob', true);
+            $block?->setData(HxAttributesRenderer::IS_HTMX_OOB, true);
         }
 
         return $block->toHtml();
