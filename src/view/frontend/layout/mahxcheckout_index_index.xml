@@ -15,9 +15,9 @@
 
         <!-- Our essential css and js libs -->
         <!-- TODO update: need to move below script to base_step theme -->
-<!--        <css src="MageHx_MahxCheckout::css/luma-checkout-overrides.css" />-->
-        <script src="MageHx_MahxCheckout::js/lib/htmx.js" defer="true" crossorigin="anonymous" />
-        <script src="MageHx_MahxCheckout::js/mahx/dist/checkout.iife.js" defer="true" crossorigin="anonymous" />
+        <css defer="defer" src="MageHx_MahxCheckout::css/luma-checkout-overrides.css" />
+        <script src="MageHx_MahxCheckout::js/lib/htmx.js" crossorigin="anonymous" />
+        <script src="MageHx_MahxCheckout::js/mahx/dist/checkout.iife.js" crossorigin="anonymous" />
 <!--        <script src="MageHx_MahxCheckout::js/lib/alpine3-csp.min.js" defer="true" crossorigin="anonymous" />-->
     </head>
     <body>

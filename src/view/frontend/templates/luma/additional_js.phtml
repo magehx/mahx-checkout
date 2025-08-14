@@ -5,7 +5,7 @@
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
     'use strict';
 
-    define('MageHx_MahxCheckout/js/page-navigation', [], () => {
+    define('MageHx_MahxCheckout/js/page-navigation', [], function () {
         const pageNavigation = PageNavigation();
         pageNavigation.$store = {
             checkoutStepStorage: CheckoutStepStorage
@@ -15,34 +15,4 @@
         return pageNavigation;
     })
 </script>
-<script nonce="<?= $eHtmlAttr($nonce) ?>">
-    'use strict';
 
-    require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
-        $(() => {
-            const guestForm = document.getElementById('guest-email-form');
-            if (guestForm) {
-                const guestManager = Object.assign(pageNavigation, GuestEmailForm(guestForm));
-                guestManager.init();
-            }
-
-            const shippingAddrForm = document.getElementById('shipping-address-form');
-            if (shippingAddrForm) {
-                const shippingAddrFormManager = Object.assign(pageNavigation, ShippingAddressForm(shippingAddrForm));
-                shippingAddrFormManager.init();
-            }
-
-            const shippingMethodsForm = document.getElementById('shipping-methods-form');
-            if (shippingMethodsForm) {
-                const shippingMethodsFormManager = Object.assign(pageNavigation, ShippingMethodsForm(shippingMethodsForm));
-                shippingMethodsFormManager.init();
-            }
-
-            const pageActions = document.getElementById('page-actions');
-            if (pageActions) {
-                const pageActionsManager = Object.assign(pageNavigation, PageAction(pageActions));
-                pageActionsManager.init();
-            }
-        });
-    });
-</script>

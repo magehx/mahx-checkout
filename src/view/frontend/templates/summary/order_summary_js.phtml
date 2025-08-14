@@ -1,40 +1,97 @@
-<?php
+<?php declare(strict_types=1);
+
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
+
 /** @var string $eHtmlAttr */
 /** @var string $nonce */
+/** @var Closure $viewModelProvider */
+/** @var DesignThemeInfo $themeInfo */
+
+$themeInfo = $viewModelProvider(DesignThemeInfo::class);
 ?>
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('OrderSummary', () => ({
-            isCartItemsVisible: false,
+    'use strict';
 
-            get cartItemsCollapseClass() {
-                return this.isCartItemsVisible ? 'collapse-open' : 'collapse-close';
-            },
+    function OrderSummary(root) {
+        return {
+            root: null,
+            isCartItemsVisible: false,
+            optionsVisibility: {},
 
             init() {
-                this.isCartItemsVisible = this.store.isCartItemsVisible;
+                this.root = root || this.$el;
+                this.initCartItemVisibility();
+                this.initOptionsVisibility();
+                this.registerEventListeners();
+            },
+
+            initCartItemVisibility() {
+                this.isCartItemsVisible = this.appStore.isCartItemsVisible;
+                this.updateVisibility('items');
+            },
+
+            initOptionsVisibility() {
+                this.optionsVisibility = this.appStore.optionsVisibility;
+                Object.keys(this.optionsVisibility).forEach((itemId) => {
+                    this.updateVisibility(itemId + '-options', itemId);
+                });
+            },
+
+            registerEventListeners() {
+                <?php // Toggle cart items section ?>
+                const itemsToggleElems = this.root.querySelectorAll("[data-role='items-toggle']");
+                Array.from(itemsToggleElems || []).forEach((elem) => {
+                    elem.addEventListener('click', this.toggleCartItemsVisibility.bind(this));
+                });
+                <?php // Toggle cart item options section ?>
+                const optionsToggleElems = this.root.querySelectorAll("[data-role='options-toggle']");
+                Array.from(optionsToggleElems || []).forEach((elem) => {
+                    elem.addEventListener('click', this.toggleOptionsVisibility.bind(this));
+                });
             },
 
             toggleCartItemsVisibility() {
                 this.isCartItemsVisible = !this.isCartItemsVisible;
-                this.store.isCartItemsVisible = this.isCartItemsVisible;
+                this.appStore.isCartItemsVisible = this.isCartItemsVisible;
+                this.updateVisibility('items');
             },
 
-            get store() {
+            toggleOptionsVisibility(event) {
+                const toggleElem = event.target.closest("[data-role='options-toggle']");
+                if (!toggleElem || !toggleElem.dataset.itemId) {
+                    return;
+                }
+                const itemId = toggleElem.dataset.itemId;
+                this.optionsVisibility[itemId] = !this.optionsVisibility[itemId];
+                this.appStore.optionsVisibility[itemId] = this.optionsVisibility[itemId];
+                this.updateVisibility(itemId + '-options', itemId);
+            },
+
+            updateVisibility(section, optionItemId = null) {
+                const contentElem = this.root.querySelector("[data-role='" + section + "-content']");
+                const collapseElem = this.root.querySelector("[data-role='" + section + "-collapse']");
+                const isVisible = section === 'items' ? this.isCartItemsVisible : this.optionsVisibility[optionItemId];
+
+                <?php // Toggle content section ?>
+                if (contentElem) {
+                    contentElem.style.display = isVisible ? 'block' : 'none';
+                }
+                <?php // add toggle class to parent elem ?>
+                if (collapseElem) {
+                    const collapseClasses = isVisible ? ['active', 'collapse-open'] : ['collapse-close']
+                    collapseElem.classList.remove('active', 'collapse-open', 'collapse-close');
+                    collapseClasses.forEach((className) => collapseElem.classList.add(className));
+                }
+            },
+
+            get appStore() {
                 return this.$store.app.orderSummary;
             },
-        }));
-
-        Alpine.data('CartItem', () => ({
-            isOptionsVisible: false,
-
-            get optionsCollapseClass() {
-                return this.isOptionsVisible ? 'collapse-open' : 'collapse-close';
-            },
-
-            toggleOptionsVisibility() {
-                this.isOptionsVisible = !this.isOptionsVisible;
-            },
-        }));
+        };
+    }
+    <?php if ($themeInfo->isHyvaTheme()): ?>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('OrderSummary', OrderSummary);
     });
+    <?php endif; ?>
 </script>

@@ -3,16 +3,16 @@
 /** @var string $nonce */
 ?>
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
+    const AppStorage = {
+        orderSummary: {
+            isCartItemsVisible: false,
+            optionsVisibility: {},
+        },
+        shipping: {
+            method: '',
+        }
+    };
     document.addEventListener('alpine:init', () => {
-        Alpine.store('app', {
-            orderSummary: {
-                isCartItemsVisible: false,
-                cartItemOptionsVisibility: {},
-            },
-            shipping: {
-                method: '',
-            }
-        });
-        window.mahxCheckout.getAppStoreSection = (section) => Alpine.store('app')[section];
+        Alpine.store('app', AppStorage);
     });
 </script>

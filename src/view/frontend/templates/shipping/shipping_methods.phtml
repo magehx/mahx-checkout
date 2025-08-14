@@ -1,14 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\ShippingMethods;
 
 /** @var Template $block */
+/** @var string $nonce */
 /** @var Closure $eHtml */
 /** @var Closure $eHtmlAttr */
 /** @var Closure $eUrl */
 /** @var Closure $viewModelProvider */
 /** @var ShippingMethods $viewModel */
+/** @var DesignThemeInfo $themeInfo */
+
+$themeInfo = $viewModelProvider(DesignThemeInfo::class);
 $viewModel = $viewModelProvider(ShippingMethods::class);
 $isHtmxOob = (bool)$block->getData('is_htmx_oob');
 ?>
@@ -55,12 +60,23 @@ $isHtmxOob = (bool)$block->getData('is_htmx_oob');
             </table>
         </form>
     </div>
-    <div
-        id="shipping-loader"
-        class="htmx-indicator checkout-loader est-shipping-loader est-shipping-country-loader"
-    >
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
+    <?= $block->getChildHtml('loader') ?>
+    <?php if ($themeInfo->isMagentoTheme()): ?>
+        <script nonce="<?= $eHtmlAttr($nonce) ?>">
+            'use strict';
+
+            require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
+                $(() => {
+                    const shippingMethodsForm = document.getElementById('shipping-methods-form');
+                    if (shippingMethodsForm) {
+                        const shippingMethodsFormManager = Object.assign(
+                            pageNavigation,
+                            ShippingMethodsForm(shippingMethodsForm)
+                        );
+                        shippingMethodsFormManager.init();
+                    }
+                });
+            });
+        </script>
+    <?php endif; ?>
 </div>

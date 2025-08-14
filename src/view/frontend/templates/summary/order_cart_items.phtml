@@ -1,66 +1,124 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\OrderCartItems;
 
 /** @var Template $block */
+/** @var string $nonce */
 /** @var Closure $eHtml */
 /** @var Closure $eHtmlAttr */
 /** @var Closure $viewModelProvider */
 /** @var OrderCartItems $viewModel */
+/** @var DesignThemeInfo $themeInfo */
+
+$themeInfo = $viewModelProvider(DesignThemeInfo::class);
 $viewModel = $viewModelProvider(OrderCartItems::class);
 ?>
-<?php // CART ITEMS ?>
-<div id="cart-items-section" class="block items-in-cart collapse collapse-arrow" x-data="OrderSummary" :class="cartItemsCollapseClass">
-    <div
-        class="px-0 text-xl font-normal border-b cursor-pointer collapse-title border-base-300"
-        @click="toggleCartItemsVisibility"
-    >
-        <?php if ($viewModel->getCartItemsTotalQty() > 1): ?>
-            <?= $eHtml($viewModel->getCartItemsTotalQty()) ?> <?= $eHtml(__('Items in Cart')) ?>
-        <?php else: ?>
-            1 <?= $eHtml(__('Item in Cart')) ?>
-        <?php endif; ?>
-    </div>
-    <div class="py-4 collapse-content">
-        <?php foreach ($viewModel->getCartItems() as $cartItem): ?>
-        <div class="flex space-x-4" x-data="CartItem">
-            <?php if ($cartItem->image): ?>
-                <div class="w-20 h-20">
-                    <img src="<?= $eHtmlAttr($cartItem->image->src) ?>"
-                         width="<?= $eHtmlAttr($cartItem->image->width) ?>"
-                         height="<?= $eHtmlAttr($cartItem->image->height) ?>"
-                         alt="<?= $eHtmlAttr($cartItem->image->alt) ?>"
-                         title="<?= $eHtmlAttr($cartItem->image->alt) ?>"
-                         loading="lazy" class="h-auto max-w-full" />
-                </div>
-            <?php endif; ?>
-            <div class="space-y-2 text-base font-normal">
-                <h4><?= $eHtml($cartItem->name) ?></h4>
-                <ul>
-                    <li><span>Qty: </span><?= $eHtml($cartItem->qty) ?></li>
-                    <li><?= /** @noEscape */ $cartItem->price ?></li>
-                </ul>
-                <?php if (!empty($cartItem->options)): ?>
-                    <div class="collapse collapse-arrow" :class="optionsCollapseClass">
-                        <div class="pl-1 -mt-4 collapse-title" @click="toggleOptionsVisibility">
-                            <?= $eHtml(__('View Details')) ?>
-                        </div>
-                        <div class="pl-1 -mt-4 collapse-content">
-                            <ul>
-                                <?php foreach ($cartItem->options as $option): ?>
-                                    <li>
-                                        <span class="font-semibold">
-                                            <?= $eHtml($option['label']) ?>: </span>
-                                            <?= $eHtml($option['value']) ?>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
+<div id="cart-items-section" data-bind="scope: 'orderSummary'" x-data="OrderSummary">
+    <div class="block items-in-cart collapse collapse-arrow" data-role="items-collapse">
+        <div
+            class="title px-0 text-xl border-b cursor-pointer collapse-title border-base-300"
+            data-role="items-toggle"
+        >
+            <strong class="font-normal">
+                <span>
+                    <?php if ($viewModel->getCartItemsTotalQty() > 1): ?>
+                        <?= $eHtml($viewModel->getCartItemsTotalQty()) ?> <?= $eHtml(__('Items in Cart')) ?>
+                    <?php else: ?>
+                        1 <?= $eHtml(__('Item in Cart')) ?>
+                    <?php endif; ?>
+                </span>
+            </strong>
+        </div>
+        <div class="minicart-items-wrapper py-4 collapse-content"
+             data-role="items-content"
+             data-bind="style: { display: isCartItemsVisible() ? 'block' : 'none' }"
+             style="display: none;"
+        >
+            <div class="minicart-items">
+                <?php foreach ($viewModel->getCartItems() as $cartItem): ?>
+                    <div class="product-item">
+                        <div class="product flex space-x-4">
+                            <?php if ($cartItem->image): ?>
+                                <div class="product-image-container !w-1/4"
+                                     style="width:<?= $eHtmlAttr($cartItem->image->width/2) ?>px; height: <?= $eHtmlAttr($cartItem->image->height/2) ?>px;"
+                                >
+                                    <span class="product-image-wrapper">
+                                        <img src="<?= $eHtmlAttr($cartItem->image->src) ?>"
+                                             width="<?= $eHtmlAttr($cartItem->image->width) ?>"
+                                             height="<?= $eHtmlAttr($cartItem->image->height) ?>"
+                                             alt="<?= $eHtmlAttr($cartItem->image->alt) ?>"
+                                             title="<?= $eHtmlAttr($cartItem->image->alt) ?>"
+                                             loading="lazy" class="h-auto max-w-full" />
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+                            <div class="product-item-details flex-1 space-y-4 text-base font-normal">
+                                <div class="product-item-inner">
+                                    <div class="product-item-name-block space-y-2">
+                                        <h4 class="product-item-name"><?= $eHtml($cartItem->name) ?></h4>
+                                        <div class="details-qty flex items-center   ">
+                                            <span class="label px-0"><?= $eHtml(__('Qty: ')) ?></span>
+                                            <span class="value"><?= $eHtml($cartItem->qty) ?></span>
+                                        </div>
+                                    </div>
+                                    <div class="subtotal">
+                                        <span class="price-excluding-tax">
+                                            <span class="cart-price">
+                                                <span class="price"><?= /** @noEscape */ $cartItem->price ?></span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <?php if (!empty($cartItem->options)): ?>
+                                    <div
+                                        class="product options collapse collapse-arrow"
+                                        data-role="item-<?= $eHtmlAttr($cartItem->id) ?>-options-collapse"
+                                    >
+                                        <span
+                                            class="toggler pl-1 -mt-4 collapse-title"
+                                            data-role="options-toggle"
+                                            data-item-id="item-<?= $eHtmlAttr($cartItem->id) ?>"
+                                        >
+                                            <span><?= $eHtml(__('View Details')) ?></span>
+                                        </span>
+                                        <div class="content pl-1 -mt-4 collapse-content"
+                                             data-role="item-<?= $eHtmlAttr($cartItem->id) ?>-options-content"
+                                             style="display: none;"
+                                        >
+                                            <div class="item-options">
+                                                <?php foreach ($cartItem->options as $option): ?>
+                                                    <dl class="flex items-center gap-2">
+                                                        <dt class="label font-semibold !py-0 after:content-[': ']">
+                                                            <?= $eHtml($option['label']) ?>
+                                                        </dt>
+                                                        <dd class="values"><?= $eHtml($option['value']) ?></dd>
+                                                    </dl>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
-                <?php endif; ?>
+                <?php endforeach; ?>
             </div>
         </div>
-        <?php endforeach; ?>
     </div>
+    <?php if ($themeInfo->isMagentoTheme()): ?>
+    <script nonce="<?= $eHtmlAttr($nonce) ?>">
+        'use strict';
+
+        require(['jquery'], ($) => {
+            $(() => {
+                const summary = OrderSummary(document.getElementById('cart-items-section'));
+                summary.$store = { app: AppStorage };
+                summary.init();
+            });
+        });
+    </script>
+    <?php endif; ?>
 </div>

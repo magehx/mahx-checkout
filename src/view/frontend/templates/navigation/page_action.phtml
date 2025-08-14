@@ -1,24 +1,28 @@
-<?php
+<?php declare(strict_types=1);
 
 use MageHx\HtmxActions\Model\HxAttributeRender\HxAttributeBuilder;
 use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\StepManager;
 
 /** @var Template $block */
+/** @var string $nonce */
 /** @var Closure $eHtml */
 /** @var Closure $eHtmlAttr */
 /** @var Closure $eUrl */
 /** @var Closure $viewModelProvider */
 /** @var StepManager $viewModel */
 /** @var HxAttributesRenderer $hxRenderer */
+/** @var DesignThemeInfo $themeInfo */
 
+$themeInfo = $viewModelProvider(DesignThemeInfo::class);
 $viewModel = $viewModelProvider(StepManager::class);
 $hxRenderer = $viewModelProvider(HxAttributesRenderer::class);
 $currentStep = $viewModel->getCurrentStep();
 ?>
 <div id="page-actions" class="h-24 w-full mt-12" x-data="PageAction" <?= $hxRenderer->renderHxSwapOOB($block) ?>>
-    <div class="flex items-center justify-center">
+    <div class="actions flex items-center justify-center">
         <button
             id="step-navigation-button"
             type="button"
@@ -37,4 +41,17 @@ $currentStep = $viewModel->getCurrentStep();
             <?= $eHtml($viewModel->getCurrentStep()->buttonLabel) ?>
         </button>
     </div>
+    <?php if ($themeInfo->isMagentoTheme()): ?>
+        <script nonce="<?= $eHtmlAttr($nonce) ?>">
+            'use strict';
+
+            require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
+                $(() => {
+                    const pageActions = document.getElementById('page-actions');
+                    const pageActionsManager = Object.assign(pageNavigation, PageAction(pageActions));
+                    pageActionsManager.init();
+                });
+            });
+        </script>
+    <?php endif; ?>
 </div>

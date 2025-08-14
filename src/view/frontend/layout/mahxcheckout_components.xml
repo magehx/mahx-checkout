@@ -20,6 +20,13 @@
                     <argument name="title" xsi:type="string">Shipping Methods</argument>
                 </arguments>
             </block>
+            <block name="shipping.methods.loader" as="loader"
+                   template="MageHx_MahxCheckout::ui/common/section_loader.phtml">
+                <arguments>
+                    <argument name="id" xsi:type="string">shipping-loader</argument>
+                    <argument name="extra_class" xsi:type="string">checkout-loader est-shipping-loader est-shipping-country-loader</argument>
+                </arguments>
+            </block>
         </block>
 
         <block class="MageHx\MahxCheckout\Block\PaymentMethods"

@@ -11,7 +11,7 @@ $extraClass = $block->getData('extra_class') ?? '';
 <div
     id="<?= $eHtmlAttr($id) ?>"
     class="<?= $classNames([
-        'htmx-indicator absolute inset-0 flex items-center justify-center bg-white/50 pointer-events-none',
+        'htmx-indicator section-loader absolute inset-0 flex items-center justify-center bg-white/50 pointer-events-none',
         $extraClass => $extraClass,
     ]) ?>"
 >

@@ -101,12 +101,15 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
             addEventListeners() {
                 const pageNavButton = this.root.querySelector("button[data-role='opc-continue']");
                 if (pageNavButton) {
-                    pageNavButton.addEventListener('click', this.handleStepAction.bind(this));
+                    pageNavButton.addEventListener('htmx:confirm', this.handleStepAction.bind(this));
                 }
             },
 
             async handleStepAction(event) {
-                event.target.dispatchEvent(
+                <?php // Stop sending request immediately. ?>
+                event.preventDefault();
+                const button = event.detail.elt;
+                this.root.dispatchEvent(
                     new CustomEvent('mahxcheckout-step-validation-before', {
                         detail: { currentStep: this.currentStep },
                         bubbles: true
@@ -117,14 +120,14 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
                 const isAllValid = await this.validateStepForms(showErrors);
 
                 if (isAllValid) {
-                    event.target.dispatchEvent(
+                    this.root.dispatchEvent(
                         new CustomEvent('mahxcheckout-step-validation-success', {
                             detail: { currentStep: this.currentStep },
                             bubbles: true
                         })
                     );
-                } else {
-                    event.preventDefault();
+                    <?php // Sends request ?>
+                    event.detail.issueRequest();
                 }
             },
 
@@ -148,6 +151,8 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
                 if (!form || !validator) {
                     return Promise.resolve(true);
                 }
+
+                validator.onFail((fields) =>  console.log(fields));
 
                 return validator.revalidate().then((isValid) => {
                     if (!isValid && showErrors) {

@@ -24,11 +24,11 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
     <label class="label" for="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>">
-        <span class="label-text">
+        <span class="<?= $classNames([
+                'label-text',
+                "after:content-['*'] after:text-red-500 after:ml-1" => $fieldConfig->required
+            ]) ?>">
             <?= $eHtml($fieldConfig->label) ?>
-            <?php if ($fieldConfig->required): ?>
-                <span class="text-red-500 ml-1" aria-hidden="true">*</span>
-            <?php endif; ?>
         </span>
     </label>
    <div class="control">

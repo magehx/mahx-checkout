@@ -1,18 +1,22 @@
-<?php
+<?php declare(strict_types=1);
 
 use MageHx\HtmxActions\Enums\HtmxSwapOption;
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\GuestEmail;
 
 /** @var Template $block */
+/** @var string $nonce */
 /** @var Closure $eHtml */
 /** @var Closure $eHtmlAttr */
 /** @var string $formKey */
 /** @var Closure $viewModelProvider */
 /** @var GuestEmail $viewModel */
 /** @var HxAttributesRenderer $hxAttrRenderer */
+/** @var DesignThemeInfo $themeInfo */
 
+$themeInfo = $viewModelProvider(DesignThemeInfo::class);
 $viewModel = $viewModelProvider(GuestEmail::class);
 $hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
 ?>
@@ -21,9 +25,8 @@ $hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
         <fieldset id="customer-email-fieldset" class="fieldset">
             <div class="field _required form-control w-full max-w-lg">
                 <label class="label" for="gef-email">
-                    <span class="label-text">
+                    <span class="label-text after:content-['*'] after:text-red-500 after:ml-1">
                         <?= $eHtml(__('Email Address')) ?>
-                        <span class="text-red-500 ml-1" aria-hidden="true">*</span>
                     </span>
                 </label>
                 <div class="control">
@@ -42,6 +45,19 @@ $hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
         </fieldset>
         <?= $formKey ?>
     </form>
+    <?php if ($themeInfo->isMagentoTheme()): ?>
+        <script nonce="<?= $eHtmlAttr($nonce) ?>">
+            'use strict';
+
+            require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
+                $(() => {
+                    const guestForm = document.getElementById('guest-email-form');
+                    const guestManager = Object.assign(pageNavigation, GuestEmailForm(guestForm));
+                    guestManager.init();
+                });
+            });
+        </script>
+    <?php endif; ?>
 
     <div class="max-w-xs my-4 md:my-8">
         <div class="divider"></div>
