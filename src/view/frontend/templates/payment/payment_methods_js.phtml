@@ -4,28 +4,33 @@
 /** @var Closure $eJs */
 ?>
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('PaymentMethodsForm', () => ({
+    'use strict';
+
+    function PaymentMethodsForm(form) {
+        return {
             form: null,
             validator: null,
 
             init() {
-                this.form = this.$el;
+                this.form = form || this.$el;
                 this.applyValidationToForm();
             },
 
             applyValidationToForm() {
                 this.validator = mahxCheckout.validator(Object.assign({ form: this.form },
-                /**
-                 * We are passing payment validation via data attribute because, payment validation
-                 * can change depending upon the payment method selected. So the logic here must
-                 * be dynamic to accommodate this change.
-                 */
-                JSON.parse(this.form.dataset.validation) || {},
-            ));
+                    /**
+                     * We are passing payment validation via data attribute because, payment validation
+                     * can change depending upon the payment method selected. So the logic here must
+                     * be dynamic to accommodate this change.
+                     */
+                    JSON.parse(this.form.dataset.validation) || {},
+                ));
                 this.validator.addRequiredGroup(this.form, '<?= $eJs(__("The payment method is missing. Select the payment method and try again.")) ?>');
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
-        }));
+        };
+    }
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('PaymentMethodsForm', PaymentMethodsForm);
     });
 </script>

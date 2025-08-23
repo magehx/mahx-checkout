@@ -14,12 +14,12 @@ use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
 $payment = $block->getPaymentData();
 $hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
 ?>
-<div class="form-control w-max">
-    <label class="label cursor-pointer justify-start space-x-2">
+<div class="payment-method form-control w-max">
+    <div class="payment-method-title flex items-center gap-x-1">
         <input
             type="radio" class="radio checked:bg-neutral" name="payment_method"
             value="<?= $eHtmlAttr($payment->code) ?>"
-            id="payment_form_method__<?= $eHtmlAttr($payment->code) ?>"
+            id="payment_method_<?= $eHtmlAttr($payment->code) ?>"
             <?= $block->isSelected() ? 'checked="checked"': '' ?>
             <?= $hxAttrRenderer->hxBuilder()
                 ->post('mahxcheckout/form/paymentMethodPost')
@@ -29,6 +29,8 @@ $hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
                 ->render()
             ?>
         />
-        <span class="label-text"><?= $eHtml($payment->title) ?></span>
-    </label>
+        <label for="payment_method_<?= $eHtmlAttr($payment->code) ?>" class="label cursor-pointer justify-start space-x-2">
+            <span class="label-text"><?= $eHtml($payment->title) ?></span>
+        </label>
+    </div>
 </div>

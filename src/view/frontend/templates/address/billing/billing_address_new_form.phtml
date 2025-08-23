@@ -1,10 +1,12 @@
 <?php
 
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddress;
 
 /** @var Template $block */
+/** @var string $nonce */
 /** @var Closure $eHtml */
 /** @var Closure $eHtmlAttr */
 /** @var Closure $eUrl */
@@ -12,7 +14,9 @@ use MageHx\MahxCheckout\ViewModel\BillingAddress;
 /** @var Closure $viewModelProvider */
 /** @var BillingAddress $viewModel */
 /** @var ShowBillingForm $showFormViewModel */
+/** @var DesignThemeInfo $themeInfo */
 
+$themeInfo = $viewModelProvider(DesignThemeInfo::class);
 $viewModel = $viewModelProvider(BillingAddress::class);
 $showFormViewModel = $viewModelProvider(ShowBillingForm::class);
 $isSameAsShipping = $viewModel->isBillingSameAsShipping();
@@ -21,13 +25,29 @@ if (!$showFormViewModel->canShowForm()) {
     return;
 }
 ?>
-<form id="billing-address-form" x-data="BillingAddressForm">
+<form id="billing-address-form" class="billing-address-form checkout-billing-address" x-data="BillingAddressForm">
     <?= $formKey ?>
-    <div id="billing-address-details">
+    <fieldset id="billing-address-details" class="fieldset">
         <?php foreach ($viewModel->getAddressFields() as $field): ?>
             <?= $viewModel->renderField($field) ?>
         <?php endforeach; ?>
         <?= $block->getChildHtml('actions') ?>
-    </div>
+    </fieldset>
+    <?php if ($themeInfo->isMagentoTheme()): ?>
+        <script nonce="<?= $eHtmlAttr($nonce) ?>">
+            'use strict';
+
+            require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
+                $(() => {
+                    const billingAddressForm = document.getElementById('billing-address-form');
+                    const billingAddressFormManager = Object.assign(
+                        pageNavigation,
+                        BillingAddressForm(billingAddressForm)
+                    );
+                    billingAddressFormManager.init();
+                });
+            });
+        </script>
+    <?php endif; ?>
 </form>
 <?= $block->getChildHtml('loader') ?>

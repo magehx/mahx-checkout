@@ -58,6 +58,104 @@
         }
     }
 
+    #payment-methods-section {
+        .payment-method {
+            .payment-content {
+                margin: 1rem 0 3rem 2.3rem;
+            }
+        }
+    }
+
+    #billing-address-details {
+        margin: 2rem 0 3rem;
+
+        .address-lines {
+            margin: 2rem 0 3rem 2.3rem;
+            line-height: 1.7;
+
+            p {
+                margin: 0;
+            }
+        }
+    }
+
+    .opc-block-summary {
+        .step-title {
+            margin-top: 0.5rem;
+        }
+    }
+
+    .checkout-payment-method .actions-toolbar .actions {
+        float: right;
+        margin: 0;
+    }
+
+    .opc-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+    }
+
+    #cart-items-section {
+        .items-in-cart {
+            margin-bottom: 0;
+        }
+
+        .minicart-items-wrapper {
+            border-bottom: 1px solid #cccccc;
+            padding-right: 10px;
+        }
+    }
+
+    #checkout-totals-summary {
+        margin: 1.25rem 0 0;
+
+        .total-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .title {
+                font-weight: 400;
+                padding: 6px 0;
+            }
+            .amount {
+                font-weight: 400;
+                padding: 6px 0 6px 14px;
+                text-align: right;
+                white-space: nowrap;
+            }
+
+            &.item-shipping {
+                p {
+                    color: #666666;
+                }
+            }
+
+            &.grand-total {
+                border-top: 1px solid #cccccc;
+                font-size: 1.8rem;
+                padding-right: 10px;
+
+                dt,dd {
+                    font-weight: 600;
+                    padding: 3px 0 0;
+                }
+                dd {
+                    margin-right: -10px;
+                }
+            }
+        }
+    }
+
+    #shipping-address-details {
+        margin-top: 2rem;
+    }
+
+    #page-actions {
+        margin: -2rem;
+    }
+
     // Base loader styles
     #checkout-page-loader {
         position: fixed;

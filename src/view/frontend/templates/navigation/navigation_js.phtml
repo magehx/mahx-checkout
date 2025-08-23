@@ -103,12 +103,14 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
                 if (pageNavButton) {
                     pageNavButton.addEventListener('htmx:confirm', this.handleStepAction.bind(this));
                 }
+
+                document.body.addEventListener('mahxcheckout-billing-canceled', () => this.updateDisableStatus(false));
+                document.body.addEventListener('mahxcheckout-billing-validated', () => this.updateDisableStatus(false));
             },
 
             async handleStepAction(event) {
                 <?php // Stop sending request immediately. ?>
                 event.preventDefault();
-                const button = event.detail.elt;
                 this.root.dispatchEvent(
                     new CustomEvent('mahxcheckout-step-validation-before', {
                         detail: { currentStep: this.currentStep },
@@ -162,6 +164,13 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
                 });
             },
 
+            updateDisableStatus(status) {
+                const pageNavButton = this.root.querySelector("button[data-role='opc-continue']");
+                if (pageNavButton) {
+                    pageNavButton.disabled = status;
+                }
+            },
+
             get buttonLabel() {
                 return this.stepStore?.currentStep?.buttonLabel;
             },
@@ -210,6 +219,16 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
             },
 
             addEventListeners() {
+                document.body.addEventListener('htmx:configRequest', function (event) {
+                    const excludePaths = [
+                        'mahxcheckout/step/getStepContent',
+                        'mahxcheckout/shipping/saveShippingInformation',
+                    ];
+                    const needToExcludeStepData = excludePaths.some((path) => event.detail.path.includes(path));
+                    if (!needToExcludeStepData) {
+                        event.detail.parameters['step'] = '<?= $eJs($viewModel->getCurrentStep()->name) ?>';
+                    }
+                });
                 document.addEventListener('htmx:afterSwap', (event) => {
                     const pushUrl = event.detail.xhr.getResponseHeader('HX-Push-Url') || '';
 

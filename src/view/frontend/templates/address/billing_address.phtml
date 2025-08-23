@@ -12,7 +12,7 @@ $viewModel = $viewModelProvider(BillingAddress::class);
 ?>
 <div
     id="billing-address-section"
-    class="<?= $classNames(['relative', $viewModel->isVirtualCart() ? 'mt-8' : 'mt-12']) ?>"
+    class="<?= $classNames(['relative checkout-payment-method', $viewModel->isVirtualCart() ? 'mt-8' : 'mt-12']) ?>"
 >
     <?= $block->getChildHtml() ?>
 </div>

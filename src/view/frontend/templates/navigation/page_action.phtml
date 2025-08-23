@@ -34,7 +34,7 @@ $currentStep = $viewModel->getCurrentStep();
                 ->indicator('#checkout-page-loader')
                 ->when($viewModel->isOnLastStep(), fn (HxAttributeBuilder $hx) => $hx->swapNone())
                 ->when(!$viewModel->isOnLastStep(), fn (HxAttributeBuilder $hx) =>
-                $hx->target('#checkout-main-content')->swapOuterHTML()
+                    $hx->target('#checkout-main-content')->swapOuterHTML()
                 )->render()
             ?>
         >

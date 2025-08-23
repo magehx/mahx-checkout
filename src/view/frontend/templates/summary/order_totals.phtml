@@ -24,18 +24,18 @@ $htmxLoaderClasses = implode(' ', $viewModel->getHtmxLoaderClasses());
         <?php foreach ($totals as $total): ?>
             <?php if ($total->code === 'grand_total') continue; ?>
 
-            <div class="flex justify-between items-center">
-                <dt class="text-gray-600">
+            <div class="<?= $classNames(['total-item flex justify-between items-center', "item-{$total->code}"]) ?>">
+                <dt class="title text-gray-600">
                     <?= /** @noEscape */ $total->label ?>
                 </dt>
-                <dd class="text-gray-800 font-medium">
+                <dd class="amount text-gray-800 font-medium">
                     <?= $viewModel->formatPrice($total->value) ?>
                 </dd>
             </div>
         <?php endforeach; ?>
 
         <?php if ($grandTotal): ?>
-            <div class="grand-total border-t border-gray-300 pt-4 mt-4 flex justify-between items-center text-xl font-semibold">
+            <div class="grand-total total-item border-t border-gray-300 pt-4 mt-4 flex justify-between items-center text-xl font-semibold">
                 <dt><?= $eHtml(__('Order Total')) ?></dt>
                 <dd><?= $viewModel->formatPrice($grandTotal->value) ?></dd>
             </div>

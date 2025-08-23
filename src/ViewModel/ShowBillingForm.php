@@ -7,12 +7,14 @@ namespace MageHx\MahxCheckout\ViewModel;
 use MageHx\MahxCheckout\Model\CheckoutDataStorage;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 use MageHx\MahxCheckout\Service\CustomerAddressService;
+use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class ShowBillingForm implements ArgumentInterface
 {
     public function __construct(
         private readonly QuoteDetails $quote,
+        private readonly CustomerSession $customerSession,
         private readonly CheckoutDataStorage $checkoutDataStorage,
         private readonly CustomerAddressService $customerAddressService,
     ) {}
@@ -27,8 +29,7 @@ class ShowBillingForm implements ArgumentInterface
             return false;
         }
 
-        return !$this->customerAddressService->isCurrentCustomerHoldsAddress();
-
+        return $this->customerSession->isLoggedIn() && !$this->customerAddressService->isCurrentCustomerHoldsAddress();
     }
 
     public function canShowCards(): bool

@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
 use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
+use MageHx\MahxCheckout\ViewModel\StepManager;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddress;
 
@@ -14,27 +15,28 @@ use MageHx\MahxCheckout\ViewModel\BillingAddress;
 /** @var BillingAddress $viewModel */
 /** @var ShowBillingForm $showFormViewModel */
 /** @var HxAttributesRenderer $hxAttributesRenderer */
+/** @var StepManager $stepManager */
 
+$stepManager = $viewModelProvider(StepManager::class);
 $viewModel = $viewModelProvider(BillingAddress::class);
 $showFormViewModel = $viewModelProvider(ShowBillingForm::class);
 $hxAttributesRenderer = $viewModelProvider(HxAttributesRenderer::class);
 $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
+$vals = ['show_form' => 1, 'show_cards' => 0];
 ?>
 <div class="form-control">
     <label class="label cursor-pointer justify-start space-x-2">
         <input
             id="is-billing-same" type="checkbox" name="is_billing_same" class="checkbox" value="1"
             <?= $isSameAsShipping ? 'checked' : '' ?>
-            hx-swap="outerHTML"
-            hx-indicator="#billing-address-section-loader"
-            hx-include="[name=form_key]"
-            hx-target="<?= $eHtmlAttr($isSameAsShipping ? '#billing-address-section' : '#checkout-main-content') ?>"
-            <?php if ($isSameAsShipping): ?>
-                hx-post="<?= $eUrl($block->getUrl('mahxcheckout/billing/editBilling')) ?>"
-                <?= $hxAttributesRenderer->vals($showFormViewModel->editFormRequestParams()) ?>
-            <?php else: ?>
-                hx-post="<?= $eUrl($block->getUrl('mahxcheckout/billing/billingAddressPost')) ?>"
-            <?php endif; ?>
+            <?= $hxAttributesRenderer->hxBuilder()
+                ->swapOuterHTML()
+                ->indicator('#billing-address-section-loader')
+                ->include('[name=form_key]')
+                ->target('#billing-address-section')
+                ->when($isSameAsShipping, fn ($hx) => $hx->post('mahxcheckout/billing/editBilling')->vals($vals))
+                ->when(!$isSameAsShipping, fn ($hx) => $hx->post('mahxcheckout/billing/billingAddressPost'))
+                ->render() ?>
         />
         <span class="label-text"><?= $eHtml(__('My billing and shipping address are the same')) ?></span>
     </label>

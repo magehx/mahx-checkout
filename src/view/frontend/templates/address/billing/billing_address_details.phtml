@@ -24,12 +24,16 @@ $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
     <?= $block->getChildHtml('isBillingSame') ?>
     <div id="billing-address-form-wrapper" class="relative">
         <?php if (!$showFormViewModel->isEditing() && $viewModel->isValidAddress()): ?>
-            <div class="collapse collapse-open">
+            <div class="address-lines collapse collapse-open">
                 <div class="collapse-content pt-4">
                     <div class="space-y-1 italic text-sm pl-6">
-                        <?php foreach ($viewModel->getBillingAddressLines() as $addressLine): ?>
-                            <p><?= $eHtml($addressLine) ?></p>
-                        <?php endforeach; ?>
+                        <?php $addressLines = $viewModel->getBillingAddressLines() ?>
+                        <p class="font-semibold"><?= $eHtml($addressLines->name) ?></p>
+                        <p><?= $eHtml($addressLines->streetLine1 ?? '') ?></p>
+                        <p><?= $eHtml($addressLines->streetLine2 ?? '') ?></p>
+                        <p><?= $eHtml($addressLines->postcode ?? '') ?></p>
+                        <p><?= $eHtml($addressLines->country ?? '') ?></p>
+                        <p class="text-blue-600 mt-1"><?= $eHtml($addressLines->telephone ?? '') ?></p>
                     </div>
                     <?php if (!$isSameAsShipping): ?>
                         <div class="mt-4 px-4">

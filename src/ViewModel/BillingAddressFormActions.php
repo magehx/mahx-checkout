@@ -25,4 +25,9 @@ class BillingAddressFormActions implements ArgumentInterface
     {
         return !$this->quote->isVirtualQuote();
     }
+
+    public function isBillingSame(): bool
+    {
+        return $this->quote->isBillingSameAsShipping();
+    }
 }

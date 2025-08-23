@@ -1,13 +1,19 @@
 <?php declare(strict_types=1);
 
 use MageHx\MahxCheckout\Block\PaymentMethods;
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 
 /** @var PaymentMethods $block */
+/** @var string $nonce */
 /** @var Closure $eHtmlAttr */
 /** @var string $formKey */
 /** @var Closure $classNames */
+/** @var Closure $viewModelProvider */
+/** @var DesignThemeInfo $themeInfo */
+
+$themeInfo = $viewModelProvider(DesignThemeInfo::class);
 ?>
-<div id="payment-methods-section" class="<?= $classNames(['relative', 'mt-12' => $block->isVirtualCart()]) ?>">
+<div id="payment-methods-section" class="<?= $classNames(['checkout-payment-method relative', 'mt-12' => $block->isVirtualCart()]) ?>">
     <?= $block->getChildHtml('formTitle') ?>
     <div class="overflow-x-auto">
         <form
@@ -24,4 +30,20 @@ use MageHx\MahxCheckout\Block\PaymentMethods;
         </form>
     </div>
     <?= $block->getChildHtml('loader') ?>
+    <?php if ($themeInfo->isMagentoTheme()): ?>
+    <script nonce="<?= $eHtmlAttr($nonce) ?>">
+        'use strict';
+
+        require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
+            $(() => {
+                const paymentMethodsForm = document.getElementById('payment-methods-form');
+                const paymentMethodsFormManager = Object.assign(
+                    pageNavigation,
+                    PaymentMethodsForm(paymentMethodsForm)
+                );
+                paymentMethodsFormManager.init();
+            });
+        });
+    </script>
+    <?php endif; ?>
 </div>
