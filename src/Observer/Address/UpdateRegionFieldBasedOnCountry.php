@@ -60,7 +60,8 @@ class UpdateRegionFieldBasedOnCountry implements ObserverInterface
             && $field->name === 'region'
             && in_array($form, [
                 CheckoutForm::SHIPPING_ADDRESS->value,
-                CheckoutForm::BILLING_ADDRESS->value
+                CheckoutForm::BILLING_ADDRESS->value,
+                CheckoutForm::NEW_ADDRESS->value,
             ], true);
     }
 
@@ -80,7 +81,12 @@ class UpdateRegionFieldBasedOnCountry implements ObserverInterface
     private function configureRegionField(FormFieldConfig &$regionField, string $countryCode): void
     {
         $regionField = $this->prepareRegionFieldAttributeService->execute($countryCode, regionField: $regionField);
-
+        if ($regionField->form === CheckoutForm::NEW_ADDRESS->value) {
+            $regionField = $this->prepareRegionFieldAttributeService->addAdditionalAttributesToRegion(
+                $regionField,
+                $regionField->form
+            );
+        }
         $regionField->meta->wrapperElemExtraAttributes['id'] = "{$regionField->form}-region-section";
         $regionField->meta->wrapperElemExtraClasses = 'relative';
         $regionField->value = (string) $this->resolveRegionValue($regionField);

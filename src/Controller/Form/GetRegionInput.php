@@ -51,7 +51,7 @@ class GetRegionInput extends ComponentAction
     private function renderRegionField(string $country, string $form): string
     {
         $regionField = $this->prepareRegionFieldAttributeService->execute($country, $form);
-        $renderer = $this->addressFieldManager->getRenderForAddressField($regionField);
+        $renderer = $this->addressFieldManager->getRendererForAddressField($regionField);
 
         return $renderer->render($regionField);
     }

@@ -4,17 +4,20 @@
 /** @var Closure $eJs */
 ?>
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('ShippingMethodsForm', () => ({
+    function ShippingMethodsForm(form) {
+        return {
             form: null,
             validator: null,
 
             init() {
-                this.form = this.$el;
+                this.form = form || this.$el;
                 this.validator = mahxCheckout.validator({ form: this.form });
                 this.validator.addRequiredGroup(this.form, '<?= $eJs(__("The shipping method is missing. Select the shipping method and try again.")) ?>');
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
-        }));
+        };
+    }
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('ShippingMethodsForm', ShippingMethodsForm);
     });
 </script>

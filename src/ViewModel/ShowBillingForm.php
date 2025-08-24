@@ -38,11 +38,7 @@ class ShowBillingForm implements ArgumentInterface
             return (bool)$this->getShowCardsData();
         }
 
-        if ($this->quote->isBillingSameAsShipping()) {
-            return false;
-        }
-
-        return !$this->canShowForm();
+        return false;
     }
 
     public function isEditing(): bool
@@ -50,9 +46,14 @@ class ShowBillingForm implements ArgumentInterface
         return $this->getShowCardsData() || $this->getShowFormData();
     }
 
+    public function currentCustomerHasAddress(): bool
+    {
+        return $this->customerAddressService->isCurrentCustomerHoldsAddress();
+    }
+
     public function editFormRequestParams(): array
     {
-        $customerHasAddress = (int)$this->customerAddressService->isCurrentCustomerHoldsAddress();
+        $customerHasAddress = (int)$this->currentCustomerHasAddress();
 
         return [
             'show_form' => $this->hasShowFormData() ? $this->getShowFormData() : (int)!$customerHasAddress ,

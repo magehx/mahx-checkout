@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
@@ -11,44 +11,54 @@ use MageHx\MahxCheckout\ViewModel\ShippingAddress;
 /** @var Closure $eUrl */
 /** @var Closure $viewModelProvider */
 /** @var ShippingAddress $viewModel */
+
 $viewModel = $viewModelProvider(ShippingAddress::class);
 ?>
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
+    function NewShippingAddressFormManager(elem) {
+        const newFormId = '<?= /** @noEscape */ CheckoutForm::NEW_ADDRESS->value ?>';
+        return {
+            form: null,
+            validator: null,
+
+            init() {
+                this.$el = elem || this.$el;
+                this.form = this.$el.querySelector('form');
+                this.modifyFormAfterRender();
+                this.registerEventListeners();
+            },
+
+            handleCountryChange(event) {
+                event.target.dispatchEvent(new CustomEvent('mahxcheckout-' + newFormId + '-country_id-changed', {
+                    bubbles: true,
+                    detail: { country: event.target.value }
+                }))
+            },
+
+            modifyFormAfterRender() {
+                Promise.resolve().then(() => {
+                    this.focusOnFirstname();
+                    this.applyValidation();
+                });
+            },
+
+            registerEventListeners() {
+                this.form.elements.country_id.addEventListener('change', this.handleCountryChange.bind(this));
+            },
+
+            focusOnFirstname() {
+                this.form.elements.firstname.focus();
+            },
+
+            applyValidation() {
+                this.validator = mahxCheckout.validator(Object.assign({
+                    form: this.form,
+                }, JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>')));
+                this.addValidatorToPageNavigation(this.form.id, this.validator);
+            },
+        };
+    }
     document.addEventListener('alpine:init', () => {
-        Alpine.data('NewAddressFormManager', () => {
-            const newFormId = '<?= $eJs(CheckoutForm::NEW_ADDRESS->value) ?>';
-
-            return {
-                form: null,
-                validator: null,
-
-                init() {
-                    this.form = this.$el.querySelector('form');
-                    this.modifyFormAfterRender();
-                },
-
-                handleCountryChange(event) {
-                    this.$dispatch(`mahxcheckout-${newFormId}-country_id-changed`, { country: event.target.value })
-                },
-
-                modifyFormAfterRender() {
-                    this.$nextTick(() => {
-                        this.focusOnFirstname();
-                        this.applyValidation();
-                    });
-                },
-
-                focusOnFirstname() {
-                    this.form.elements.firstname.focus();
-                },
-
-                applyValidation() {
-                    this.validator = mahxCheckout.validator(Object.assign({
-                        form: this.form,
-                    }, JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>')));
-                    this.addValidatorToPageNavigation(this.form.id, this.validator);
-                },
-            };
-        });
+        Alpine.data('NewShippingAddressFormManager', NewShippingAddressFormManager)
     });
 </script>

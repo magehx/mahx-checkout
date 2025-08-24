@@ -56,7 +56,7 @@ class AddressFieldManager
         return $transportFields->getData('fields');
     }
 
-    public function getRenderForAddressField(FormFieldConfig $fieldAttributes): FieldRendererInterface
+    public function getRendererForAddressField(FormFieldConfig $fieldAttributes): FieldRendererInterface
     {
         return $this->addressFieldRendererPool->getRenderer($fieldAttributes);
     }

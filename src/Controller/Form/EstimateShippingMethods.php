@@ -78,6 +78,6 @@ class EstimateShippingMethods extends ComponentAction
         );
         $regionField->meta->wrapperElemExtraAttributes[HtmxCoreAttributes::swapOOB->value] = 'true';
 
-        return $this->addressFieldManager->getRenderForAddressField($regionField)->render($regionField);
+        return $this->addressFieldManager->getRendererForAddressField($regionField)->render($regionField);
     }
 }

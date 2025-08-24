@@ -48,7 +48,7 @@ class ShippingAddress implements ArgumentInterface
 
     public function renderField(FormFieldConfig $fieldConfig): string
     {
-        $renderer = $this->addressFieldManager->getRenderForAddressField($fieldConfig);
+        $renderer = $this->addressFieldManager->getRendererForAddressField($fieldConfig);
         $rendererData = new DataObject(['renderer' => $renderer]);
 
         $this->eventDispatcher->dispatchShippingAddressFieldRenderBefore(

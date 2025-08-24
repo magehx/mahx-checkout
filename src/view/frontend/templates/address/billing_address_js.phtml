@@ -59,7 +59,6 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
             },
 
             handleBillingCancel(event) {
-                console.log('handleBillingCancel');
                 htmx.trigger(event.target, 'mahxcheckout-billing-canceled');
                 this.stepStore.actionButton.isDisabled = false;
             },

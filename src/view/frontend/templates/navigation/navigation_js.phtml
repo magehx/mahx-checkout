@@ -204,6 +204,15 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
                     this.stepStore.findStepBy('urlHash', hash) ||
                     this.stepStore.findStepBy('isDefault', true) ||
                     this.stepStore.getFirstStep();
+                this.updateStepInputValue(this.stepStore.currentStep.name);
+            },
+
+            updateStepInputValue(step) {
+                this.getCurrentStepInput().value = step;
+            },
+
+            getCurrentStepInput() {
+                return document.getElementById('current-step');
             },
 
             addValidatorToPageNavigation(componentId, validator) {
@@ -219,14 +228,14 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
             },
 
             addEventListeners() {
-                document.body.addEventListener('htmx:configRequest', function (event) {
+                document.body.addEventListener('htmx:configRequest', (event) => {
                     const excludePaths = [
                         'mahxcheckout/step/getStepContent',
                         'mahxcheckout/shipping/saveShippingInformation',
                     ];
                     const needToExcludeStepData = excludePaths.some((path) => event.detail.path.includes(path));
                     if (!needToExcludeStepData) {
-                        event.detail.parameters['step'] = '<?= $eJs($viewModel->getCurrentStep()->name) ?>';
+                        event.detail.parameters['step'] = this.getCurrentStepInput().value;
                     }
                 });
                 document.addEventListener('htmx:afterSwap', (event) => {
@@ -242,6 +251,7 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
 
                     if (newStep) {
                         this.stepStore.currentStep = newStep;
+                        this.updateStepInputValue(newStep.name);
                     }
 
                     const checkoutMainElem = document.getElementById('checkout');

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\ShippingAddressCards;
@@ -17,37 +17,91 @@ if (!$viewModel->isCurrentCustomerHaveAddresses()) {
 }
 ?>
 <script nonce="<?= $eHtmlAttr($nonce) ?>">
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('shippingAddressCardStorage', {
-            selectedAddressId: null,
-        });
-
-        Alpine.data('ShippingAddressCards', () => ({
+    const ShippingAddressCardStorage = {
+        selectedAddressId: null,
+    };
+    function ShippingAddressCards(elem) {
+        return {
             get selectedAddressId() {
                 return this.store.selectedAddressId;
             },
 
             init() {
+                this.$el = elem || this.$el;
                 this.store.selectedAddressId = this.$el.dataset.selectedAddress;
+                this.registerEventListeners();
             },
 
-            isAddressCardSelected(addressId) {
-                return this.selectedAddressId === addressId;
-            },
-
-            setShipToAddress(event) {
-                const addressId = event.target.dataset.id;
-                this.store.selectedAddressId = addressId;
-                this.$dispatch(`mahxcheckout-customer-address-${addressId}-selected`);
+            registerEventListeners() {
+                this.$el.addEventListener('mahxcheckout-customer-address-selected', (event) => {
+                    const addressIdInput = this.$el.querySelector("input[name=customer_address_id]");
+                    if (addressIdInput) {
+                        addressIdInput.value = event.detail.addressId;
+                    }
+                });
             },
 
             get store() {
                 return this.$store.shippingAddressCardStorage;
             },
-        }));
+        };
+    }
 
-        Alpine.data('AddressCard', () => ({
+    function AddressCard(elem) {
+        return {
             addressId: null,
+
+            init() {
+                this.$el = elem || this.$el;
+                this.addressId = this.$el.dataset.addressId;
+                this.applyCardChanges();
+                this.registerEventListeners();
+            },
+
+            applyCardChanges() {
+                this.applySelectedCardStyle();
+                this.updateShipHereButtonDisplay();
+            },
+
+            registerEventListeners() {
+                const shipHereButton = this.getShipHereButton();
+                if (shipHereButton) {
+                    shipHereButton.addEventListener('click', this.setShipToAddress.bind(this));
+                }
+                this.$el.parentElement.addEventListener(
+                    'mahxcheckout-customer-address-selected',
+                    () => this.applyCardChanges()
+                );
+            },
+
+            setShipToAddress(event) {
+                this.store.selectedAddressId = this.addressId;
+                event.target.dispatchEvent(
+                    new CustomEvent('mahxcheckout-customer-address-selected', {
+                        bubbles: true,
+                        detail: { addressId: this.addressId }
+                    })
+                );
+            },
+
+            applySelectedCardStyle() {
+                const selectedClasses = ['selected-item', 'border-2', 'border-orange-500', 'relative'];
+                const unselectedClasses = ['border', 'border-gray-300'];
+
+                selectedClasses.forEach(cls => this.$el.classList.toggle(cls, this.isSelected));
+                unselectedClasses.forEach(cls => this.$el.classList.toggle(cls, !this.isSelected));
+            },
+
+            updateShipHereButtonDisplay() {
+                const shipHereButton = this.getShipHereButton();
+                if (shipHereButton) {
+                    shipHereButton.display = this.isSelected ? 'none' : 'block';
+                }
+            },
+
+            getShipHereButton() {
+                return this.$el.querySelector("button[data-role='action-ship-here']");
+            },
 
             get isSelected() {
                 return this.store.selectedAddressId === this.addressId;
@@ -57,17 +111,18 @@ if (!$viewModel->isCurrentCustomerHaveAddresses()) {
                 return !this.isSelected;
             },
 
-            get addressCardExtraClasses() {
-                return this.isSelected ? 'border-2 border-orange-500 relative' : 'border border-gray-300';
-            },
-
-            init() {
-                this.addressId = this.$el.dataset.addressId;
-            },
+            // get addressCardExtraClasses() {
+            //     return this.isSelected ? 'border-2 border-orange-500 relative' : 'border border-gray-300';
+            // },
 
             get store() {
                 return this.$store.shippingAddressCardStorage;
             },
-        }));
+        };
+    }
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('shippingAddressCardStorage', ShippingAddressCardStorage);
+        Alpine.data('ShippingAddressCards', ShippingAddressCards);
+        Alpine.data('AddressCard', AddressCard);
     });
 </script>

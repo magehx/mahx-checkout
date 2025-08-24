@@ -25,24 +25,23 @@ if (!$addressCard) {
 <div class="actions flex items-center min-h-[2.5rem]">
     <?php if ($addressCard->isNew()): ?>
         <button
-            class="btn btn-ghost mt-4 text-primary" type="button"
+            class="action edit-address-link btn btn-ghost mt-4 text-primary" type="button"
             hx-target="#shipping-address-form-section"
             hx-indicator="#shipping-address-cards-loader"
-            hx-get="<?= $block->getUrl("mahxcheckout/shipping/getNewAddressForm") ?>"
+            hx-include="[name=form_key]"
+            hx-post="<?= $block->getUrl("mahxcheckout/shipping/getNewAddressForm") ?>"
         >
             <?= $eHtml(__('Edit')) ?>
         </button>
     <?php endif; ?>
     <div class="action-item ml-auto">
         <button
-            type="button" class="btn btn-sm mt-4 btn-outline"
+            type="button" class="action action-select-shipping-item btn btn-sm mt-4 btn-outline"
             data-id="<?= $eHtmlAttr($addressCard->addressId) ?>"
+            data-role="action-ship-here"
             x-cloak
-            x-show="isNotSelected"
-            @click="setShipToAddress"
             <?= $hxAttributeRenderer->hxBuilder()
                 ->post($viewModel->getEstimateShippingByAddressIdUrl($addressCard->addressId))
-                ->trigger("mahxcheckout-customer-address-{$addressCard->addressId}-selected from:window")
                 ->target('#shipping-methods-section')
                 ->swapOuterHTML()
                 ->indicator('#shipping-loader')

@@ -22,7 +22,10 @@ $viewModel = $viewModelProvider(BillingAddress::class);
 $showFormViewModel = $viewModelProvider(ShowBillingForm::class);
 $hxAttributesRenderer = $viewModelProvider(HxAttributesRenderer::class);
 $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
-$vals = ['show_form' => 1, 'show_cards' => 0];
+$vals = [
+    'show_form' => (int)(!$viewModel->isCustomerLoggedIn() || !$showFormViewModel->currentCustomerHasAddress()),
+    'show_cards' => (int)($viewModel->isCustomerLoggedIn() && $showFormViewModel->currentCustomerHasAddress()),
+];
 ?>
 <div class="form-control">
     <label class="label cursor-pointer justify-start space-x-2">
