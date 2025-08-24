@@ -1,17 +1,15 @@
 <?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\Block\PaymentMethods;
-use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 
 /** @var PaymentMethods $block */
 /** @var string $nonce */
-/** @var Closure $eHtmlAttr */
+/** @var Esc $esc */
 /** @var string $formKey */
 /** @var Closure $classNames */
-/** @var Closure $viewModelProvider */
-/** @var DesignThemeInfo $themeInfo */
-
-$themeInfo = $viewModelProvider(DesignThemeInfo::class);
+/** @var ViewModelProvider $viewModelProvider */
 ?>
 <div id="payment-methods-section" class="<?= $classNames(['checkout-payment-method relative', 'mt-12' => $block->isVirtualCart()]) ?>">
     <?= $block->getChildHtml('formTitle') ?>
@@ -19,7 +17,7 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
         <form
             id="payment-methods-form"
             x-data="PaymentMethodsForm"
-            data-validation="<?= $eHtmlAttr($block->getValidationJson()) ?>"
+            data-validation="<?= $esc->htmlAttr($block->getValidationJson()) ?>"
         >
             <?= $formKey ?>
             <div class="space-y-2">
@@ -30,20 +28,5 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
         </form>
     </div>
     <?= $block->getChildHtml('loader') ?>
-    <?php if ($themeInfo->isMagentoTheme()): ?>
-    <script nonce="<?= $eHtmlAttr($nonce) ?>">
-        'use strict';
-
-        require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
-            $(() => {
-                const paymentMethodsForm = document.getElementById('payment-methods-form');
-                const paymentMethodsFormManager = Object.assign(
-                    pageNavigation,
-                    PaymentMethodsForm(paymentMethodsForm)
-                );
-                paymentMethodsFormManager.init();
-            });
-        });
-    </script>
-    <?php endif; ?>
+    <?= $block->getChildHtml('luma_js') ?>
 </div>

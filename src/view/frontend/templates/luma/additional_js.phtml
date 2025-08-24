@@ -1,8 +1,11 @@
 <?php declare(strict_types=1);
-/** @var string $eHtmlAttr */
+
+use MageHx\MageTemplateUtils\Model\Esc;
+
+/** @var Esc $esc */
 /** @var string $nonce */
 ?>
-<script nonce="<?= $eHtmlAttr($nonce) ?>">
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
     'use strict';
 
     define('MageHx_MahxCheckout/js/page-navigation', [], function () {

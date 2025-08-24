@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
 use MageHx\MahxCheckout\Block\Address\FieldRenderer;
 
 /** @var FieldRenderer $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
+/** @var Esc $esc */
 /** @var Closure $classNames */
 
 $fieldConfig = $block->getFieldConfig();
@@ -23,21 +23,21 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
-    <label class="label" for="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>">
+    <label class="label" for="<?= $esc->htmlAttr($fieldConfig->getFieldId()) ?>">
         <span class="<?= $classNames([
                 'label-text',
                 "after:content-['*'] after:text-red-500 after:ml-1" => $fieldConfig->required
             ]) ?>">
-            <?= $eHtml($fieldConfig->label) ?>
+            <?= $esc->html($fieldConfig->label) ?>
         </span>
     </label>
    <div class="control">
        <input
            type="text"
-           id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
-           name="<?= $eHtmlAttr($fieldConfig->name) ?>"
+           id="<?= $esc->htmlAttr($fieldConfig->getFieldId()) ?>"
+           name="<?= $esc->htmlAttr($fieldConfig->name) ?>"
            class="input-text input input-bordered input-sm md:input-md w-full max-w-lg"
-           value="<?= $eHtmlAttr($fieldConfig->value)  ?>"
+           value="<?= $esc->htmlAttr($fieldConfig->value)  ?>"
            <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
        />
    </div>

@@ -1,15 +1,16 @@
 <?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 
-/** @var string $eHtmlAttr */
+/** @var Esc $esc */
 /** @var string $nonce */
-/** @var Closure $viewModelProvider */
-/** @var DesignThemeInfo $themeInfo */
+/** @var ViewModelProvider $viewModelProvider */
 
-$themeInfo = $viewModelProvider(DesignThemeInfo::class);
+$themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
 ?>
-<script nonce="<?= $eHtmlAttr($nonce) ?>">
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
     'use strict';
 
     function OrderSummary(root) {

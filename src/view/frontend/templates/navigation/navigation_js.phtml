@@ -1,22 +1,20 @@
 <?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\StepManager;
 
 /** @var Template $block */
-/** @var string $eHtmlAttr */
 /** @var string $nonce */
-/** @var Closure $eJs */
-/** @var Closure $eUrl */
-/** @var Closure $viewModelProvider */
-/** @var StepManager $viewModel */
-/** @var DesignThemeInfo $themeInfo */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(StepManager::class);
-$themeInfo = $viewModelProvider(DesignThemeInfo::class);
+$viewModel = $viewModelProvider->get(StepManager::class);
+$themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
 ?>
-<script nonce="<?= $eHtmlAttr($nonce) ?>">
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
     /**
      * @typedef {Object} FormComponentData
      * @property {string} name - Unique identifier for the form component. This is equals to the form id.
@@ -37,7 +35,7 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
     const CheckoutStepStorage = {
         currentStep: null,
         /** @type {CheckoutStepsMap} */
-        steps: JSON.parse('<?= $eJs($viewModel->getStepsJson()) ?>'),
+        steps: JSON.parse('<?= $esc->js($viewModel->getStepsJson()) ?>'),
         validators: {},
         actionButton: {
             isDisabled: false,
@@ -154,7 +152,7 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
                     return Promise.resolve(true);
                 }
 
-                validator.onFail((fields) =>  console.log(fields));
+                // validator.onFail((fields) =>  console.log(fields));
 
                 return validator.revalidate().then((isValid) => {
                     if (!isValid && showErrors) {

@@ -1,15 +1,12 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
-use Magento\Framework\Escaper;
+use MageHx\MageTemplateUtils\Model\Esc;
 use Magento\Theme\Block\Html\Header\Logo;
 use Magento\Theme\ViewModel\Block\Html\Header\LogoSizeResolverInterface;
 
 /**
  * @var Logo $block
- * @var Closure $e
- * @var Closure $eUrl
- * @var Escaper $escaper
+ * @var Esc $esc
  * @var LogoSizeResolverInterface|null $logoSizeResolver
  */
 
@@ -26,14 +23,14 @@ $logoHeight = $logoSizeResolver !== null && $logoSizeResolver->getHeight()
     <div class="container">
         <a
             class="logo"
-            href="<?= $eUrl($block->getUrl('')) ?>"
-            title="<?= $escaper->escapeHtmlAttr($storeName) ?>"
+            href="<?= $esc->url($block->getUrl('')) ?>"
+            title="<?= $esc->htmlAttr($storeName) ?>"
             aria-label="store logo">
-            <img src="<?= $eUrl($block->getLogoSrc()) ?>"
-                 title="<?= $escaper->escapeHtmlAttr($block->getLogoAlt()) ?>"
-                 alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt()) ?>"
-                <?= $logoWidth ? 'width="' . $escaper->escapeHtmlAttr($logoWidth) . '"' : '' ?>
-                <?= $logoHeight ? 'height="' . $escaper->escapeHtmlAttr($logoHeight) . '"' : '' ?>
+            <img src="<?= $esc->url($block->getLogoSrc()) ?>"
+                 title="<?= $esc->htmlAttr($block->getLogoAlt()) ?>"
+                 alt="<?= $esc->htmlAttr($block->getLogoAlt()) ?>"
+                <?= $logoWidth ? 'width="' . $esc->htmlAttr($logoWidth) . '"' : '' ?>
+                <?= $logoHeight ? 'height="' . $esc->htmlAttr($logoHeight) . '"' : '' ?>
             />
         </a>
     </div>

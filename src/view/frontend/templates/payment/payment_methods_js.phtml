@@ -1,9 +1,11 @@
-<?php
-/** @var string $eHtmlAttr */
+<?php declare(strict_types=1);
+
+use MageHx\MageTemplateUtils\Model\Esc;
+
 /** @var string $nonce */
-/** @var Closure $eJs */
+/** @var Esc $esc */
 ?>
-<script nonce="<?= $eHtmlAttr($nonce) ?>">
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
     'use strict';
 
     function PaymentMethodsForm(form) {
@@ -25,7 +27,7 @@
                      */
                     JSON.parse(this.form.dataset.validation) || {},
                 ));
-                this.validator.addRequiredGroup(this.form, '<?= $eJs(__("The payment method is missing. Select the payment method and try again.")) ?>');
+                this.validator.addRequiredGroup(this.form, '<?= $esc->js(__("The payment method is missing. Select the payment method and try again.")) ?>');
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
         };

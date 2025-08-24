@@ -1,24 +1,19 @@
 <?php declare(strict_types=1);
 
-use MageHx\HtmxActions\Enums\HtmxSwapOption;
-use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\GuestEmail;
 
 /** @var Template $block */
 /** @var string $nonce */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
+/** @var Esc $esc */
 /** @var string $formKey */
-/** @var Closure $viewModelProvider */
-/** @var GuestEmail $viewModel */
-/** @var HxAttributesRenderer $hxAttrRenderer */
-/** @var DesignThemeInfo $themeInfo */
+/** @var ViewModelProvider $viewModelProvider */
 
-$themeInfo = $viewModelProvider(DesignThemeInfo::class);
-$viewModel = $viewModelProvider(GuestEmail::class);
-$hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
+$viewModel = $viewModelProvider->get(GuestEmail::class);
+$hxAttrRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
 ?>
 <div id="guest-email-form-container">
     <form id="guest-email-form" class="form form-login" novalidate="novalidate" x-data="GuestEmailForm">
@@ -26,14 +21,14 @@ $hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
             <div class="field _required form-control w-full max-w-lg">
                 <label class="label" for="gef-email">
                     <span class="label-text after:content-['*'] after:text-red-500 after:ml-1">
-                        <?= $eHtml(__('Email Address')) ?>
+                        <?= $esc->html(__('Email Address')) ?>
                     </span>
                 </label>
                 <div class="control">
                     <input
                         id="gef-email" type="text" name="email" placeholder="joe@example.com"
                         class="input-text input input-bordered input-sm md:input-md w-full max-w-lg"
-                        value="<?= $eHtmlAttr($viewModel->getEmail()) ?>"
+                        value="<?= $esc->htmlAttr($viewModel->getEmail()) ?>"
                         <?= $hxAttrRenderer->hxBuilder()
                             ->post('mahxcheckout/form/guestEmailPost')
                             ->swapNone()
@@ -45,21 +40,8 @@ $hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
         </fieldset>
         <?= $formKey ?>
     </form>
-    <?php if ($themeInfo->isMagentoTheme()): ?>
-        <script nonce="<?= $eHtmlAttr($nonce) ?>">
-            'use strict';
-
-            require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
-                $(() => {
-                    const guestForm = document.getElementById('guest-email-form');
-                    const guestManager = Object.assign(pageNavigation, GuestEmailForm(guestForm));
-                    guestManager.init();
-                });
-            });
-        </script>
-    <?php endif; ?>
-
     <div class="max-w-xs my-4 md:my-8">
         <div class="divider"></div>
     </div>
+    <?= $block->getChildHtml('luma_js') ?>
 </div>

@@ -1,21 +1,19 @@
 <?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\Data\Address\CardData;
 use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
 use MageHx\MahxCheckout\ViewModel\ShippingAddressCards;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
-/** @var Closure $viewModelProvider */
-/** @var ShippingAddressCards $viewModel */
-/** @var HxAttributesRenderer $hxAttributeRenderer */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
 /** @var CardData $addressCard */
 
-$viewModel = $viewModelProvider(ShippingAddressCards::class);
-$hxAttributeRenderer = $viewModelProvider(HxAttributesRenderer::class);
+$viewModel = $viewModelProvider->get(ShippingAddressCards::class);
+$hxAttributeRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
 $addressCard = $block->getData('address_card');
 
 if (!$addressCard) {
@@ -31,13 +29,13 @@ if (!$addressCard) {
             hx-include="[name=form_key]"
             hx-post="<?= $block->getUrl("mahxcheckout/shipping/getNewAddressForm") ?>"
         >
-            <?= $eHtml(__('Edit')) ?>
+            <?= $esc->html(__('Edit')) ?>
         </button>
     <?php endif; ?>
     <div class="action-item ml-auto">
         <button
             type="button" class="action action-select-shipping-item btn btn-sm mt-4 btn-outline"
-            data-id="<?= $eHtmlAttr($addressCard->addressId) ?>"
+            data-id="<?= $esc->htmlAttr($addressCard->addressId) ?>"
             data-role="action-ship-here"
             x-cloak
             <?= $hxAttributeRenderer->hxBuilder()
@@ -50,7 +48,7 @@ if (!$addressCard) {
                 ->render()
             ?>
         >
-            <?= $eHtml(__('Ship Here')) ?>
+            <?= $esc->html(__('Ship Here')) ?>
         </button>
     </div>
 </div>

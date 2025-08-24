@@ -1,12 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
 use MageHx\MahxCheckout\Block\Address\FieldRenderer;
 use MageHx\MahxCheckout\Data\FormField\SelectFieldMeta;
-use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute as AFA;
 
 /** @var FieldRenderer $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
+/** @var Esc $esc */
 /** @var Closure $classNames */
 /** @var SelectFieldMeta $fieldMeta */
 
@@ -28,25 +27,25 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
-    <label class="label" for="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>">
+    <label class="label" for="<?= $esc->htmlAttr($fieldConfig->getFieldId()) ?>">
         <span class="<?= $classNames([
                 'label-text',
                 "after:content-['*'] after:text-red-500 after:ml-1" => $fieldConfig->required
             ]) ?>">
-            <?= $eHtml($fieldConfig->label) ?>
+            <?= $esc->html($fieldConfig->label) ?>
         </span>
     </label>
     <div class="control">
         <select
             class="select select-bordered select-sm w-full md:select-md"
-            id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
-            name="<?= $eHtmlAttr($fieldConfig->name) ?>"
+            id="<?= $esc->htmlAttr($fieldConfig->getFieldId()) ?>"
+            name="<?= $esc->htmlAttr($fieldConfig->name) ?>"
             <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
         >
-            <option value=""><?= $eHtml($fieldMeta->defaultOptionLabel) ?></option>
+            <option value=""><?= $esc->html($fieldMeta->defaultOptionLabel) ?></option>
             <?php foreach ($fieldMeta->options as $value => $label): ?>
-                <option value="<?= $eHtmlAttr($value) ?>" <?= $fieldConfig->value == $value ? 'selected' : '' ?>>
-                    <?= $eHtml($label) ?>
+                <option value="<?= $esc->htmlAttr($value) ?>" <?= $fieldConfig->value == $value ? 'selected' : '' ?>>
+                    <?= $esc->html($label) ?>
                 </option>
             <?php endforeach; ?>
         </select>

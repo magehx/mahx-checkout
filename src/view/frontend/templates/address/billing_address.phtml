@@ -1,14 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\BillingAddress;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
 /** @var Closure $classNames */
-/** @var Closure $viewModelProvider */
-/** @var BillingAddress $viewModel */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(BillingAddress::class);
+$viewModel = $viewModelProvider->get(BillingAddress::class);
 ?>
 <div
     id="billing-address-section"

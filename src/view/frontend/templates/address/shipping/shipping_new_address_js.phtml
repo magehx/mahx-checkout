@@ -1,20 +1,19 @@
 <?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 use MageHx\MahxCheckout\ViewModel\ShippingAddress;
 
 /** @var Template $block */
-/** @var string $eHtmlAttr */
 /** @var string $nonce */
-/** @var Closure $eJs */
-/** @var Closure $eUrl */
-/** @var Closure $viewModelProvider */
-/** @var ShippingAddress $viewModel */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(ShippingAddress::class);
+$viewModel = $viewModelProvider->get(ShippingAddress::class);
 ?>
-<script nonce="<?= $eHtmlAttr($nonce) ?>">
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
     function NewShippingAddressFormManager(elem) {
         const newFormId = '<?= /** @noEscape */ CheckoutForm::NEW_ADDRESS->value ?>';
         return {
@@ -53,7 +52,7 @@ $viewModel = $viewModelProvider(ShippingAddress::class);
             applyValidation() {
                 this.validator = mahxCheckout.validator(Object.assign({
                     form: this.form,
-                }, JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>')));
+                }, JSON.parse('<?= $esc->js($viewModel->getValidationJson()) ?>')));
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
         };

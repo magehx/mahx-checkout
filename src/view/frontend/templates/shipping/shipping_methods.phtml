@@ -1,26 +1,23 @@
 <?php declare(strict_types=1);
 
-use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
+use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\ShippingMethods;
 
 /** @var Template $block */
 /** @var string $nonce */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
-/** @var Closure $viewModelProvider */
-/** @var ShippingMethods $viewModel */
-/** @var DesignThemeInfo $themeInfo */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
 
-$themeInfo = $viewModelProvider(DesignThemeInfo::class);
-$viewModel = $viewModelProvider(ShippingMethods::class);
-$isHtmxOob = (bool)$block->getData('is_htmx_oob');
+$viewModel = $viewModelProvider->get(ShippingMethods::class);
+$hxAttrRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
 ?>
 <div
     id="shipping-methods-section"
     class="mt-12 relative"
-    <?= $eHtml($isHtmxOob ? 'hx-swap-oob="true"' : '') ?>
+    <?= $hxAttrRenderer->renderHxSwapOOB($block) ?>
 >
     <?= $block->getChildHtml('formTitle') ?>
     <div class="overflow-x-auto">
@@ -35,23 +32,23 @@ $isHtmxOob = (bool)$block->getData('is_htmx_oob');
                     <tr class="row">
                         <td class="col col-method w-12">
                             <input
-                                id="<?= $eHtmlAttr($id) ?>" type="radio" class="radio" name="shipping_method"
-                                value="<?= $eHtmlAttr($methodValue) ?>"
+                                id="<?= $esc->htmlAttr($id) ?>" type="radio" class="radio" name="shipping_method"
+                                value="<?= $esc->htmlAttr($methodValue) ?>"
                                 <?= $methodValue === $viewModel->getSelectedMethod() ? 'checked': '' ?>/>
                         </td>
                         <td class="col col-price font-bold">
-                            <label for="<?= $eHtmlAttr($id) ?>" class="price cursor-pointer">
+                            <label for="<?= $esc->htmlAttr($id) ?>" class="price cursor-pointer">
                                 <span class="price"><?= /** @noEscape */ $viewModel->getMethodPriceHtml($method) ?></span>
                             </label>
                         </td>
                         <td class="col col-method">
-                            <label for="<?= $eHtmlAttr($id) ?>" class="cursor-pointer">
-                                <?= $eHtml($method->getMethodTitle()) ?>
+                            <label for="<?= $esc->htmlAttr($id) ?>" class="cursor-pointer">
+                                <?= $esc->html($method->getMethodTitle()) ?>
                             </label>
                         </td>
                         <td class="col col-method">
-                            <label for="<?= $eHtmlAttr($id) ?>" class="cursor-pointer">
-                                <?= $eHtml($method->getCarrierTitle()) ?>
+                            <label for="<?= $esc->htmlAttr($id) ?>" class="cursor-pointer">
+                                <?= $esc->html($method->getCarrierTitle()) ?>
                             </label>
                         </td>
                     </tr>
@@ -61,22 +58,5 @@ $isHtmxOob = (bool)$block->getData('is_htmx_oob');
         </form>
     </div>
     <?= $block->getChildHtml('loader') ?>
-    <?php if ($themeInfo->isMagentoTheme()): ?>
-        <script nonce="<?= $eHtmlAttr($nonce) ?>">
-            'use strict';
-
-            require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
-                $(() => {
-                    const shippingMethodsForm = document.getElementById('shipping-methods-form');
-                    if (shippingMethodsForm) {
-                        const shippingMethodsFormManager = Object.assign(
-                            pageNavigation,
-                            ShippingMethodsForm(shippingMethodsForm)
-                        );
-                        shippingMethodsFormManager.init();
-                    }
-                });
-            });
-        </script>
-    <?php endif; ?>
+    <?= $block->getChildHtml('luma_js') ?>
 </div>

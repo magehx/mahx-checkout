@@ -1,15 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\Totals;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
+/** @var Esc $esc */
 /** @var Closure $classNames */
-/** @var Closure $viewModelProvider */
-/** @var Totals $viewModel */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(Totals::class);
+$viewModel = $viewModelProvider->get(Totals::class);
 $totals = $viewModel->getTotals();
 $grandTotal = $viewModel->getGrandTotal();
 $isHtmxOob = (bool)$block->getData('is_htmx_oob');
@@ -36,7 +37,7 @@ $htmxLoaderClasses = implode(' ', $viewModel->getHtmxLoaderClasses());
 
         <?php if ($grandTotal): ?>
             <div class="grand-total total-item border-t border-gray-300 pt-4 mt-4 flex justify-between items-center text-xl font-semibold">
-                <dt><?= $eHtml(__('Order Total')) ?></dt>
+                <dt><?= $esc->html(__('Order Total')) ?></dt>
                 <dd><?= $viewModel->formatPrice($grandTotal->value) ?></dd>
             </div>
         <?php endif; ?>

@@ -1,24 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
-use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddress;
 
 /** @var Template $block */
 /** @var string $nonce */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
+/** @var Esc $esc */
 /** @var string $formKey */
-/** @var Closure $viewModelProvider */
-/** @var BillingAddress $viewModel */
-/** @var ShowBillingForm $showFormViewModel */
-/** @var DesignThemeInfo $themeInfo */
+/** @var ViewModelProvider $viewModelProvider */
 
-$themeInfo = $viewModelProvider(DesignThemeInfo::class);
-$viewModel = $viewModelProvider(BillingAddress::class);
-$showFormViewModel = $viewModelProvider(ShowBillingForm::class);
+$viewModel = $viewModelProvider->get(BillingAddress::class);
+$showFormViewModel = $viewModelProvider->get(ShowBillingForm::class);
 $isSameAsShipping = $viewModel->isBillingSameAsShipping();
 
 if (!$showFormViewModel->canShowForm()) {
@@ -33,21 +28,6 @@ if (!$showFormViewModel->canShowForm()) {
         <?php endforeach; ?>
         <?= $block->getChildHtml('actions') ?>
     </fieldset>
-    <?php if ($themeInfo->isMagentoTheme()): ?>
-        <script nonce="<?= $eHtmlAttr($nonce) ?>">
-            'use strict';
-
-            require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
-                $(() => {
-                    const billingAddressForm = document.getElementById('billing-address-form');
-                    const billingAddressFormManager = Object.assign(
-                        pageNavigation,
-                        BillingAddressForm(billingAddressForm)
-                    );
-                    billingAddressFormManager.init();
-                });
-            });
-        </script>
-    <?php endif; ?>
+    <?= $block->getChildHtml('luma_js') ?>
 </form>
 <?= $block->getChildHtml('loader') ?>

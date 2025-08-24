@@ -1,19 +1,16 @@
 <?php declare(strict_types=1);
 
-use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\OrderCartItems;
 
 /** @var Template $block */
 /** @var string $nonce */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $viewModelProvider */
-/** @var OrderCartItems $viewModel */
-/** @var DesignThemeInfo $themeInfo */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
 
-$themeInfo = $viewModelProvider(DesignThemeInfo::class);
-$viewModel = $viewModelProvider(OrderCartItems::class);
+$viewModel = $viewModelProvider->get(OrderCartItems::class);
 ?>
 <div id="cart-items-section" data-bind="scope: 'orderSummary'" x-data="OrderSummary">
     <div class="block items-in-cart collapse collapse-arrow" data-role="items-collapse">
@@ -24,9 +21,9 @@ $viewModel = $viewModelProvider(OrderCartItems::class);
             <strong class="font-normal">
                 <span>
                     <?php if ($viewModel->getCartItemsTotalQty() > 1): ?>
-                        <?= $eHtml($viewModel->getCartItemsTotalQty()) ?> <?= $eHtml(__('Items in Cart')) ?>
+                        <?= $esc->html($viewModel->getCartItemsTotalQty()) ?> <?= $esc->html(__('Items in Cart')) ?>
                     <?php else: ?>
-                        1 <?= $eHtml(__('Item in Cart')) ?>
+                        1 <?= $esc->html(__('Item in Cart')) ?>
                     <?php endif; ?>
                 </span>
             </strong>
@@ -42,14 +39,14 @@ $viewModel = $viewModelProvider(OrderCartItems::class);
                         <div class="product flex space-x-4">
                             <?php if ($cartItem->image): ?>
                                 <div class="product-image-container !w-1/4"
-                                     style="width:<?= $eHtmlAttr($cartItem->image->width/2) ?>px; height: <?= $eHtmlAttr($cartItem->image->height/2) ?>px;"
+                                     style="width:<?= $esc->htmlAttr($cartItem->image->width/2) ?>px; height: <?= $esc->htmlAttr($cartItem->image->height/2) ?>px;"
                                 >
                                     <span class="product-image-wrapper">
-                                        <img src="<?= $eHtmlAttr($cartItem->image->src) ?>"
-                                             width="<?= $eHtmlAttr($cartItem->image->width) ?>"
-                                             height="<?= $eHtmlAttr($cartItem->image->height) ?>"
-                                             alt="<?= $eHtmlAttr($cartItem->image->alt) ?>"
-                                             title="<?= $eHtmlAttr($cartItem->image->alt) ?>"
+                                        <img src="<?= $esc->htmlAttr($cartItem->image->src) ?>"
+                                             width="<?= $esc->htmlAttr($cartItem->image->width) ?>"
+                                             height="<?= $esc->htmlAttr($cartItem->image->height) ?>"
+                                             alt="<?= $esc->htmlAttr($cartItem->image->alt) ?>"
+                                             title="<?= $esc->htmlAttr($cartItem->image->alt) ?>"
                                              loading="lazy" class="h-auto max-w-full" />
                                     </span>
                                 </div>
@@ -57,10 +54,10 @@ $viewModel = $viewModelProvider(OrderCartItems::class);
                             <div class="product-item-details flex-1 space-y-4 text-base font-normal">
                                 <div class="product-item-inner">
                                     <div class="product-item-name-block space-y-2">
-                                        <h4 class="product-item-name"><?= $eHtml($cartItem->name) ?></h4>
+                                        <h4 class="product-item-name"><?= $esc->html($cartItem->name) ?></h4>
                                         <div class="details-qty flex items-center   ">
-                                            <span class="label px-0"><?= $eHtml(__('Qty: ')) ?></span>
-                                            <span class="value"><?= $eHtml($cartItem->qty) ?></span>
+                                            <span class="label px-0"><?= $esc->html(__('Qty: ')) ?></span>
+                                            <span class="value"><?= $esc->html($cartItem->qty) ?></span>
                                         </div>
                                     </div>
                                     <div class="subtotal">
@@ -75,26 +72,26 @@ $viewModel = $viewModelProvider(OrderCartItems::class);
                                 <?php if (!empty($cartItem->options)): ?>
                                     <div
                                         class="product options collapse collapse-arrow"
-                                        data-role="item-<?= $eHtmlAttr($cartItem->id) ?>-options-collapse"
+                                        data-role="item-<?= $esc->htmlAttr($cartItem->id) ?>-options-collapse"
                                     >
                                         <span
                                             class="toggler pl-1 -mt-4 collapse-title"
                                             data-role="options-toggle"
-                                            data-item-id="item-<?= $eHtmlAttr($cartItem->id) ?>"
+                                            data-item-id="item-<?= $esc->htmlAttr($cartItem->id) ?>"
                                         >
-                                            <span><?= $eHtml(__('View Details')) ?></span>
+                                            <span><?= $esc->html(__('View Details')) ?></span>
                                         </span>
                                         <div class="content pl-1 -mt-4 collapse-content"
-                                             data-role="item-<?= $eHtmlAttr($cartItem->id) ?>-options-content"
+                                             data-role="item-<?= $esc->htmlAttr($cartItem->id) ?>-options-content"
                                              style="display: none;"
                                         >
                                             <div class="item-options">
                                                 <?php foreach ($cartItem->options as $option): ?>
                                                     <dl class="flex items-center gap-2">
                                                         <dt class="label font-semibold !py-0 after:content-[': ']">
-                                                            <?= $eHtml($option['label']) ?>
+                                                            <?= $esc->html($option['label']) ?>
                                                         </dt>
-                                                        <dd class="values"><?= $eHtml($option['value']) ?></dd>
+                                                        <dd class="values"><?= $esc->html($option['value']) ?></dd>
                                                     </dl>
                                                 <?php endforeach; ?>
                                             </div>
@@ -108,17 +105,5 @@ $viewModel = $viewModelProvider(OrderCartItems::class);
             </div>
         </div>
     </div>
-    <?php if ($themeInfo->isMagentoTheme()): ?>
-    <script nonce="<?= $eHtmlAttr($nonce) ?>">
-        'use strict';
-
-        require(['jquery'], ($) => {
-            $(() => {
-                const summary = OrderSummary(document.getElementById('cart-items-section'));
-                summary.$store = { app: AppStorage };
-                summary.init();
-            });
-        });
-    </script>
-    <?php endif; ?>
+    <?= $block->getChildHtml('luma_js') ?>
 </div>

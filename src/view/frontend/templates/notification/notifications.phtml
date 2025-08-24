@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
 use MageHx\MahxCheckout\Block\Notifications;
 
-/** @var Closure $eHtml */
+/** @var Esc $esc */
 /** @var Notifications $block */
 ?>
 <div id="notifications-container" <?= $block->isHtmxOOBNeeded() ?  'hx-swap-oob="true"' : ''?>>
@@ -10,7 +11,7 @@ use MageHx\MahxCheckout\Block\Notifications;
         <div class="toast toast-top toast-end z-50" x-data="Notification" x-show="show">
             <?php foreach ($block->getValidationErrors() as $message): ?>
                 <div class="alert alert-error">
-                    <span><?= $eHtml(__($message)) ?></span>
+                    <span><?= $esc->html(__($message)) ?></span>
                 </div>
             <?php endforeach; ?>
         </div>
@@ -19,7 +20,7 @@ use MageHx\MahxCheckout\Block\Notifications;
     <?php if (!empty($block->getGenericErrorMessage())): ?>
     <div class="toast toast-top toast-end z-50" x-data="Notification" x-show="show">
         <div class="alert alert-warning">
-            <span><?= $eHtml($block->getGenericErrorMessage()) ?></span>
+            <span><?= $esc->html($block->getGenericErrorMessage()) ?></span>
         </div>
     </div>
     <?php endif; ?>
@@ -27,7 +28,7 @@ use MageHx\MahxCheckout\Block\Notifications;
     <?php if (!empty($block->getSuccessMessage())): ?>
         <div class="toast toast-top toast-end z-50" x-data="Notification" x-show="show">
             <div class="alert alert-success">
-                <span><?= $eHtml($block->getSuccessMessage()) ?></span>
+                <span><?= $esc->html($block->getSuccessMessage()) ?></span>
             </div>
         </div>
     <?php endif; ?>

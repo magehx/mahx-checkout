@@ -1,30 +1,29 @@
 <?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\ShippingAddressCards;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eUrl */
-/** @var Closure $viewModelProvider */
-/** @var ShippingAddressCards $viewModel */
-/** @var DesignThemeInfo $designThemeInfo */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(ShippingAddressCards::class);
-$designThemeInfo = $viewModelProvider(DesignThemeInfo::class);
+$viewModel = $viewModelProvider->get(ShippingAddressCards::class);
+$designThemeInfo = $viewModelProvider->get(DesignThemeInfo::class);
 ?>
 <div id="shipping-address-details" class="opc-block-shipping-information collapse collapse-open">
     <div class="ship-to text-xl font-medium border-b collapse-title">
         <div class="shipping-information-title flex items-center justify-between">
-            <span><?= $eHtml(__('Ship To:')) ?></span>
+            <span><?= $esc->html(__('Ship To:')) ?></span>
             <button
                 type="button" class="action-edit btn-edit-pencil"
                 hx-target="#checkout-main-content"
                 hx-swap="outerHTML"
                 hx-indicator="#checkout-page-loader"
                 hx-include="[name=form_key]"
-                hx-post="<?= $eUrl($block->getUrl('mahxcheckout/step/getStepContent', ['step' => 'shipping'])) ?>"
+                hx-post="<?= $esc->url($block->getUrl('mahxcheckout/step/getStepContent', ['step' => 'shipping'])) ?>"
             >
                 <?php if ($designThemeInfo->isHyvaTheme()): ?>
                     <?php // Hero Solid Pencil Svg icon ?>
@@ -38,12 +37,12 @@ $designThemeInfo = $viewModelProvider(DesignThemeInfo::class);
     <div class="pt-4 collapse-content">
         <div class="space-y-2 text-base italic font-normal">
             <?php $addressLines = $viewModel->getShippingAddressLines(); ?>
-            <p class="font-semibold"><?= $eHtml($addressLines->name) ?></p>
-            <p><?= $eHtml($addressLines->streetLine1 ?? '') ?></p>
-            <p><?= $eHtml($addressLines->streetLine2 ?? '') ?></p>
-            <p><?= $eHtml($addressLines->postcode ?? '') ?></p>
-            <p><?= $eHtml($addressLines->country ?? '') ?></p>
-            <p class="text-blue-600 mt-1"><?= $eHtml($addressLines->telephone ?? '') ?></p>
+            <p class="font-semibold"><?= $esc->html($addressLines->name) ?></p>
+            <p><?= $esc->html($addressLines->streetLine1 ?? '') ?></p>
+            <p><?= $esc->html($addressLines->streetLine2 ?? '') ?></p>
+            <p><?= $esc->html($addressLines->postcode ?? '') ?></p>
+            <p><?= $esc->html($addressLines->country ?? '') ?></p>
+            <p class="text-blue-600 mt-1"><?= $esc->html($addressLines->telephone ?? '') ?></p>
         </div>
     </div>
 </div>

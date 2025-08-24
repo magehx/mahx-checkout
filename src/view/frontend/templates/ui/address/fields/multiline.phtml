@@ -1,11 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
 use MageHx\MahxCheckout\Block\Address\FieldRenderer;
 use MageHx\MahxCheckout\Data\FormField\MultilineFieldMeta;
 
 /** @var FieldRenderer $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
+/** @var Esc $esc */
 /** @var Closure $classNames */
 /** @var MultilineFieldMeta $fieldMeta */
 
@@ -26,12 +26,12 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
-    <label class="label" for="<?= $eHtmlAttr($fieldConfig->getFieldId() . '-0') ?>">
+    <label class="label" for="<?= $esc->htmlAttr($fieldConfig->getFieldId() . '-0') ?>">
         <span class="<?= $classNames([
                 'label-text',
                 "after:content-['*'] after:text-red-500 after:ml-1" => $fieldConfig->required
             ]) ?>">
-            <?= $eHtml($fieldConfig->label) ?>
+            <?= $esc->html($fieldConfig->label) ?>
         </span>
     </label>
     <div class="control space-y-2">
@@ -43,9 +43,9 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
                 <input
                     type="text"
                     class="input-text input input-bordered input-sm md:input-md w-full max-w-lg"
-                    id="<?= $eHtmlAttr($fieldConfig->getFieldId() . '-' . $index) ?>"
-                    name="<?= $eHtmlAttr($fieldConfig->name) ?>[<?= $eHtmlAttr($index) ?>]"
-                    value="<?= $eHtmlAttr($fieldConfig->value[$index] ?? '')  ?>"
+                    id="<?= $esc->htmlAttr($fieldConfig->getFieldId() . '-' . $index) ?>"
+                    name="<?= $esc->htmlAttr($fieldConfig->name) ?>[<?= $esc->htmlAttr($index) ?>]"
+                    value="<?= $esc->htmlAttr($fieldConfig->value[$index] ?? '')  ?>"
                     <?= /** @noEscape */ !$index ? $block->getInputAdditionalAttributes() : '' ?>
                 />
             </div>

@@ -1,20 +1,18 @@
 <?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\StepManager;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
+/** @var Esc $esc */
 /** @var Closure $classNames */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
-/** @var Closure $viewModelProvider */
-/** @var StepManager $viewModel */
-/** @var HxAttributesRenderer $hxRenderer */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(StepManager::class);
-$hxRenderer = $viewModelProvider(HxAttributesRenderer::class);
+$viewModel = $viewModelProvider->get(StepManager::class);
+$hxRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
 ?>
 <div id="step-navigation-section" class="w-full py-4 mb-4" <?= $hxRenderer->renderHxSwapOOB($block) ?>>
     <input type="hidden" name="step" id="current-step" value="<?= $viewModel->getCurrentStep()->name ?>" />
@@ -25,15 +23,15 @@ $hxRenderer = $viewModelProvider(HxAttributesRenderer::class);
                         'opc-progress-bar-item step !min-w-56 cursor-pointer',
                         '_active step-success font-extrabold' => $viewModel->isStepCompleted($step)
                     ]) ?>"
-                    data-step-name="<?= $eHtmlAttr($step->name) ?>"
+                    data-step-name="<?= $esc->htmlAttr($step->name) ?>"
                     hx-trigger="click"
                     hx-target="#checkout-main-content"
                     hx-swap="outerHTML"
                     hx-include="[name=form_key]"
                     hx-indicator="#checkout-page-loader"
-                    hx-post="<?= $eUrl($block->getUrl('mahxcheckout/step/getStepContent', ['step' => $step->name])) ?>"
+                    hx-post="<?= $esc->url($block->getUrl('mahxcheckout/step/getStepContent', ['step' => $step->name])) ?>"
                 >
-                    <span><?= $eHtml($step->label) ?></span>
+                    <span><?= $esc->html($step->label) ?></span>
                 </li>
             <?php endforeach; ?>
         </ul>

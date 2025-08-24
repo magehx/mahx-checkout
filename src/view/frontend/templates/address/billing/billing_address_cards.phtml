@@ -1,20 +1,18 @@
 <?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddressCards;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
+/** @var Esc $esc */
 /** @var Closure $classNames */
-/** @var Closure $viewModelProvider */
-/** @var BillingAddressCards $viewModel */
-/** @var ShowBillingForm $showFormViewModel */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(BillingAddressCards::class);
-$showFormViewModel = $viewModelProvider(ShowBillingForm::class);
+$viewModel = $viewModelProvider->get(BillingAddressCards::class);
+$showFormViewModel = $viewModelProvider->get(ShowBillingForm::class);
 
 if (!$showFormViewModel->canShowCards()) {
     return;
@@ -32,17 +30,17 @@ if (!$showFormViewModel->canShowCards()) {
             >
                 <input
                     type="radio" name="billing_address_id" class="radio"
-                    id="<?= $eHtmlAttr($inputId) ?>"
-                    value="<?= $eHtmlAttr($addressCard->addressId) ?>"
+                    id="<?= $esc->htmlAttr($inputId) ?>"
+                    value="<?= $esc->htmlAttr($addressCard->addressId) ?>"
                     <?= $addressCard->isSelected ? 'checked' : '' ?>
                     hx-include="[name=form_key]"
                     hx-indicator="#checkout-page-loader"
                     hx-target="#checkout-main-content"
                     hx-swap="outerHTML"
-                    hx-post="<?= $eUrl($block->getUrl('mahxcheckout/billing/saveBillingById')) ?>"
+                    hx-post="<?= $esc->url($block->getUrl('mahxcheckout/billing/saveBillingById')) ?>"
                 />
-                <label for="<?= $eHtmlAttr($inputId) ?>" class="cursor-pointer">
-                    <?= $eHtml($addressCard->addressLines->label()) ?>
+                <label for="<?= $esc->htmlAttr($inputId) ?>" class="cursor-pointer">
+                    <?= $esc->html($addressCard->addressLines->label()) ?>
                 </label>
             </li>
         <?php endforeach; ?>
@@ -59,7 +57,7 @@ if (!$showFormViewModel->canShowCards()) {
                     hx-swap="outerHTML"
                     hx-post="<?= $block->getUrl('mahxcheckout/billing/editBilling') ?>"
                 >
-                    + <?= $eHtml(__('New Address')) ?>
+                    + <?= $esc->html(__('New Address')) ?>
                 </button>
             </div>
         </div>

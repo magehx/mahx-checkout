@@ -1,19 +1,17 @@
 <?php declare(strict_types=1);
 
 use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\BillingAddressFormActions;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
-/** @var Closure $viewModelProvider */
-/** @var BillingAddressFormActions $viewModel */
-/** @var HxAttributesRenderer $hxAttrRenderer */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(BillingAddressFormActions::class);
-$hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
+$viewModel = $viewModelProvider->get(BillingAddressFormActions::class);
+$hxAttrRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
 ?>
 <?php if ($viewModel->canShow()): ?>
 <div class="actions-toolbar max-w-lg">
@@ -34,7 +32,7 @@ $hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
                 ->swapOuterHTML()
                 ->render() ?>
         >
-            <?= $eHtml(__('Cancel')) ?>
+            <?= $esc->html(__('Cancel')) ?>
         </button>
         <button class="action action-update btn btn-neutral" type="button"
                 data-role="action-update"
@@ -42,9 +40,9 @@ $hxAttrRenderer = $viewModelProvider(HxAttributesRenderer::class);
                 hx-indicator=".save-billing-loader"
                 hx-target="#billing-address-section"
                 hx-trigger="mahxcheckout-billing-validated from:body"
-                hx-post="<?= $eUrl($block->getUrl('mahxcheckout/billing/billingAddressPost')) ?>"
+                hx-post="<?= $esc->url($block->getUrl('mahxcheckout/billing/billingAddressPost')) ?>"
         >
-            <?= $eHtml(__('Update')) ?>
+            <?= $esc->html(__('Update')) ?>
         </button>
     </div>
 </div>

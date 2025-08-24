@@ -10,7 +10,12 @@
                     <argument name="title" xsi:type="string">Shipping Address</argument>
                 </arguments>
             </block>
-            <block name="guest.email.form" as="guestEmailForm" template="MageHx_MahxCheckout::email/guest_email.phtml" />
+            <block name="guest.email.form" as="guestEmailForm" template="MageHx_MahxCheckout::email/guest_email.phtml">
+                <block name="guest.email.form.luma.js" as="luma_js"
+                       template="MageHx_MahxCheckout::email/guest_email/luma/init_js.phtml"/>
+            </block>
+            <block name="shipping.address.form.luma.js" as="luma_js"
+                   template="MageHx_MahxCheckout::address/shipping/luma/init_js.phtml"/>
         </block>
 
         <block class="MageHx\MahxCheckout\Block\ShippingMethodsForm" name="shipping.methods.form"
@@ -27,6 +32,7 @@
                     <argument name="extra_class" xsi:type="string">checkout-loader est-shipping-loader est-shipping-country-loader</argument>
                 </arguments>
             </block>
+            <block name="shipping.methods.form.luma.js" as="luma_js" template="MageHx_MahxCheckout::shipping/luma/init_js.phtml"/>
         </block>
 
         <block class="MageHx\MahxCheckout\Block\PaymentMethods"
@@ -45,6 +51,7 @@
                     <argument name="extra_class" xsi:type="string">checkout-loader save-payment-loader</argument>
                 </arguments>
             </block>
+            <block name="payment.methods.form.luma.js" as="luma_js" template="MageHx_MahxCheckout::payment/luma/init_js.phtml"/>
         </block>
 
         <block name="billing.address.section" template="MageHx_MahxCheckout::address/billing_address.phtml">
@@ -63,6 +70,8 @@
                    template="MageHx_MahxCheckout::address/billing/billing_address_new_form.phtml">
                 <block name="billing.address.form.actions" as="actions"
                        template="MageHx_MahxCheckout::address/billing/form/actions.phtml"/>
+                <block name="billing.address.form.luma.js" as="luma_js"
+                       template="MageHx_MahxCheckout::address/billing/form/luma/init_js.phtml" />
             </block>
             <block name="billing.address.section.loader" as="sectionLoader"
                    template="MageHx_MahxCheckout::ui/common/section_loader.phtml">
@@ -82,19 +91,29 @@
             <block name="shipping.address.cards.form.actions" as="actions"
                    template="MageHx_MahxCheckout::address/shipping/cards/actions.phtml"/>
             <block name="shipping.address.cards.form"
-                   template="MageHx_MahxCheckout::address/shipping/shipping_new_address_form.phtml" />
+                   template="MageHx_MahxCheckout::address/shipping/shipping_new_address_form.phtml">
+                <block name="shipping.address.cards.form.luma.js" as="luma_js"
+                    template="MageHx_MahxCheckout::address/shipping/new_address/luma/init_js.phtml"/>
+            </block>
             <block name="shipping.address.cards.loader" as="loader"
                    template="MageHx_MahxCheckout::ui/common/section_loader.phtml">
                 <arguments>
                     <argument name="id" xsi:type="string">shipping-address-cards-loader</argument>
                 </arguments>
             </block>
+            <block name="shipping.address.cards.luma.js" as="luma_js"
+                   template="MageHx_MahxCheckout::address/shipping/cards/luma/init_js.phtml"/>
         </block>
 
-        <block name="checkout.summary.cart.items" template="MageHx_MahxCheckout::summary/order_cart_items.phtml" />
+        <block name="checkout.summary.cart.items" template="MageHx_MahxCheckout::summary/order_cart_items.phtml">
+            <block name="checkout.summary.cart.items.luma.js" as="luma_js" template="MageHx_MahxCheckout::summary/cart_items/luma/init_js.phtml"/>
+        </block>
         <block name="checkout.order.totals" template="MageHx_MahxCheckout::summary/order_totals.phtml"
                before="checkout.summary.cart.items"/>
-        <block name="checkout.navigation.action" template="MageHx_MahxCheckout::navigation/page_action.phtml" />
+        <block name="checkout.navigation.action" template="MageHx_MahxCheckout::navigation/page_action.phtml">
+            <block name="checkout.navigation.action.luma.js" as="luma_js"
+                   template="MageHx_MahxCheckout::navigation/page_action/luma/init_js.phtml"/>
+        </block>
         <block class="MageHx\MahxCheckout\Block\Notifications" name="checkout.notifications"
                template="MageHx_MahxCheckout::notification/notifications.phtml" />
         <block name="checkout.step.auto.loader" template="MageHx_MahxCheckout::ui/common/step_loader.phtml" />

@@ -1,21 +1,20 @@
 <?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddress;
 
 /** @var Template $block */
-/** @var string $eHtmlAttr */
 /** @var string $nonce */
-/** @var Closure $eJs */
-/** @var Closure $viewModelProvider */
-/** @var BillingAddress $viewModel */
-/** @var DesignThemeInfo $themeInfo */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(BillingAddress::class);
-$themeInfo = $viewModelProvider(DesignThemeInfo::class);
+$viewModel = $viewModelProvider->get(BillingAddress::class);
+$themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
 ?>
-<script nonce="<?= $eHtmlAttr($nonce) ?>">
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
     'use strict';
 
     function BillingAddressForm(form) {
@@ -81,7 +80,7 @@ $themeInfo = $viewModelProvider(DesignThemeInfo::class);
             applyValidation() {
                 this.validator = mahxCheckout.validator(Object.assign({
                     form: this.form,
-                }, JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>')))
+                }, JSON.parse('<?= $esc->js($viewModel->getValidationJson()) ?>')))
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
             <?php if($themeInfo->isHyvaTheme()): ?>

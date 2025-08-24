@@ -1,19 +1,17 @@
 <?php declare(strict_types=1);
 
-use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\ShippingAddress;
 
 /** @var Template $block */
 /** @var string $nonce */
-/** @var Closure $eHtmlAttr */
+/** @var Esc $esc->htmlAttr */
 /** @var string $formKey */
-/** @var Closure $viewModelProvider */
-/** @var ShippingAddress $viewModel */
-/** @var DesignThemeInfo $themeInfo */
+/** @var ViewModelProvider $viewModelProvider */
 
-$themeInfo = $viewModelProvider(DesignThemeInfo::class);
-$viewModel = $viewModelProvider(ShippingAddress::class);
+$viewModel = $viewModelProvider->get(ShippingAddress::class);
 ?>
 <div id="shipping-address-form-container" class="checkout-shipping-address">
     <?= $block->getChildHtml('formTitle') ?>
@@ -27,17 +25,5 @@ $viewModel = $viewModelProvider(ShippingAddress::class);
             <?= $formKey ?>
         </FIELDSET>
     </form>
-    <?php if ($themeInfo->isMagentoTheme()): ?>
-        <script nonce="<?= $eHtmlAttr($nonce) ?>">
-            'use strict';
-
-            require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
-                $(() => {
-                    const shippingAddrForm = document.getElementById('shipping-address-form');
-                    const shippingAddrFormManager = Object.assign(pageNavigation, ShippingAddressForm(shippingAddrForm));
-                    shippingAddrFormManager.init();
-                });
-            });
-        </script>
-    <?php endif; ?>
+    <?= $block->getChildHtml('luma_js') ?>
 </div>

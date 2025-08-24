@@ -1,23 +1,20 @@
 <?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
 use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddress;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
+/** @var Esc $esc */
 /** @var string $formKey */
-/** @var Closure $viewModelProvider */
-/** @var BillingAddress $viewModel */
-/** @var ShowBillingForm $showFormViewModel */
-/** @var HxAttributesRenderer $hxAttributesRenderer */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(BillingAddress::class);
-$hxAttributesRenderer = $viewModelProvider(HxAttributesRenderer::class);
-$showFormViewModel = $viewModelProvider(ShowBillingForm::class);
+$viewModel = $viewModelProvider->get(BillingAddress::class);
+$hxAttributesRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
+$showFormViewModel = $viewModelProvider->get(ShowBillingForm::class);
 $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
 ?>
 <div id="billing-address-details">
@@ -28,12 +25,12 @@ $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
                 <div class="collapse-content pt-4">
                     <div class="space-y-1 italic text-sm pl-6">
                         <?php $addressLines = $viewModel->getBillingAddressLines() ?>
-                        <p class="font-semibold"><?= $eHtml($addressLines->name) ?></p>
-                        <p><?= $eHtml($addressLines->streetLine1 ?? '') ?></p>
-                        <p><?= $eHtml($addressLines->streetLine2 ?? '') ?></p>
-                        <p><?= $eHtml($addressLines->postcode ?? '') ?></p>
-                        <p><?= $eHtml($addressLines->country ?? '') ?></p>
-                        <p class="text-blue-600 mt-1"><?= $eHtml($addressLines->telephone ?? '') ?></p>
+                        <p class="font-semibold"><?= $esc->html($addressLines->name) ?></p>
+                        <p><?= $esc->html($addressLines->streetLine1 ?? '') ?></p>
+                        <p><?= $esc->html($addressLines->streetLine2 ?? '') ?></p>
+                        <p><?= $esc->html($addressLines->postcode ?? '') ?></p>
+                        <p><?= $esc->html($addressLines->country ?? '') ?></p>
+                        <p class="text-blue-600 mt-1"><?= $esc->html($addressLines->telephone ?? '') ?></p>
                     </div>
                     <?php if (!$isSameAsShipping): ?>
                         <div class="mt-4 px-4">
@@ -49,7 +46,7 @@ $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
                                     ->render()
                                 ?>
                             >
-                                <?= $eHtml(__('Edit')) ?>
+                                <?= $esc->html(__('Edit')) ?>
                             </button>
                         </div>
                     <?php endif; ?>

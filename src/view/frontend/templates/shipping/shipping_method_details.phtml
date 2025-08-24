@@ -1,22 +1,22 @@
 <?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\ShippingMethods;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eUrl */
-/** @var Closure $viewModelProvider */
-/** @var ShippingMethods $viewModel */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(ShippingMethods::class);
-$designThemeInfo = $viewModelProvider(DesignThemeInfo::class);
+$viewModel = $viewModelProvider->get(ShippingMethods::class);
+$designThemeInfo = $viewModelProvider->get(DesignThemeInfo::class);
 ?>
 <div id="shipping-method-details" class="opc-block-shipping-information mt-4 collapse collapse-open">
     <div class="ship-via text-xl font-medium border-b collapse-title">
         <div class="shipping-information-title flex items-center justify-between">
-            <span><?= $eHtml(__('Shipping Method:')) ?></span>
+            <span><?= $esc->html(__('Shipping Method:')) ?></span>
             <?php // Hero Solid Pencil Svg icon ?>
             <button
                 type="button" class="action-edit btn-edit-pencil"
@@ -24,7 +24,7 @@ $designThemeInfo = $viewModelProvider(DesignThemeInfo::class);
                 hx-swap="outerHTML"
                 hx-include="[name=form_key]"
                 hx-indicator="#checkout-page-loader"
-                hx-post="<?= $eUrl($block->getUrl('mahxcheckout/step/getStepContent', ['step' => 'shipping'])) ?>"
+                hx-post="<?= $esc->url($block->getUrl('mahxcheckout/step/getStepContent', ['step' => 'shipping'])) ?>"
             >
                 <?php if ($designThemeInfo->isHyvaTheme()): ?>
                     <?php // Hero Solid Pencil Svg icon ?>
@@ -38,7 +38,7 @@ $designThemeInfo = $viewModelProvider(DesignThemeInfo::class);
     </div>
     <div class="pt-4 text-base font-normal collapse-content">
         <div class="space-y-2">
-            <p><?= $eHtml($viewModel->getShippingMethodDetails()) ?></p>
+            <p><?= $esc->html($viewModel->getShippingMethodDetails()) ?></p>
         </div>
     </div>
 </div>

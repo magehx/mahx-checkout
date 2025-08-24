@@ -1,15 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
-/** @var Closure $eHtmlAttr */
+/** @var Esc $esc */
 /** @var Closure $classNames */
+
 $id = $block->getData('id') ?? '';
 $extraClass = $block->getData('extra_class') ?? '';
 ?>
 <div
-    id="<?= $eHtmlAttr($id) ?>"
+    id="<?= $esc->htmlAttr($id) ?>"
     class="<?= $classNames([
         'htmx-indicator section-loader absolute inset-0 flex items-center justify-center bg-white/50 pointer-events-none',
         $extraClass => $extraClass,

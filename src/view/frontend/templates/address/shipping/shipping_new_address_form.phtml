@@ -1,7 +1,8 @@
 <?php declare(strict_types=1);
 
 use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
-use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 use MageHx\MahxCheckout\ViewModel\ShippingAddress;
@@ -9,25 +10,18 @@ use MageHx\MahxCheckout\ViewModel\ShippingAddressCards;
 
 /** @var Template $block */
 /** @var string $nonce */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
+/** @var Esc $esc */
 /** @var string $formKey */
-/** @var Closure $viewModelProvider */
-/** @var ShippingAddressCards $viewModel */
-/** @var ShippingAddress $formModel */
-/** @var HxAttributesRenderer $hxAttributesRenderer */
-/** @var DesignThemeInfo $themeInfo */
+/** @var ViewModelProvider $viewModelProvider */
 
-$themeInfo = $viewModelProvider(DesignThemeInfo::class);
-$viewModel = $viewModelProvider(ShippingAddressCards::class);
-$hxAttributesRenderer = $viewModelProvider(HxAttributesRenderer::class);
-$formModel = $viewModelProvider(ShippingAddress::class);
+$viewModel = $viewModelProvider->get(ShippingAddressCards::class);
+$hxAttributesRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
+$formModel = $viewModelProvider->get(ShippingAddress::class);
 $addOOBAttribute = $block->getData('add_oob_attribute');
 $newAddressFormName = CheckoutForm::NEW_ADDRESS->value;
 ?>
 <div id="new-shipping-address-container" x-data="NewShippingAddressFormManager">
-    <form id="<?= $eHtmlAttr($newAddressFormName) ?>"
+    <form id="<?= $esc->htmlAttr($newAddressFormName) ?>"
         <?= $hxAttributesRenderer->hxBuilder()
             ->post('mahxcheckout/form/saveNewShippingAddress')
             ->target('#shipping-address-cards')
@@ -35,7 +29,7 @@ $newAddressFormName = CheckoutForm::NEW_ADDRESS->value;
             ->swapOuterHTML()
             ->render(); ?>
     >
-        <h2 class="text-xl font-semibold mb-4"><?= $eHtml(__('Add New Address')) ?></h2>
+        <h2 class="text-xl font-semibold mb-4"><?= $esc->html(__('Add New Address')) ?></h2>
 
         <div class="fieldset address">
             <?php foreach ($formModel->getAddressFields($newAddressFormName) as $field): ?>
@@ -56,25 +50,13 @@ $newAddressFormName = CheckoutForm::NEW_ADDRESS->value;
                         ->swapOuterHTML()
                         ->render(); ?>
                 >
-                    <?= $eHtml(__('Cancel')) ?>
+                    <?= $esc->html(__('Cancel')) ?>
                 </button>
                 <button class="action action-update btn btn-neutral" type="submit">
-                    <?= $eHtml($viewModel->isNewAddressExists() ? __('Ship Here') : __('Update')) ?>
+                    <?= $esc->html($viewModel->isNewAddressExists() ? __('Ship Here') : __('Update')) ?>
                 </button>
             </div>
         </div>
-        <?php if ($themeInfo->isMagentoTheme()): ?>
-            <script nonce="<?= $eHtmlAttr($nonce) ?>">
-                'use strict';
-
-                require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
-                    $(() => {
-                        const containerElem = document.getElementById('new-shipping-address-container');
-                        const newAddressManager = Object.assign(pageNavigation, NewShippingAddressFormManager(containerElem));
-                        newAddressManager.init();
-                    });
-                });
-            </script>
-        <?php endif; ?>
+        <?= $block->getChildHtml('luma_js') ?>
     </form>
 </div>
