@@ -16,6 +16,8 @@ class BaseFormFieldMeta extends Data
     public array $wrapperElemExtraAttributes = [];
     public ?HxAttributesData $inputElementHxAttributes = null;
 
+    public int $width = 100;
+
     public function copyFrom(BaseFormFieldMeta $source): static
     {
         $this->inputElementExtraAttributes = $source->inputElementExtraAttributes;
@@ -26,5 +28,15 @@ class BaseFormFieldMeta extends Data
         $this->inputElementHxAttributes = $source->inputElementHxAttributes;
 
         return $this;
+    }
+
+    public function getSpanWidth(): int
+    {
+        return match (true) {
+            $this->width > 75 => 4,
+            $this->width > 50 => 3,
+            $this->width > 25 => 2,
+            $this->width <= 25 => 1,
+        };
     }
 }

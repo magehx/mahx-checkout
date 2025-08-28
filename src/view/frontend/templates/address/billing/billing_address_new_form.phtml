@@ -22,12 +22,14 @@ if (!$showFormViewModel->canShowForm()) {
 ?>
 <form id="billing-address-form" class="billing-address-form checkout-billing-address" x-data="BillingAddressForm">
     <?= $formKey ?>
-    <fieldset id="billing-address-details" class="fieldset">
-        <?php foreach ($viewModel->getAddressFields() as $field): ?>
-            <?= $viewModel->renderField($field) ?>
-        <?php endforeach; ?>
+    <div class="max-w-lg">
+        <fieldset id="billing-address-details" class="fieldset address grid md:grid-cols-4 gap-2">
+            <?php foreach ($viewModel->getAddressFields() as $field): ?>
+                <?= $viewModel->renderField($field) ?>
+            <?php endforeach; ?>
+        </fieldset>
         <?= $block->getChildHtml('actions') ?>
-    </fieldset>
+    </div>
     <?= $block->getChildHtml('luma_js') ?>
 </form>
 <?= $block->getChildHtml('loader') ?>

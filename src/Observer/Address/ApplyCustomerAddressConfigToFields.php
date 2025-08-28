@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Observer\Address;
 
+use MageHx\MahxCheckout\Data\FormField\Multiline\LineMeta;
 use MageHx\MahxCheckout\Data\FormField\MultilineFieldMeta;
 use MageHx\MahxCheckout\Data\FormField\SelectFieldMeta;
 use MageHx\MahxCheckout\Data\FormFieldConfig;
@@ -52,7 +53,28 @@ class ApplyCustomerAddressConfigToFields implements ObserverInterface
      */
     private function modifyStreetField(array &$addressFields): void
     {
-        $addressFields['street']->meta = new MultilineFieldMeta($this->config->getStreetLinesCount());
+        $linesCount = $this->config->getStreetLinesCount();
+        $streetConfigMap = $this->config->getAddressRenderMapping()['street'] ?? null;
+        $streetLinesMap = array_values($streetConfigMap['lines'] ?? []);
+        $linesMeta = [];
+
+        for ($i = 0; $i < $linesCount; $i++) {
+            $lineMap = $i === 0
+                ? $streetConfigMap
+                : ($streetLinesMap[$i - 1] ?? []);
+
+            $label = $i === 0
+                ? ($lineMap['label'] ?? 'Street Address')
+                : ($lineMap['label'] ?? '');
+
+            $linesMeta[] = new LineMeta(
+                __($label)->render(),
+                (bool)($lineMap['required'] ?? true),
+                (int)($lineMap['width'] ?? 100)
+            );
+        }
+
+        $addressFields['street']->meta = new MultilineFieldMeta($linesCount, $linesMeta);
     }
 
     private function modifyTelephoneField(array &$addressFields): void

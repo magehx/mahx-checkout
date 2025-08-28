@@ -31,11 +31,13 @@ $newAddressFormName = CheckoutForm::NEW_ADDRESS->value;
     >
         <h2 class="text-xl font-semibold mb-4"><?= $esc->html(__('Add New Address')) ?></h2>
 
-        <div class="fieldset address">
-            <?php foreach ($formModel->getAddressFields($newAddressFormName) as $field): ?>
-                <?= $formModel->renderField($field) ?>
-            <?php endforeach; ?>
-            <?= $formKey ?>
+        <div class="max-w-lg">
+            <div class="fieldset address grid md:grid-cols-4 gap-2">
+                <?php foreach ($formModel->getAddressFields($newAddressFormName) as $field): ?>
+                    <?= $formModel->renderField($field) ?>
+                <?php endforeach; ?>
+                <?= $formKey ?>
+            </div>
         </div>
 
         <div class="actions-toolbar">

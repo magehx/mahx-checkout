@@ -7,7 +7,7 @@ use MageHx\MahxCheckout\ViewModel\ShippingAddress;
 
 /** @var Template $block */
 /** @var string $nonce */
-/** @var Esc $esc->htmlAttr */
+/** @var Esc $esc */
 /** @var string $formKey */
 /** @var ViewModelProvider $viewModelProvider */
 
@@ -18,12 +18,14 @@ $viewModel = $viewModelProvider->get(ShippingAddress::class);
     <?= $block->getChildHtml('guestEmailForm') ?>
 
     <form id="shipping-address-form" class="form form-shipping-address" x-data="ShippingAddressForm">
-        <fieldset class="fieldset address space-y-2">
-            <?php foreach ($viewModel->getAddressFields() as $field): ?>
-                <?= $viewModel->renderField($field) ?>
-            <?php endforeach; ?>
-            <?= $formKey ?>
-        </FIELDSET>
+        <div class="max-w-lg">
+            <div class="fieldset address grid md:grid-cols-4 gap-2">
+                <?php foreach ($viewModel->getAddressFields() as $field): ?>
+                    <?= $viewModel->renderField($field) ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?= $formKey ?>
     </form>
     <?= $block->getChildHtml('luma_js') ?>
 </div>

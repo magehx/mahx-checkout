@@ -16,6 +16,7 @@ class Config
 {
     const MAHXCHECKOUT_ENABLED_CONFIG_PATH = 'mahxcheckout/general/enabled';
     const MAHXCHECKOUT_THEME_CONFIG_PATH = 'mahxcheckout/general/theme';
+    const MAHXCHECKOUT_ADDRESS_RENDER_MAP = 'mahxcheckout/address/render_map';
     const STREET_LINES_COUNT_CONFIG_PATH = 'customer/address/street_lines';
     const TELEPHONE_SHOW_CONFIG_PATH = 'customer/address/telephone_show';
     const PREFIX_SHOW_CONFIG_PATH = 'customer/address/prefix_show';
@@ -25,7 +26,7 @@ class Config
     const MIDDLE_NAME_SHOW_CONFIG_PATH = 'customer/address/middlename_show';
 
     public function __construct(
-        private readonly ScopeConfigInterface $scopeConfig
+        private readonly ScopeConfigInterface $scopeConfig,
     ) {
     }
 
@@ -104,6 +105,11 @@ class Config
     public function getMiddleNameShow(): YesNo
     {
         return YesNo::tryFrom((int)$this->isStoreSetFlag(self::MIDDLE_NAME_SHOW_CONFIG_PATH));
+    }
+
+    public function getAddressRenderMapping(): array
+    {
+        return $this->getStoreConfig(self::MAHXCHECKOUT_ADDRESS_RENDER_MAP) ?: [];
     }
 
     public function getStoreConfig(string $path): mixed

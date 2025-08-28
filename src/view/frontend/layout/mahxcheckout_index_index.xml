@@ -5,20 +5,17 @@
     <update handle="mahxcheckout_scripts" />
 
     <head>
-        <!-- Remove existing styles -->
+        <!-- Remove Luma styles; If you want to use tailwind styling in luma, uncomment below styles -->
 <!--        <remove src="css/styles-m.css" />-->
 <!--        <remove src="css/styles-l.css" />-->
 <!--        <remove src="css/print.css" />-->
 <!--        <remove src="mage/calendar.css"/>-->
 <!--        <remove src="jquery/uppy/dist/uppy-custom.css"/>-->
-<!--        <remove src="requirejs/require.js"/>-->
 
         <!-- Our essential css and js libs -->
-        <!-- TODO update: need to move below script to base_step theme -->
         <css defer="defer" src="MageHx_MahxCheckout::css/luma-checkout-overrides.css" />
         <script src="MageHx_MahxCheckout::js/lib/htmx.js" crossorigin="anonymous" />
         <script src="MageHx_MahxCheckout::js/mahx/dist/checkout.iife.js" crossorigin="anonymous" />
-<!--        <script src="MageHx_MahxCheckout::js/lib/alpine3-csp.min.js" defer="true" crossorigin="anonymous" />-->
     </head>
     <body>
         <referenceContainer name="content" htmlTag="div" htmlClass="relative">

@@ -16,8 +16,12 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
 ?>
 <div
     class="<?= $classNames([
-        'field form-control w-full max-w-lg',
+        'field form-control',
         '_required' => $fieldConfig->required,
+        'md-col-span-4 md:col-span-4' => $fieldConfig->meta->getSpanWidth() === 4,
+        'md-col-span-3 md:col-span-3' => $fieldConfig->meta->getSpanWidth() === 3,
+        'md-col-span-2 md:col-span-2' => $fieldConfig->meta->getSpanWidth() === 2,
+        'md-col-span-1 md:col-span-1' => $fieldConfig->meta->getSpanWidth() === 1,
         $wrapperClasses => $wrapperClasses
     ]) ?>"
     <?= $block->getWrapperAdditionalAttributes() ?>
@@ -36,7 +40,7 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
            type="text"
            id="<?= $esc->htmlAttr($fieldConfig->getFieldId()) ?>"
            name="<?= $esc->htmlAttr($fieldConfig->name) ?>"
-           class="input-text input input-bordered input-sm md:input-md w-full max-w-lg"
+           class="input-text input input-bordered input-sm md:input-md w-full"
            value="<?= $esc->htmlAttr($fieldConfig->value)  ?>"
            <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
        />

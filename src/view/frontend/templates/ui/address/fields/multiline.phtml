@@ -19,37 +19,46 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
 ?>
 <div
     class="<?= $classNames([
-        'field form-control w-full max-w-lg',
-        '_required' => $fieldConfig->required,
+        'multiline field form-control md-col-span-4 md:col-span-4 grid md:grid-cols-4 gap-2',
         $wrapperClasses => $wrapperClasses
     ]) ?>"
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
-    <label class="label" for="<?= $esc->htmlAttr($fieldConfig->getFieldId() . '-0') ?>">
-        <span class="<?= $classNames([
-                'label-text',
-                "after:content-['*'] after:text-red-500 after:ml-1" => $fieldConfig->required
-            ]) ?>">
-            <?= $esc->html($fieldConfig->label) ?>
-        </span>
-    </label>
-    <div class="control space-y-2">
-        <?php foreach (range(0, ($fieldMeta->lineCount) - 1) as $index): ?>
-            <div class="<?= $classNames([
-                    'field', '_required' => $fieldConfig->required, 'additional' => $index > 0
-                ]) ?>"
-            >
-                <input
-                    type="text"
-                    class="input-text input input-bordered input-sm md:input-md w-full max-w-lg"
-                    id="<?= $esc->htmlAttr($fieldConfig->getFieldId() . '-' . $index) ?>"
-                    name="<?= $esc->htmlAttr($fieldConfig->name) ?>[<?= $esc->htmlAttr($index) ?>]"
-                    value="<?= $esc->htmlAttr($fieldConfig->value[$index] ?? '')  ?>"
-                    <?= /** @noEscape */ !$index ? $block->getInputAdditionalAttributes() : '' ?>
-                />
+    <?php foreach ($fieldMeta->lines as $index => $lineConfig): ?>
+        <?php $id = $fieldConfig->getFieldId() . '_' . $index ?>
+        <div
+            class="<?= $classNames([
+                'field form-control',
+                '_required' => $lineConfig->required,
+                'md-col-span-4 md:col-span-4' => $lineConfig->getSpanWidth() === 4,
+                'md-col-span-3 md:col-span-3' => $lineConfig->getSpanWidth() === 3,
+                'md-col-span-2 md:col-span-2' => $lineConfig->getSpanWidth() === 2,
+                'md-col-span-1 md:col-span-1' => $lineConfig->getSpanWidth() === 1,
+            ]) ?>"
+        >
+            <div class="<?= $classNames(['additional' => $index !== 0]) ?>">
+                <?php if ($lineConfig->label): ?>
+                    <label class="label" for="<?= $esc->htmlAttr($id) ?>">
+                <span class="<?= $classNames([
+                    'label-text',
+                    "after:content-['*'] after:text-red-500 after:ml-1" => $lineConfig->required
+                ]) ?>">
+                    <?= $esc->html($lineConfig->label) ?>
+                </span>
+                    </label>
+                <?php endif; ?>
+                <div class="control">
+                    <input
+                        type="text"
+                        id="<?= $esc->htmlAttr($id) ?>"
+                        name="<?= $esc->htmlAttr(sprintf('%s[%s]', $fieldConfig->name, $index)) ?>"
+                        class="input-text input input-bordered input-sm md:input-md w-full"
+                        value="<?= $esc->htmlAttr($fieldConfig->value[$index] ?? '')  ?>"
+                    />
+                </div>
             </div>
-        <?php endforeach; ?>
-    </div>
+        </div>
+    <?php endforeach; ?>
     <?= /** @noEscape */ $block->getAfterInputHtml() ?>
 </div>
