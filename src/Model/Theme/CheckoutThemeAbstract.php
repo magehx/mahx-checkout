@@ -15,14 +15,32 @@ abstract class CheckoutThemeAbstract implements CheckoutThemeInterface
      * @var CheckoutStepData[]
      */
     protected array $steps = [];
+
+    /** @var CheckoutThemeInterface[] */
+    protected array $parents = [];
     protected ?CheckoutStepPool $stepPool = null;
 
     public function __construct(
-        private readonly CheckoutStepPoolFactory $stepPoolFactory
+        private readonly CheckoutStepPoolFactory $stepPoolFactory,
     ) {
+    }
+
+    public function init(): void
+    {
         $this->stepPool = $this->stepPoolFactory->create();
-        $this->stepPool->loadStepsForTheme($this->getCode());
+        $this->stepPool->loadStepsForTheme($this);
         $this->steps = $this->stepPool->getCheckoutStepsData();
+    }
+
+    public function setParentThemes(array $parentThemes): self
+    {
+        $this->parents = $parentThemes;
+        return $this;
+    }
+
+    public function getParentThemes(): array
+    {
+        return $this->parents;
     }
 
     public function getSteps(): array
@@ -91,5 +109,10 @@ abstract class CheckoutThemeAbstract implements CheckoutThemeInterface
         }
 
         return false;
+    }
+
+    public function getParentCode(): ?string
+    {
+        return null;
     }
 }

@@ -4,9 +4,7 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="mahxcheckout_theme_default_layout" />
     <body>
-        <referenceContainer name="content" htmlClass="bg-gray-50 min-h-screen text-gray-800 relative">
-            <referenceBlock name="checkout.main" template="MageHx_MahxCheckout::main.phtml"/>
-        </referenceContainer>
+        <referenceContainer name="content" htmlClass="bg-gray-50 min-h-screen text-gray-800 relative"/>
         <move element="checkout.step.navigation" destination="checkout.main" before="-"/>
         <move element="checkout.main.content" destination="checkout.main" after="checkout.step.navigation"/>
         <move element="checkout.step.auto.loader" destination="checkout.main.section" before="-" />

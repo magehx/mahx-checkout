@@ -73,11 +73,12 @@ class AddAdditionalLayoutHandlers implements ObserverInterface
      */
     private function addThemeLayoutHandles(): void
     {
-        $themeCode = $this->activeTheme->getCode();
-        $handle = "mahxcheckout_theme_{$themeCode}";
+        foreach (array_reverse([$this->activeTheme, ...$this->activeTheme->getParentThemes()]) as $theme) {
+            $handle = "mahxcheckout_theme_{$theme->getCode()}";
 
-        $this->addLayoutHandle($handle);
-        $this->addHyvaLayoutHandle($handle);
+            $this->addLayoutHandle($handle);
+            $this->addHyvaLayoutHandle($handle);
+        }
     }
 
     /**

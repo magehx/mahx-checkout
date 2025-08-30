@@ -9,9 +9,11 @@ namespace MageHx\MahxCheckout\Model\Theme;
  */
 class DefaultCheckoutTheme extends CheckoutThemeAbstract
 {
+    public const THEME_CODE = 'default';
+
     public function getCode(): string
     {
-        return 'default';
+        return self::THEME_CODE;
     }
 
     public function getLabel(): string

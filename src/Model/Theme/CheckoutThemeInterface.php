@@ -16,6 +16,8 @@ interface CheckoutThemeInterface
     public function getCode(): string;
     public function getLabel(): string;
 
+    public function getParentCode(): ?string;
+
     /**
      * @return CheckoutStepData[]
      */
@@ -29,5 +31,11 @@ interface CheckoutThemeInterface
 
     public function isLastStep(string|CheckoutStepData $step): bool;
 
+    public function setParentThemes(array $parentThemes): self;
+
+    /**
+     * @return CheckoutThemeInterface[]
+     */
+    public function getParentThemes(): array;
 }
 

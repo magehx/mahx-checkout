@@ -30,7 +30,11 @@ class CheckoutThemeRegistry
             throw new LocalizedException(__('Checkout theme "%1" is not registered.', $code));
         }
 
-        return $this->themes[$code];
+        $theme = $this->themes[$code];
+        $theme->setParentThemes($this->prepareParentThemes($theme));
+        $theme->init();
+
+        return $theme;
     }
 
     /**
@@ -47,6 +51,28 @@ class CheckoutThemeRegistry
     public function getCodes(): array
     {
         return array_keys($this->themes);
+    }
+
+
+    /**
+     * @return CheckoutThemeInterface[]
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function prepareParentThemes(CheckoutThemeInterface $theme): array
+    {
+        $themes = [];
+        $parentTheme = $theme;
+
+        if (!$theme->getParentCode()) {
+            return [];
+        }
+
+        do {
+            $parentTheme = $this->get($parentTheme->getParentCode());
+            $themes[] = $parentTheme;
+        } while($parentTheme->getParentCode());
+
+        return array_filter($themes);
     }
 }
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Model\StepManager;
 
+use MageHx\MahxCheckout\Model\Theme\CheckoutThemeInterface;
+use MageHx\MahxCheckout\Model\Theme\CheckoutThemeRegistry;
 use Magento\Framework\UrlInterface;
 use MageHx\MahxCheckout\Data\CheckoutStepData;
 use MageHx\MahxCheckout\Data\FormComponentData;
@@ -32,9 +34,12 @@ class CheckoutStepPool
         $this->themeSteps = $themeSteps;
     }
 
-    public function loadStepsForTheme(string $themeCode): void
+    public function loadStepsForTheme(CheckoutThemeInterface $theme): void
     {
-        $this->steps = $this->themeSteps[$themeCode] ?? [];
+        foreach (array_reverse([$theme, ...$theme->getParentThemes()]) as $stepTheme) {
+            $this->steps = array_merge($this->steps, $this->themeSteps[$stepTheme->getCode()] ?? []);
+        }
+
         $this->prepareCheckoutStepData();
     }
 

@@ -19,7 +19,7 @@
     </head>
     <body>
         <referenceContainer name="content" htmlTag="div" htmlClass="relative">
-            <block cacheable="false" name="checkout.main" template="MageHx_MahxCheckout::luma/main.phtml"/>
+            <block cacheable="false" name="checkout.main" template="MageHx_MahxCheckout::main.phtml"/>
             <container name="checkout.scripts" />
             <block name="checkout.page.loader" template="MageHx_MahxCheckout::ui/page/loader.phtml" />
         </referenceContainer>
