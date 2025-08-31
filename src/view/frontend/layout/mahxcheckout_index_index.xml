@@ -15,7 +15,7 @@
         <!-- Our essential css and js libs -->
         <css defer="defer" src="MageHx_MahxCheckout::css/luma-checkout-overrides.css" />
         <script src="MageHx_MahxCheckout::js/lib/htmx.js" crossorigin="anonymous" />
-        <script src="MageHx_MahxCheckout::js/mahx/dist/checkout.iife.js" crossorigin="anonymous" />
+        <script src="MageHx_MahxCheckout::js/mahx/build/checkout.iife.js" crossorigin="anonymous" />
     </head>
     <body>
         <referenceContainer name="content" htmlTag="div" htmlClass="relative">

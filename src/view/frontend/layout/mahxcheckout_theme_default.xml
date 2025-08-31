@@ -11,5 +11,6 @@
         <move element="checkout.notifications" destination="checkout.main.section" after="-"/>
         <move element="checkout.summary.cart.items" destination="checkout.summary.section" after="checkout.summary.title"/>
         <move element="checkout.navigation.action" destination="checkout.right.section" after="checkout.summary.section"/>
+        <move element="checkout.init.step.loader" destination="checkout.main.section" after="-" />
     </body>
 </page>

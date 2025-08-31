@@ -283,3 +283,34 @@ $themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
     });
     <?php endif; ?>
 </script>
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
+    'use strict';
+    <?php
+    /**
+     * When the page loads for the first time, there are chance that the current step (stored in the server session)
+     * mismatches with the url hash. In that case, we need to force reset the current step in the session according
+     * to the hash url and also reload the content based on the hash url.
+     */
+    ?>
+    document.body.addEventListener("htmx:load", () => {
+        const storage = CheckoutStepStorage;
+        const stepReloaderElem = document.getElementById('step-reloader');
+        const currentStep = storage.findStepBy('name', stepReloaderElem.dataset.currentStep);
+        const urlHash = (window.location.hash || '').replace('#', '');
+        const hashStep = storage.findStepBy('urlHash', urlHash) || storage.findStepBy('isDefault', true);
+
+        if (currentStep && hashStep && currentStep.urlHash !== hashStep.urlHash) {
+            stepReloaderElem.setAttribute('hx-vals', JSON.stringify({ step: hashStep.name }));
+            stepReloaderElem.dispatchEvent(
+                new CustomEvent('mahxcheckout-reload-step', {
+                    bubbles: true,
+                    cancelable: true,
+                    detail: {
+                        currentStep: currentStep,
+                        hashStep: hashStep,
+                    }
+                }),
+            );
+        }
+    }, { once: true });
+</script>

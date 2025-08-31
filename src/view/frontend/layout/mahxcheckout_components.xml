@@ -117,5 +117,6 @@
         <block class="MageHx\MahxCheckout\Block\Notifications" name="checkout.notifications"
                template="MageHx_MahxCheckout::notification/notifications.phtml" />
         <block name="checkout.step.auto.loader" template="MageHx_MahxCheckout::ui/common/step_loader.phtml" />
+        <block name="checkout.init.step.loader" template="MageHx_MahxCheckout::navigation/init_step_loader.phtml" />
     </body>
 </page>
