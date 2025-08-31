@@ -4,22 +4,23 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Controller\Billing;
 
+use MageHx\MahxCheckout\Controller\Form\ComponentAction\Context;
+use MageHx\MahxCheckout\Service\ApplyShowBillingFormDataFromRequest;
 use Magento\Framework\Controller\ResultInterface;
 use MageHx\MahxCheckout\Controller\Form\ComponentAction;
 
 class EditBilling extends ComponentAction
 {
+    public function __construct(
+        Context $context,
+        private readonly ApplyShowBillingFormDataFromRequest $applyShowBillingFormData,
+    ) {
+        parent::__construct($context);
+    }
+
     public function execute(): ResultInterface
     {
-        $isBillingSame = (bool) $this->getRequest()->getParam('is_billing_same');
-        $showForm = (bool) $this->getRequest()->getParam('show_form');
-        $showCards = (bool) ($this->getRequest()->getParam('show_cards'));
-
-        $this->checkoutDataStorage->setData([
-            'is_billing_same' => $isBillingSame,
-            'show_cards' => $showCards,
-            'show_form' => $showForm
-        ]);
+        $this->applyShowBillingFormData->apply();
 
         return $this->getComponentResponse('billing.address.section');
     }

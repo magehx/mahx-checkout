@@ -7,8 +7,10 @@ namespace MageHx\MahxCheckout\ViewModel;
 use MageHx\MahxCheckout\Model\CheckoutDataStorage;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 use MageHx\MahxCheckout\Service\CustomerAddressService;
+use MageHx\MahxCheckout\Service\PrepareBillingAddressData;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
+use Throwable;
 
 class ShowBillingForm implements ArgumentInterface
 {
@@ -17,12 +19,20 @@ class ShowBillingForm implements ArgumentInterface
         private readonly CustomerSession $customerSession,
         private readonly CheckoutDataStorage $checkoutDataStorage,
         private readonly CustomerAddressService $customerAddressService,
+        private readonly PrepareBillingAddressData $prepareBillingAddressData,
     ) {}
 
     public function canShowForm(): bool
     {
         if ($this->hasShowFormData()) {
             return (bool) $this->getShowFormData();
+        }
+
+        if ($this->quote->isVirtualQuote() && !$this->hasValidBillingAddress()) {
+            if (!$this->customerSession->isLoggedIn()) {
+                return true;
+            }
+            return !$this->customerAddressService->isCurrentCustomerHoldsAddress();
         }
 
         if ($this->quote->isBillingSameAsShipping()) {
@@ -36,6 +46,10 @@ class ShowBillingForm implements ArgumentInterface
     {
         if ($this->hasShowCardsData()) {
             return (bool)$this->getShowCardsData();
+        }
+
+        if ($this->quote->isVirtualQuote() && !$this->hasValidBillingAddress()) {
+            return true;
         }
 
         return false;
@@ -79,5 +93,20 @@ class ShowBillingForm implements ArgumentInterface
     private function hasShowCardsData(): bool
     {
         return $this->checkoutDataStorage->hasData('show_cards');
+    }
+
+    private function hasValidBillingAddress(): bool
+    {
+        try {
+            $billingAddress = $this->quote->getBillingAddress();
+            $addressData = $this->prepareBillingAddressData->prepare([
+                ...$billingAddress->getData(),
+                'street' => $billingAddress->getStreet(),
+            ]);
+            $addressData->validate();
+            return true;
+        } catch (Throwable) {
+            return false;
+        }
     }
 }

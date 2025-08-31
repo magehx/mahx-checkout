@@ -32,15 +32,18 @@ class BillingAddressCards implements ArgumentInterface
         $customerAddresses = $this->customerAddressService->getCurrentCustomerAddressList();
         $billingAddress = $this->quote->getBillingAddress();
         $newAddresses = $this->getNewAddresses();
-
         $additional = [];
 
-        if (!$billingAddress->getCustomerAddressId()) {
+        if (!$billingAddress->getCustomerAddressId() && $billingAddress->validate() === true) {
             $additional[] = $billingAddress;
         }
 
         if (!empty($newAddresses)) {
-            $additional = array_merge($additional, $newAddresses);
+            foreach ($newAddresses as $address) {
+                if ($address->validate() === true) {
+                    $additional[] = $address;
+                }
+            }
         }
 
         return [...$customerAddresses, ...$additional];
@@ -60,6 +63,9 @@ class BillingAddressCards implements ArgumentInterface
         ]);
     }
 
+    /**
+     * @return Address[]
+     */
     private function getNewAddresses(): array
     {
         return array_filter(

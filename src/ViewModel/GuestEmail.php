@@ -42,4 +42,9 @@ class GuestEmail implements ArgumentInterface
             'email' => $this->formDataStorage->getData('email') ?? $this->quote->getQuoteCustomerEmail(),
         ]);
     }
+
+    public function isVirtualCart(): bool
+    {
+        return $this->quote->isVirtualQuote();
+    }
 }

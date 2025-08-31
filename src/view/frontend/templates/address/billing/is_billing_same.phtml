@@ -13,8 +13,13 @@ use MageHx\MahxCheckout\ViewModel\BillingAddress;
 /** @var string $formKey */
 /** @var ViewModelProvider $viewModelProvider */
 
-$stepManager = $viewModelProvider->get(StepManager::class);
 $viewModel = $viewModelProvider->get(BillingAddress::class);
+
+if ($viewModel->isVirtualCart()) {
+    return;
+}
+
+$stepManager = $viewModelProvider->get(StepManager::class);
 $showFormViewModel = $viewModelProvider->get(ShowBillingForm::class);
 $hxAttributesRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
 $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();

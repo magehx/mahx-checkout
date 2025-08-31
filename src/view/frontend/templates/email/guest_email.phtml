@@ -40,8 +40,10 @@ $hxAttrRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
         </fieldset>
         <?= $formKey ?>
     </form>
-    <div class="max-w-xs my-4 md:my-8">
-        <div class="divider"></div>
-    </div>
+    <?php if (!$viewModel->isVirtualCart()): ?>
+        <div class="max-w-xs my-4 md:my-8">
+            <div class="divider"></div>
+        </div>
+    <?php endif; ?>
     <?= $block->getChildHtml('luma_js') ?>
 </div>

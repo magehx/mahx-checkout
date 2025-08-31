@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MageHx\MahxCheckout\Controller\Billing;
 
 use Exception;
+use MageHx\MahxCheckout\Service\ApplyShowBillingFormDataFromRequest;
 use MageHx\MahxCheckout\Service\GenerateBlockHtml;
 use MageHx\MahxCheckout\Service\PrepareBillingAddressData;
 use Magento\Framework\Controller\Result\RawFactory;
@@ -23,6 +24,7 @@ class BillingAddressPost extends ComponentAction
         private readonly GenerateBlockHtml $generateBlockHtml,
         private readonly SaveBillingAddress $saveBillingAddressService,
         private readonly PrepareBillingAddressData $prepareBillingAddressData,
+        private readonly ApplyShowBillingFormDataFromRequest $applyShowBillingFormData,
     ) {
         parent::__construct($context);
     }
@@ -38,6 +40,7 @@ class BillingAddressPost extends ComponentAction
             }
             $this->saveBillingAddressService->execute($billingAddressData);
             $totals = $this->generateBlockHtml->getComponentHtml('checkout.order.totals', withHtmxOob: true);
+            $this->applyShowBillingFormData->apply();
             return $this->getComponentResponse('billing.address.section', additionalHtml: $totals);
         } catch (Exception $e) {
             $this->prepareErrorNotificationsWithFormData($billingAddressData->toArray(), $e);

@@ -18,14 +18,10 @@ if (!$viewModel->isCurrentCustomerHaveAddresses()) {
 ?>
 <script nonce="<?= $esc->htmlAttr($nonce) ?>">
     const ShippingAddressCardStorage = {
-        selectedAddressId: null,
+        selectedAddressId: '<?= $esc->js($viewModel->getCustomerAddressSelected()) ?>',
     };
     function ShippingAddressCards(elem) {
         return {
-            get selectedAddressId() {
-                return this.store.selectedAddressId;
-            },
-
             init() {
                 this.$el = elem || this.$el;
                 this.store.selectedAddressId = this.$el.dataset.selectedAddress;
@@ -43,6 +39,10 @@ if (!$viewModel->isCurrentCustomerHaveAddresses()) {
 
             get store() {
                 return this.$store.shippingAddressCardStorage;
+            },
+
+            get selectedAddressId() {
+                return this.store.selectedAddressId;
             },
         };
     }
@@ -94,8 +94,9 @@ if (!$viewModel->isCurrentCustomerHaveAddresses()) {
 
             updateShipHereButtonDisplay() {
                 const shipHereButton = this.getShipHereButton();
+
                 if (shipHereButton) {
-                    shipHereButton.display = this.isSelected ? 'none' : 'block';
+                    shipHereButton.style.display = this.isSelected ? 'none' : 'block';
                 }
             },
 
@@ -110,10 +111,6 @@ if (!$viewModel->isCurrentCustomerHaveAddresses()) {
             get isNotSelected() {
                 return !this.isSelected;
             },
-
-            // get addressCardExtraClasses() {
-            //     return this.isSelected ? 'border-2 border-orange-500 relative' : 'border border-gray-300';
-            // },
 
             get store() {
                 return this.$store.shippingAddressCardStorage;

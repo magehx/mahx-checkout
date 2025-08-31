@@ -40,7 +40,7 @@ class CheckoutStepPool
             $this->steps = array_merge($this->steps, $this->themeSteps[$stepTheme->getCode()] ?? []);
         }
 
-        $this->prepareCheckoutStepData();
+        $this->prepareCheckoutStepData($theme);
     }
 
     /**
@@ -59,9 +59,12 @@ class CheckoutStepPool
         return $this->checkoutStepsData ?? [];
     }
 
-    private function prepareCheckoutStepData(): void
+    private function prepareCheckoutStepData(CheckoutThemeInterface $theme): void
     {
-        $transportSteps = $this->eventDispatcher->dispatchStepsDataBuildBefore(['steps' => $this->steps]);
+        $transportSteps = $this->eventDispatcher->dispatchStepsDataBuildBefore([
+            'steps' => $this->steps,
+            'theme' => $theme
+        ]);
         $this->steps = $transportSteps->getData('steps');
 
         $checkoutStepsData = [];
@@ -91,9 +94,12 @@ class CheckoutStepPool
         }
 
         $transportStepsData = $this->eventDispatcher
-            ->dispatchStepsDataBuildAfter(['checkout_steps_data' => $checkoutStepsData]);
+            ->dispatchStepsDataBuildAfter([
+                'steps_data' => $checkoutStepsData,
+                'theme' => $theme,
+            ]);
 
-        $this->checkoutStepsData = $transportStepsData->getData('checkout_steps_data');
+        $this->checkoutStepsData = $transportStepsData->getData('steps_data');
         uasort($this->checkoutStepsData, fn($a, $b) => $a->order <=> $b->order);
     }
 }

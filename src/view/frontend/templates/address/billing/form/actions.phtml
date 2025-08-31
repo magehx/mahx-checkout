@@ -4,6 +4,7 @@ use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
 use MageHx\MageTemplateUtils\Model\Esc;
 use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\BillingAddressFormActions;
+use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
@@ -12,10 +13,12 @@ use Magento\Framework\View\Element\Template;
 
 $viewModel = $viewModelProvider->get(BillingAddressFormActions::class);
 $hxAttrRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
+$showFormViewModel = $viewModelProvider->get(ShowBillingForm::class);
 ?>
-<?php if ($viewModel->canShow()): ?>
+<?php if ($showFormViewModel->canShowForm()): ?>
 <div class="actions-toolbar max-w-lg">
     <div class="actions flex items-center justify-end space-x-4">
+        <?php if ($viewModel->canShowCancelButton()): ?>
         <button
             class="action action-cancel btn btn-ghost" type="button"
             data-role="action-cancel"
@@ -34,13 +37,21 @@ $hxAttrRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
         >
             <?= $esc->html(__('Cancel')) ?>
         </button>
+        <?php endif; ?>
         <button class="action action-update btn btn-neutral" type="button"
                 data-role="action-update"
-                hx-swap="outerHTML"
-                hx-indicator=".save-billing-loader"
-                hx-target="#billing-address-section"
-                hx-trigger="mahxcheckout-billing-validated from:body"
-                hx-post="<?= $esc->url($block->getUrl('mahxcheckout/billing/billingAddressPost')) ?>"
+                <?= $hxAttrRenderer->hxBuilder()
+                    ->post('mahxcheckout/billing/billingAddressPost')
+                    ->target('#billing-address-section')
+                    ->trigger('mahxcheckout-billing-validated from:body')
+                    ->indicator('.save-billing-loader')
+                    ->vals([
+                        'show_form' => 0,
+                        'show_cards' => 0,
+                        'is_billing_same' => (int) $viewModel->isBillingSame(),
+                    ])
+                    ->swapOuterHTML()
+                    ->render() ?>
         >
             <?= $esc->html(__('Update')) ?>
         </button>
