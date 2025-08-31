@@ -9,6 +9,6 @@ export default defineConfig({
       formats: ['iife'], // for browser usage
     },
     minify: 'esbuild',
-    outDir: 'dist',
+    outDir: 'build',
   },
 });

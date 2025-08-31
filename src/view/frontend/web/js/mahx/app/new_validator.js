@@ -17,6 +17,7 @@ const getDotNameFromElement = (input) =>
 export default function Validator({
   form,
   rules = {},
+  customRules = {},
   messages = {},
   aliases = {},
   globalConfig = {},
@@ -356,6 +357,7 @@ export default function Validator({
             });
           },
           nullable: () => {},
+          ...customRules,
         },
         () => {}
       );
