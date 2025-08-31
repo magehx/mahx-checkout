@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="checkout.main.content">
+            <referenceContainer name="checkout.main.section" htmlClass="opc-wrapper md:col-span-2 p-6" />
+            <referenceContainer
+                name="checkout.right.section"
+                htmlClass="modal-custom opc-sidebar opc-summary-wrapper custom-slide self-start">
+                <container
+                    name="checkout.summary.section"
+                    htmlTag="div"
+                    htmlClass="opc-block-summary bg-white shadow rounded p-6 space-y-4">
+                    <block name="checkout.summary.title" template="MageHx_MahxCheckout::ui/section_title.phtml">
+                        <arguments>
+                            <argument name="title" xsi:type="string">Order Summary</argument>
+                        </arguments>
+                    </block>
+                </container>
+            </referenceContainer>
+        </referenceBlock>
+    </body>
+</page>

@@ -14,6 +14,7 @@
             <block name="checkout.payment.methods.js" template="MageHx_MahxCheckout::payment/payment_methods_js.phtml" />
             <block name="checkout.billing.address.script" template="MageHx_MahxCheckout::address/billing_address_js.phtml" />
             <block name="checkout.order.summary.script" template="MageHx_MahxCheckout::summary/order_summary_js.phtml" />
+            <block name="checkout.luma.js" template="MageHx_MahxCheckout::luma/additional_js.phtml" />
         </referenceContainer>
     </body>
 </page>

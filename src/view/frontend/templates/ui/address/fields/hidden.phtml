@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
 use MageHx\MahxCheckout\Block\Address\FieldRenderer;
 
 /** @var FieldRenderer $block */
-/** @var Closure $eHtmlAttr */
+/** @var Esc $esc */
 
 $fieldConfig = $block->getFieldConfig();
 
@@ -11,8 +12,10 @@ if (! $fieldConfig) {
     return;
 }
 ?>
-<input
-    type="hidden"
-    id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
-    name="<?= $eHtmlAttr($fieldConfig->name) ?>"
-    value="<?= $eHtmlAttr($fieldConfig->value)  ?>" />
+<div class="md:col-span-4">
+    <input
+        type="hidden"
+        id="<?= $esc->htmlAttr($fieldConfig->getFieldId()) ?>"
+        name="<?= $esc->htmlAttr($fieldConfig->name) ?>"
+        value="<?= $esc->htmlAttr($fieldConfig->value)  ?>" />
+</div>

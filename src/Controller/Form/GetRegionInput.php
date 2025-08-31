@@ -26,7 +26,7 @@ class GetRegionInput extends ComponentAction
         try {
             $input = $this->getValidatedInput();
 
-            $this->formDataStorage->setData(['country_id' => $input->country]);
+            $this->checkoutDataStorage->setData(['country_id' => $input->country]);
 
             $html = $this->renderRegionField($input->country, $input->form);
 
@@ -51,7 +51,7 @@ class GetRegionInput extends ComponentAction
     private function renderRegionField(string $country, string $form): string
     {
         $regionField = $this->prepareRegionFieldAttributeService->execute($country, $form);
-        $renderer = $this->addressFieldManager->getRenderForAddressField($regionField);
+        $renderer = $this->addressFieldManager->getRendererForAddressField($regionField);
 
         return $renderer->render($regionField);
     }

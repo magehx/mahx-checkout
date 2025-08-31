@@ -1,20 +1,25 @@
-<?php
-/** @var string $eHtmlAttr */
+<?php declare(strict_types=1);
+
+use MageHx\MageTemplateUtils\Model\Esc;
+
 /** @var string $nonce */
-/** @var Closure $eJs */
+/** @var Esc $esc */
 ?>
-<script nonce="<?= $eHtmlAttr($nonce) ?>">
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('ShippingMethodsForm', () => ({
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
+    function ShippingMethodsForm(form) {
+        return {
             form: null,
             validator: null,
 
             init() {
-                this.form = this.$el;
+                this.form = form || this.$el;
                 this.validator = mahxCheckout.validator({ form: this.form });
-                this.validator.addRequiredGroup(this.form, '<?= $eJs(__("The shipping method is missing. Select the shipping method and try again.")) ?>');
+                this.validator.addRequiredGroup(this.form, '<?= $esc->js(__("The shipping method is missing. Select the shipping method and try again.")) ?>');
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
-        }));
+        };
+    }
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('ShippingMethodsForm', ShippingMethodsForm);
     });
 </script>

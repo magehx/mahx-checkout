@@ -6,6 +6,101 @@
             <general>
                 <enabled>0</enabled>
             </general>
+<!--            <address>-->
+<!--                <render_map>-->
+<!--                    <firstname>-->
+<!--                        <code>firstname</code>-->
+<!--                        <label>Firstname</label>-->
+<!--                        <width>100</width>-->
+<!--                        <sortOrder>20</sortOrder>-->
+<!--                        <canShow>1</canShow>-->
+<!--                        <required>1</required>-->
+<!--                    </firstname>-->
+<!--                    <lastname>-->
+<!--                        <code>lastname</code>-->
+<!--                        <label>Lastname</label>-->
+<!--                        <width>100</width>-->
+<!--                        <sortOrder>40</sortOrder>-->
+<!--                        <canShow>1</canShow>-->
+<!--                        <required>1</required>-->
+<!--                    </lastname>-->
+<!--                    <company>-->
+<!--                        <code>company</code>-->
+<!--                        <label>Company</label>-->
+<!--                        <width>100</width>-->
+<!--                        <sortOrder>60</sortOrder>-->
+<!--                        <canShow>1</canShow>-->
+<!--                        <required>1</required>-->
+<!--                    </company>-->
+<!--                    <street>-->
+<!--                        <code>street</code>-->
+<!--                        <label>Street</label>-->
+<!--                        <width>50</width>-->
+<!--                        <sortOrder>70</sortOrder>-->
+<!--                        <canShow>1</canShow>-->
+<!--                        <required>1</required>-->
+<!--                        <lines>-->
+<!--                            <line1>-->
+<!--                                <label>House Number</label>-->
+<!--                                <width>50</width>-->
+<!--                                <required>0</required>-->
+<!--                            </line1>-->
+<!--                            <line2>-->
+<!--                                <width>100</width>-->
+<!--                                <required>0</required>-->
+<!--                            </line2>-->
+<!--                        </lines>-->
+<!--                    </street>-->
+<!--                    <country_id>-->
+<!--                        <code>country_id</code>-->
+<!--                        <label>Country</label>-->
+<!--                        <width>100</width>-->
+<!--                        <sortOrder>80</sortOrder>-->
+<!--                        <canShow>1</canShow>-->
+<!--                        <required>1</required>-->
+<!--                    </country_id>-->
+<!--                    <region>-->
+<!--                        <code>region</code>-->
+<!--                        <label>State/Province</label>-->
+<!--                        <width>100</width>-->
+<!--                        <sortOrder>90</sortOrder>-->
+<!--                        <canShow>1</canShow>-->
+<!--                        <required>0</required>-->
+<!--                    </region>-->
+<!--                    <city>-->
+<!--                        <code>city</code>-->
+<!--                        <label>City</label>-->
+<!--                        <width>50</width>-->
+<!--                        <sortOrder>75</sortOrder>-->
+<!--                        <canShow>1</canShow>-->
+<!--                        <required>1</required>-->
+<!--                    </city>-->
+<!--                    <postcode>-->
+<!--                        <code>postcode</code>-->
+<!--                        <label>Zip/Postal Code</label>-->
+<!--                        <width>50</width>-->
+<!--                        <sortOrder>77</sortOrder>-->
+<!--                        <canShow>1</canShow>-->
+<!--                        <required>1</required>-->
+<!--                    </postcode>-->
+<!--                    <telephone>-->
+<!--                        <code>telephone</code>-->
+<!--                        <label>Phone Number</label>-->
+<!--                        <width>100</width>-->
+<!--                        <sortOrder>120</sortOrder>-->
+<!--                        <canShow>1</canShow>-->
+<!--                        <required>1</required>-->
+<!--                    </telephone>-->
+<!--                    <vat_id>-->
+<!--                        <code>vat_id</code>-->
+<!--                        <label>Vat Number</label>-->
+<!--                        <width>100</width>-->
+<!--                        <sortOrder>140</sortOrder>-->
+<!--                        <canShow>0</canShow>-->
+<!--                        <required>0</required>-->
+<!--                    </vat_id>-->
+<!--                </render_map>-->
+<!--            </address>-->
         </mahxcheckout>
         <csp>
             <mode>

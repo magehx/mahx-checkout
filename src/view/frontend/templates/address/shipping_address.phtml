@@ -1,25 +1,31 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\ShippingAddress;
 
 /** @var Template $block */
-/** @var Closure $e */
-/** @var Closure $eUrl */
+/** @var string $nonce */
+/** @var Esc $esc */
 /** @var string $formKey */
-/** @var Closure $viewModelProvider */
-/** @var ShippingAddress $viewModel */
-$viewModel = $viewModelProvider(ShippingAddress::class);
-$addOOBAttribute = $block->getData('add_oob_attribute');
+/** @var ViewModelProvider $viewModelProvider */
+
+$viewModel = $viewModelProvider->get(ShippingAddress::class);
 ?>
-<div id="shipping-address-form-container" <?= $addOOBAttribute ? 'hx-swap-oob="true"' : '' ?>>
+<div id="shipping-address-form-container" class="checkout-shipping-address">
     <?= $block->getChildHtml('formTitle') ?>
     <?= $block->getChildHtml('guestEmailForm') ?>
 
-    <form id="shipping-address-form" class="space-y-2" x-data="ShippingAddressForm">
-        <?php foreach ($viewModel->getAddressFields() as $field): ?>
-            <?= $viewModel->renderField($field) ?>
-        <?php endforeach; ?>
+    <form id="shipping-address-form" class="form form-shipping-address" x-data="ShippingAddressForm">
+        <div class="max-w-lg">
+            <div class="fieldset address grid md:grid-cols-4 gap-2">
+                <?php foreach ($viewModel->getAddressFields() as $field): ?>
+                    <?= $viewModel->renderField($field) ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
         <?= $formKey ?>
     </form>
+    <?= $block->getChildHtml('luma_js') ?>
 </div>

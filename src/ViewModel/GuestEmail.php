@@ -8,7 +8,7 @@ use MageHx\MahxCheckout\Data\GuestEmailData;
 use MageHx\MahxCheckout\Data\ValidationMapperData;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
-use MageHx\MahxCheckout\Model\FormDataStorage;
+use MageHx\MahxCheckout\Model\CheckoutDataStorage;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 
 class GuestEmail implements ArgumentInterface
@@ -16,7 +16,7 @@ class GuestEmail implements ArgumentInterface
     public function __construct(
         private readonly QuoteDetails $quote,
         private readonly Json $jsonSerializer,
-        private readonly FormDataStorage $formDataStorage,
+        private readonly CheckoutDataStorage $formDataStorage,
     ) {
     }
 
@@ -41,5 +41,10 @@ class GuestEmail implements ArgumentInterface
         return GuestEmailData::from([
             'email' => $this->formDataStorage->getData('email') ?? $this->quote->getQuoteCustomerEmail(),
         ]);
+    }
+
+    public function isVirtualCart(): bool
+    {
+        return $this->quote->isVirtualQuote();
     }
 }

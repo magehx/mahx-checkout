@@ -1,46 +1,38 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
+use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\StepManager;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
-/** @var Closure $viewModelProvider */
-/** @var StepManager $viewModel */
-$viewModel = $viewModelProvider(StepManager::class);
+/** @var Esc $esc */
+/** @var Closure $classNames */
+/** @var ViewModelProvider $viewModelProvider */
+
+$viewModel = $viewModelProvider->get(StepManager::class);
+$hxRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
 ?>
-<input type="hidden" name="step" id="current-step" :value="currentStep.name" />
+<div id="step-navigation-section" class="w-full py-4 mb-4" <?= $hxRenderer->renderHxSwapOOB($block) ?>>
+    <input type="hidden" name="step" id="current-step" value="<?= $viewModel->getCurrentStep()->name ?>" />
 
-<div
-    id="auto-step-content-loader"
-    hx-get="<?= $eUrl($block->getUrl('mahxcheckout/step/getStepContent')) ?>"
-    hx-include="#current-step"
-    hx-trigger="load"
-    hx-target="#checkout-main-content"
-    hx-swap="outerHTML"
-    hx-indicator="#step-loader"
->
-</div>
-
-<div id="step-navigation-section" class="w-full py-4 mb-4">
     <div class="px-4 mx-auto max-w-7xl">
-        <ul class="text-base steps">
+        <ul class="opc-progress-bar text-base steps">
             <?php foreach ($viewModel->getStepsInfo() as $step): ?>
-                <li class="step !min-w-56 cursor-pointer"
-                    data-step-name="<?= $eHtmlAttr($step->name) ?>"
-                    x-data="NavItem"
-                    :class="stepExtraClass"
-                    :data-content="stepDataContent"
+                <li class="<?= $classNames([
+                        'opc-progress-bar-item step !min-w-56 cursor-pointer',
+                        '_active step-success font-extrabold' => $viewModel->isStepCompleted($step)
+                    ]) ?>"
+                    data-step-name="<?= $esc->htmlAttr($step->name) ?>"
                     hx-trigger="click"
                     hx-target="#checkout-main-content"
                     hx-swap="outerHTML"
+                    hx-include="[name=form_key]"
                     hx-indicator="#checkout-page-loader"
-                    hx-get="<?= $eUrl($block->getUrl('mahxcheckout/step/getStepContent', ['step' => $step->name])) ?>"
-                    hx-on:afterSwap="dispatchNavStepChanged"
+                    hx-post="<?= $esc->url($block->getUrl('mahxcheckout/step/getStepContent', ['step' => $step->name])) ?>"
                 >
-                    <?= $eHtml($step->label) ?>
+                    <span><?= $esc->html($step->label) ?></span>
                 </li>
             <?php endforeach; ?>
         </ul>

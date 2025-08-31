@@ -1,36 +1,40 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\HtmxActions\Model\HxAttributeRender\HxAttributeBuilder;
+use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\StepManager;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
-/** @var Closure $viewModelProvider */
-/** @var StepManager $viewModel */
+/** @var string $nonce */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(StepManager::class);
+$viewModel = $viewModelProvider->get(StepManager::class);
+$hxRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
 $currentStep = $viewModel->getCurrentStep();
 ?>
-<div id="page-actions" class="h-24 w-full mt-12">
-    <div class="flex items-center justify-center">
+<div id="page-actions" class="h-24 w-full mt-12" x-data="PageAction" <?= $hxRenderer->renderHxSwapOOB($block) ?>>
+    <div class="actions flex items-center justify-center">
         <button
             id="step-navigation-button"
             type="button"
             class="btn btn-primary btn-lg"
-            x-text="currentStep.buttonLabel"
-            @click="handleStepAction"
-            hx-post="<?= $eUrl($block->getUrl($currentStep?->saveDataUrl)) ?>"
-            hx-include="<?= $eHtmlAttr($viewModel->getHtmxIncludesForCurrentStep()) ?>"
-            hx-swap="<?= $viewModel->isOnLastStep() ? 'none' : 'outerHTML' ?>"
-            hx-target="<?= $viewModel->isOnLastStep() ? null : '#checkout-main-content' ?>"
-            hx-trigger="mahxcheckout-step-validated from:body"
-            hx-target="#checkout-main-content"
-            hx-indicator="#checkout-page-loader"
-            hx-on:afterSwap="dispatchPageActionCompleted"
+            data-role="opc-continue"
+            <?= $hxRenderer->hxBuilder()
+                ->post($currentStep->saveDataUrl)
+                ->include($viewModel->getHtmxIncludesForCurrentStep())
+                ->indicator('#checkout-page-loader')
+                ->when($viewModel->isOnLastStep(), fn (HxAttributeBuilder $hx) => $hx->swapNone())
+                ->when(!$viewModel->isOnLastStep(), fn (HxAttributeBuilder $hx) =>
+                    $hx->target('#checkout-main-content')->swapOuterHTML()
+                )->render()
+            ?>
         >
-            <?= $eHtml(__('Continue')) ?>
+            <?= $esc->html($viewModel->getCurrentStep()->buttonLabel) ?>
         </button>
     </div>
+    <?= $block->getChildHtml('luma_js') ?>
 </div>

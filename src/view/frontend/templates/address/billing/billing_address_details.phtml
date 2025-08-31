@@ -1,59 +1,58 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
+use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
+use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddress;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
+/** @var Esc $esc */
 /** @var string $formKey */
-/** @var Closure $viewModelProvider */
-/** @var BillingAddress $viewModel */
-$viewModel = $viewModelProvider(BillingAddress::class);
+/** @var ViewModelProvider $viewModelProvider */
+
+$viewModel = $viewModelProvider->get(BillingAddress::class);
+$hxAttributesRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
+$showFormViewModel = $viewModelProvider->get(ShowBillingForm::class);
 $isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
+$isLoggedIn = $viewModel->isCustomerLoggedIn();
+$customerHasAddresses = $showFormViewModel->currentCustomerHasAddress();
+$vals = [
+    'show_form' => (int) ($viewModel->isVirtualCart() || !$isLoggedIn || !$customerHasAddresses),
+    'show_cards' => (int)($isLoggedIn && $customerHasAddresses),
+];
 ?>
 <div id="billing-address-details">
-    <div class="form-control">
-        <label class="label cursor-pointer justify-start space-x-2">
-            <input
-                id="is-billing-same" type="checkbox" name="is_billing_same" class="checkbox" value="1"
-                <?= $isSameAsShipping ? 'checked' : '' ?>
-                hx-swap="outerHTML"
-                hx-indicator="#billing-address-section-loader"
-                hx-vals='{"show_form": <?= $eHtmlAttr((int)!$viewModel->isCustomerLoggedIn()) ?>}'
-                hx-target="<?= $eHtmlAttr($isSameAsShipping ? '#billing-address-section' : '#checkout-main-content') ?>"
-                <?php if ($isSameAsShipping): ?>
-                    hx-get="<?= $eUrl($block->getUrl('mahxcheckout/billing/editBilling')) ?>"
-                <?php else: ?>
-                    hx-include="[name=form_key]"
-                    hx-post="<?= $eUrl($block->getUrl('mahxcheckout/billing/billingAddressPost')) ?>"
-                    hx-on:afterSwap="dispatchBillingAddressSaved"
-                <?php endif; ?>
-            />
-            <span class="label-text"><?= $eHtml(__('My billing and shipping address are the same')) ?></span>
-        </label>
-    </div>
+    <?= $block->getChildHtml('isBillingSame') ?>
     <div id="billing-address-form-wrapper" class="relative">
-        <?php if (!$viewModel->isEditing()): ?>
-            <div class="collapse collapse-open">
+        <?php if (!$showFormViewModel->canShowForm() && !$showFormViewModel->canShowCards() && $viewModel->isValidAddress()): ?>
+            <div class="address-lines collapse collapse-open">
                 <div class="collapse-content pt-4">
                     <div class="space-y-1 italic text-sm pl-6">
-                        <?php foreach ($viewModel->getBillingAddressLines() as $addressLine): ?>
-                            <p><?= $eHtml($addressLine) ?></p>
-                        <?php endforeach; ?>
+                        <?php $addressLines = $viewModel->getBillingAddressLines() ?>
+                        <p class="font-semibold"><?= $esc->html($addressLines->name) ?></p>
+                        <p><?= $esc->html($addressLines->streetLine1 ?? '') ?></p>
+                        <p><?= $esc->html($addressLines->streetLine2 ?? '') ?></p>
+                        <p><?= $esc->html($addressLines->postcode ?? '') ?></p>
+                        <p><?= $esc->html($addressLines->country ?? '') ?></p>
+                        <p class="text-blue-600 mt-1"><?= $esc->html($addressLines->telephone ?? '') ?></p>
                     </div>
                     <?php if (!$isSameAsShipping): ?>
                         <div class="mt-4 px-4">
                             <button
                                 type="button" class="btn btn-sm btn-neutral"
-                                hx-target="#billing-address-section"
-                                hx-indicator="#billing-address-section-loader"
-                                hx-include="#is-billing-same"
-                                hx-vals='{"show_form": <?= $eHtmlAttr((int)!$viewModel->isCustomerLoggedIn()) ?>}'
-                                hx-get="<?= $block->getUrl('mahxcheckout/billing/editBilling') ?>"
+                                <?= $hxAttributesRenderer->hxBuilder()
+                                    ->post('mahxcheckout/billing/editBilling')
+                                    ->target('#billing-address-section')
+                                    ->include(['#is-billing-same', '[name=form_key]'])
+                                    ->vals($vals)
+                                    ->indicator('#billing-address-section-loader')
+                                    ->swapOuterHTML()
+                                    ->render()
+                                ?>
                             >
-                                <?= $eHtml(__('Edit')) ?>
+                                <?= $esc->html(__('Edit')) ?>
                             </button>
                         </div>
                     <?php endif; ?>

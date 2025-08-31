@@ -1,27 +1,35 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
+use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddress;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
+/** @var string $nonce */
+/** @var Esc $esc */
 /** @var string $formKey */
-/** @var Closure $viewModelProvider */
-/** @var BillingAddress $viewModel */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(BillingAddress::class);
+$viewModel = $viewModelProvider->get(BillingAddress::class);
+$showFormViewModel = $viewModelProvider->get(ShowBillingForm::class);
 $isSameAsShipping = $viewModel->isBillingSameAsShipping();
+
+if (!$showFormViewModel->canShowForm()) {
+    return;
+}
 ?>
-<?php if ($viewModel->canShowForm()): ?>
-    <form id="billing-address-form" x-data="BillingAddressForm">
-        <?= $formKey ?>
-        <div id="billing-address-details">
+<form id="billing-address-form" class="billing-address-form checkout-billing-address" x-data="BillingAddressForm">
+    <?= $formKey ?>
+    <div class="max-w-lg">
+        <fieldset id="billing-address-details" class="fieldset address grid md:grid-cols-4 gap-2">
             <?php foreach ($viewModel->getAddressFields() as $field): ?>
                 <?= $viewModel->renderField($field) ?>
             <?php endforeach; ?>
-            <?= $block->getChildHtml('actions') ?>
-        </div>
-    </form>
-<?php endif; ?>
+        </fieldset>
+        <?= $block->getChildHtml('actions') ?>
+    </div>
+    <?= $block->getChildHtml('luma_js') ?>
+</form>
+<?= $block->getChildHtml('loader') ?>

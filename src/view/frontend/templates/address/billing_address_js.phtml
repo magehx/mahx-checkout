@@ -1,32 +1,65 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddress;
 
 /** @var Template $block */
-/** @var string $eHtmlAttr */
 /** @var string $nonce */
-/** @var Closure $eJs */
-/** @var Closure $viewModelProvider */
-/** @var BillingAddress $viewModel */
-$viewModel = $viewModelProvider(BillingAddress::class);
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
+
+$viewModel = $viewModelProvider->get(BillingAddress::class);
+$themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
 ?>
-<script nonce="<?= $eHtmlAttr($nonce) ?>">
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('BillingAddressForm', () => ({
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
+    'use strict';
+
+    function BillingAddressForm(form) {
+        return {
             form: null,
             validator: null,
 
             init() {
-                this.form = this.$el;
+                this.form = form || this.$el;
                 this.modifyFormAfterRender();
+                this.disablePageActionButton();
+                this.registerEventListeners();
+            },
+
+            disablePageActionButton() {
+                this.stepStore.actionButton.isDisabled = true;
+                const pageNavButton = document.body.querySelector("button[data-role='opc-continue']");
+                if (pageNavButton) {
+                    pageNavButton.disabled = true;
+                }
+            },
+
+            registerEventListeners() {
+                const cancelButton = this.form.querySelector("button[data-role='action-cancel']");
+                if (cancelButton) {
+                    cancelButton.addEventListener('click', this.handleBillingCancel.bind(this));
+                }
+
+                const updateButton = this.form.querySelector("button[data-role='action-update']");
+                if (updateButton) {
+                    updateButton.addEventListener('click', this.handleBillingUpdate.bind(this));
+                }
             },
 
             async handleBillingUpdate() {
                 const isValid = await this.validator.revalidate();
                 if (isValid) {
-                    htmx.trigger(document.body, 'mahxcheckout-billing-address-form-validated')
+                    this.stepStore.actionButton.isDisabled = false;
+                    htmx.trigger(document.body, 'mahxcheckout-billing-validated');
                 }
+            },
+
+            handleBillingCancel(event) {
+                htmx.trigger(event.target, 'mahxcheckout-billing-canceled');
+                this.stepStore.actionButton.isDisabled = false;
             },
 
             handleCountryChange(event) {
@@ -34,7 +67,7 @@ $viewModel = $viewModelProvider(BillingAddress::class);
             },
 
             modifyFormAfterRender() {
-                this.$nextTick(() => {
+                Promise.resolve().then(() => {
                     this.focusOnFirstname();
                     this.applyValidation();
                 });
@@ -47,19 +80,18 @@ $viewModel = $viewModelProvider(BillingAddress::class);
             applyValidation() {
                 this.validator = mahxCheckout.validator(Object.assign({
                     form: this.form,
-                }, JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>')))
+                }, JSON.parse('<?= $esc->js($viewModel->getValidationJson()) ?>')))
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
-        }));
-
-        Alpine.data('BillingAddressSection', () => ({
-            dispatchBillingAddressSavedById(event) {
-                this.$dispatch('mahxcheckout-billing-saved-by-id', { htmxEvent: event });
+            <?php if($themeInfo->isHyvaTheme()): ?>
+            get stepStore() {
+                return this.$store.checkoutStepStorage;
             },
+            <?php endif; ?>
+        };
+    }
 
-            dispatchBillingAddressSaved(event) {
-                this.$dispatch('mahxcheckout-billing-saved', { htmxEvent: event });
-            }
-        }))
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('BillingAddressForm', BillingAddressForm);
     });
 </script>

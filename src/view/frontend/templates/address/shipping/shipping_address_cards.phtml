@@ -1,23 +1,25 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\ShippingAddressCards;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
+/** @var string $nonce */
+/** @var Esc $esc */
 /** @var string $formKey */
-/** @var Closure $viewModelProvider */
-/** @var ShippingAddressCards $viewModel */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(ShippingAddressCards::class);
+$viewModel = $viewModelProvider->get(ShippingAddressCards::class);
+$hxAttributesRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
 $estimatePropsJson = htmlspecialchars($viewModel->getNewAddressEstimatePropsJson(), ENT_QUOTES, 'UTF-8');
 ?>
 <div
-    id="shipping-address-cards-container"
+    id="shipping-address-cards"
     class="relative"
-    data-selected-address="<?= $eHtmlAttr($viewModel->getCustomerAddressSelected()) ?>"
+    data-selected-address="<?= $esc->htmlAttr($viewModel->getCustomerAddressSelected()) ?>"
     x-data="ShippingAddressCards"
 >
     <?= $block->getChildHtml('formTitle') ?>
@@ -30,23 +32,19 @@ $estimatePropsJson = htmlspecialchars($viewModel->getNewAddressEstimatePropsJson
     ?>
     <form id="shipping-address-form">
         <?= $formKey ?>
-        <input type="hidden" name="customer_address_id" id="customer_address_id" :value="selectedAddressId" />
+        <input type="hidden" name="customer_address_id" id="customer_address_id"
+               value="<?= $esc->htmlAttr($viewModel->getCustomerAddressSelected()) ?>"/>
     </form>
     <?php // ############### SHIPPING ADDRESS FORM - ends ###################### ?>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <div class="shipping-address-items grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <?php foreach ($viewModel->getCustomerAddressCards() as $addressCard): ?>
-            <?php
-                $addressId = $addressCard['addressId'];
-                $isNewAddress = $addressId === 'new';
-                $isAddressSelected = $addressCard['isSelected'];
-                $addressLines = $addressCard['addressLines'];
-            ?>
+            <?php $addressLines = $addressCard->addressLines; ?>
             <div
-                class="flex flex-col justify-between p-4 rounded-md shadow bg-white min-h-[260px]"
-                data-address-id="<?= $eHtmlAttr($addressId) ?>"
+                class="shipping-address-item flex flex-col justify-between p-4 rounded-md shadow bg-white min-h-[260px]"
+                data-address-id="<?= $esc->htmlAttr($addressCard->addressId) ?>"
+                data-role="address-card"
                 x-data="AddressCard"
-                :class="addressCardExtraClasses"
             >
                 <template x-if="isSelected">
                     <?php // Tick SVG  ?>
@@ -58,67 +56,33 @@ $estimatePropsJson = htmlspecialchars($viewModel->getNewAddressEstimatePropsJson
                 </template>
 
                 <div>
-                    <p class="font-semibold"><?= $eHtmlAttr($addressLines['name']) ?></p>
-                    <p><?= $eHtml($addressLines['line_1'] ?? '') ?></p>
-                    <p><?= $eHtml($addressLines['line_2'] ?? '') ?></p>
-                    <p><?= $eHtml($addressLines['postcode'] ?? '') ?></p>
-                    <p><?= $eHtml($addressLines['country'] ?? '') ?></p>
-                    <p class="text-blue-600 mt-1"><?= $eHtml($addressLines['telephone'] ?? '') ?></p>
+                    <p class="font-semibold"><?= $esc->html($addressLines->name) ?></p>
+                    <p><?= $esc->html($addressLines->streetLine1 ?? '') ?></p>
+                    <p><?= $esc->html($addressLines->streetLine2 ?? '') ?></p>
+                    <p><?= $esc->html($addressLines->postcode ?? '') ?></p>
+                    <p><?= $esc->html($addressLines->country ?? '') ?></p>
+                    <p class="text-blue-600 mt-1"><?= $esc->html($addressLines->telephone ?? '') ?></p>
                 </div>
 
-                <div class="actions flex items-center min-h-[2.5rem]">
-                    <?php if ($isNewAddress): ?>
-                        <button
-                            class="btn btn-ghost mt-4 text-primary" type="button"
-                            hx-target="#shipping-address-form-section"
-                            hx-indicator="#shipping-address-cards-loader"
-                            hx-get="<?= $block->getUrl("mahxcheckout/shipping/getNewAddressForm") ?>"
-                        >
-                            <?= $eHtml(__('Edit')) ?>
-                        </button>
-                    <?php endif; ?>
-                    <div class="action-item ml-auto">
-                        <button
-                            type="button" class="btn btn-sm mt-4 btn-outline"
-                            data-id="<?= $eHtmlAttr($addressId) ?>"
-                            x-cloak
-                            x-show="isNotSelected"
-                            @click="setShipToAddress"
-                            hx-post="<?= $eUrl($viewModel->getEstimateShippingByAddressIdUrl($addressId)) ?>"
-                            hx-trigger="mahxcheckout-customer-address-<?= $eHtmlAttr($addressId) ?>-selected from:window"
-                            hx-target="#shipping-methods-section"
-                            hx-swap="outerHTML"
-                            hx-indicator="#shipping-loader"
-                            hx-include="[name=form_key]"
-                            <?php if ($isNewAddress): ?>
-                                hx-vals='<?= $estimatePropsJson ?>'
-                            <?php endif; ?>
-                        >
-                            <?= $eHtml(__('Ship Here')) ?>
-                        </button>
-                    </div>
-                </div>
+                <?= $block->getChildBlock('actions')->setData('address_card', $addressCard)->toHtml() ?>
             </div>
         <?php endforeach; ?>
     </div>
 
-        <div id="shipping-address-form-section" class="mt-6 pt-6">
-            <?php if (!$viewModel->isNewAddressExists()): ?>
-                <button
-                    type="button" class="btn btn-outline btn-sm"
-                    hx-target="#shipping-address-form-section"
-                    hx-indicator="#shipping-address-cards-loader"
-                    hx-get="<?= $block->getUrl("mahxcheckout/shipping/getNewAddressForm") ?>"
-                >
-                    + <?= $eHtml(__('New Address')) ?>
-                </button>
-            <?php endif; ?>
-        </div>
-    <div id="shipping-address-cards-loader"
-         class="htmx-indicator absolute inset-0 flex items-center justify-center bg-white/50 pointer-events-none">
-        <span class="loading loading-dots loading-lg"></span>
-        <span class="loading loading-dots loading-lg"></span>
-        <span class="loading loading-dots loading-lg"></span>
+    <div id="shipping-address-form-section" class="mt-6 pt-6">
+        <?php if (!$viewModel->isNewAddressExists()): ?>
+            <button
+                type="button" class="btn btn-outline btn-sm"
+                hx-target="#shipping-address-form-section"
+                hx-indicator="#shipping-address-cards-loader"
+                hx-get="<?= $block->getUrl("mahxcheckout/shipping/getNewAddressForm") ?>"
+            >
+                + <?= $esc->html(__('New Address')) ?>
+            </button>
+        <?php endif; ?>
     </div>
+
+    <?= $block->getChildHtml('loader') ?>
+    <?= $block->getChildHtml('luma_js') ?>
 </div>
 

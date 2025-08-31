@@ -1,0 +1,47 @@
+<?php declare(strict_types=1);
+
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
+use MageHx\MahxCheckout\ViewModel\HxAttributesRenderer;
+use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
+use MageHx\MahxCheckout\ViewModel\StepManager;
+use Magento\Framework\View\Element\Template;
+use MageHx\MahxCheckout\ViewModel\BillingAddress;
+
+/** @var Template $block */
+/** @var Esc $esc */
+/** @var string $formKey */
+/** @var ViewModelProvider $viewModelProvider */
+
+$viewModel = $viewModelProvider->get(BillingAddress::class);
+
+if ($viewModel->isVirtualCart()) {
+    return;
+}
+
+$stepManager = $viewModelProvider->get(StepManager::class);
+$showFormViewModel = $viewModelProvider->get(ShowBillingForm::class);
+$hxAttributesRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
+$isSameAsShipping = $viewModel->getBillingSameAsShippingValue();
+$vals = [
+    'show_form' => (int)(!$viewModel->isCustomerLoggedIn() || !$showFormViewModel->currentCustomerHasAddress()),
+    'show_cards' => (int)($viewModel->isCustomerLoggedIn() && $showFormViewModel->currentCustomerHasAddress()),
+];
+?>
+<div class="form-control">
+    <label class="label cursor-pointer justify-start space-x-2">
+        <input
+            id="is-billing-same" type="checkbox" name="is_billing_same" class="checkbox" value="1"
+            <?= $isSameAsShipping ? 'checked' : '' ?>
+            <?= $hxAttributesRenderer->hxBuilder()
+                ->swapOuterHTML()
+                ->indicator('#billing-address-section-loader')
+                ->include('[name=form_key]')
+                ->target('#billing-address-section')
+                ->when($isSameAsShipping, fn ($hx) => $hx->post('mahxcheckout/billing/editBilling')->vals($vals))
+                ->when(!$isSameAsShipping, fn ($hx) => $hx->post('mahxcheckout/billing/billingAddressPost'))
+                ->render() ?>
+        />
+        <span class="label-text"><?= $esc->html(__('My billing and shipping address are the same')) ?></span>
+    </label>
+</div>

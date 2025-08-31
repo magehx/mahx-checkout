@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace MageHx\MahxCheckout\Controller\Billing;
 
 use Exception;
+use MageHx\MahxCheckout\Service\ApplyShowBillingFormDataFromRequest;
+use MageHx\MahxCheckout\Service\GenerateBlockHtml;
+use MageHx\MahxCheckout\Service\PrepareBillingAddressData;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\ResultInterface;
 use MageHx\MahxCheckout\Controller\Form\ComponentAction;
@@ -18,7 +21,10 @@ class BillingAddressPost extends ComponentAction
     public function __construct(
         Context $context,
         private readonly QuoteDetails $quote,
+        private readonly GenerateBlockHtml $generateBlockHtml,
         private readonly SaveBillingAddress $saveBillingAddressService,
+        private readonly PrepareBillingAddressData $prepareBillingAddressData,
+        private readonly ApplyShowBillingFormDataFromRequest $applyShowBillingFormData,
     ) {
         parent::__construct($context);
     }
@@ -27,12 +33,15 @@ class BillingAddressPost extends ComponentAction
     {
         // prepare billing address data and validate
         $billingAddressData = $this->getBillingAddressData();
+
         try {
             if (!$billingAddressData->same_as_billing) {
                 $billingAddressData->validate();
             }
             $this->saveBillingAddressService->execute($billingAddressData);
-            return $this->getCheckoutContentResponse();
+            $totals = $this->generateBlockHtml->getComponentHtml('checkout.order.totals', withHtmxOob: true);
+            $this->applyShowBillingFormData->apply();
+            return $this->getComponentResponse('billing.address.section', additionalHtml: $totals);
         } catch (Exception $e) {
             $this->prepareErrorNotificationsWithFormData($billingAddressData->toArray(), $e);
             return $this->getNotificationsResponse()->setHeader('HX-Reswap', 'none');
@@ -46,16 +55,6 @@ class BillingAddressPost extends ComponentAction
         $data = $isSameAsShipping ? $shippingAddress->getData() : (array)$this->getRequest()->getPost();
         $data['street'] = $isSameAsShipping ? $shippingAddress->getStreet() : ($data['street'] ?? []);
 
-        return AddressData::from([
-            'firstname' => $data['firstname'] ?? '',
-            'lastname' => $data['lastname'] ?? '',
-            'street' => $data['street'] ?? [],
-            'city' => $data['city'] ?? '',
-            'country_id' => $data['country_id'] ?? '',
-            'postcode' => $data['postcode'] ?? '',
-            'telephone' => $data['telephone'] ?? '',
-            'region' => $data['region'] ?? '',
-            'same_as_billing' => $isSameAsShipping,
-        ]);
+        return $this->prepareBillingAddressData->prepare($data, $isSameAsShipping);
     }
 }

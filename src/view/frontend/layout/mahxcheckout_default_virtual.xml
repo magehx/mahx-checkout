@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <move element="guest.email.form" destination="checkout.main.section" before="-" />
+        <move element="billing.address.section" destination="checkout.main.section" after="guest.email.form" />
+        <move element="payment.methods.form" destination="checkout.main.section" after="billing.address.section" />
+
+        <referenceBlock name="checkout.shipping.address.details" remove="true"/>
+        <referenceBlock name="checkout.shipping.method.details" remove="true"/>
+    </body>
+</page>

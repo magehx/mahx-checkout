@@ -4,9 +4,9 @@
     <body>
         <referenceBlock name="billing.address.section">
             <block name="billing.address.cards" after="billing.address.details"
-                   template="MageHx_MahxCheckout::address/billing/billing_address_cards.phtml">
-            </block>
+                   template="MageHx_MahxCheckout::address/billing/billing_address_cards.phtml"/>
         </referenceBlock>
 
+        <referenceBlock name="guest.email.form" remove="true" />
     </body>
 </page>

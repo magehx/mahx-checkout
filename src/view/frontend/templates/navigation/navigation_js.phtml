@@ -1,18 +1,20 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\StepManager;
 
 /** @var Template $block */
-/** @var string $eHtmlAttr */
 /** @var string $nonce */
-/** @var Closure $eJs */
-/** @var Closure $eUrl */
-/** @var Closure $viewModelProvider */
-/** @var StepManager $viewModel */
-$viewModel = $viewModelProvider(StepManager::class);
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
+
+$viewModel = $viewModelProvider->get(StepManager::class);
+$themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
 ?>
-<script nonce="<?= $eHtmlAttr($nonce) ?>">
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
     /**
      * @typedef {Object} FormComponentData
      * @property {string} name - Unique identifier for the form component. This is equals to the form id.
@@ -30,133 +32,34 @@ $viewModel = $viewModelProvider(StepManager::class);
      * @property {Object.<string, FormComponentData>} formComponents - Keyed list of form components.
      */
 
-    /**
-     * @typedef {Object.<string, CheckoutStepData>} CheckoutStepsMap
-     * A map of step names to their step data.
-     */
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('checkoutStepStorage', {
-            currentStep: null,
-            /** @type {CheckoutStepsMap} */
-            steps: JSON.parse('<?= $eJs($viewModel->getStepsJson()) ?>'),
-            validators: {},
+    const CheckoutStepStorage = {
+        currentStep: null,
+        /** @type {CheckoutStepsMap} */
+        steps: JSON.parse('<?= $esc->js($viewModel->getStepsJson()) ?>'),
+        validators: {},
+        actionButton: {
+            isDisabled: false,
+        },
 
-            findStepBy(prop, value) {
-                const key = Object.keys(this.steps).find(
-                    (stepKey) => this.steps[stepKey][prop] === value
-                );
-                return key ? this.steps[key] : null;
-            },
+        findStepBy(prop, value) {
+            const key = Object.keys(this.steps).find(
+                (stepKey) => this.steps[stepKey][prop] === value
+            );
+            return key ? this.steps[key] : null;
+        },
 
-            getFirstStep() {
-                const firstKey = Object.keys(this.steps)[0];
-                return this.steps[firstKey];
-            },
-        });
+        getFirstStep() {
+            const firstKey = Object.keys(this.steps)[0];
+            return this.steps[firstKey];
+        },
 
-        Alpine.data('PageNavigation', () => ({
-            init() {
-                this.calculateCurrentStep();
-                this.addEventListeners();
-            },
+        getValidatorFor(validatorId) {
+            return this.validators[validatorId];
+        },
+    };
 
-            calculateCurrentStep() {
-                const hash = window.location.hash.substring(1);
-                this.stepStore.currentStep =
-                    this.stepStore.findStepBy('urlHash', hash) ||
-                    this.stepStore.findStepBy('isDefault', true) ||
-                    this.stepStore.getFirstStep();
-            },
-
-            addValidatorToPageNavigation(componentId, validator) {
-                this.stepStore.validators[componentId] = validator;
-            },
-
-            removeValidatorFromPageNavigation(componentId) {
-                delete this.stepStore.validators[componentId];
-            },
-
-            async handleStepAction() {
-                if (!this.currentStep) {
-                    return;
-                }
-
-                this.$dispatch('mahxcheckout-step-validation-before', { currentStep: this.currentStep });
-
-                const validationResults = await Promise.all(
-                    Object.keys(this.currentStep.formComponents).map((componentId) => {
-                        const form = document.getElementById(componentId);
-                        const validator = this.stepStore.validators[componentId];
-
-                        return this.prepareValidationPromiseForForm(form, validator)
-                    })
-                );
-
-                const isAllValid = validationResults.every((result) => result === true);
-
-                if (isAllValid) {
-                    this.$dispatch('mahxcheckout-step-validation-success', { currentStep: this.currentStep });
-                    htmx.trigger(document.body, 'mahxcheckout-step-validated');
-                }
-            },
-
-            prepareValidationPromiseForForm(form, validator) {
-                if (!form || !validator) {
-                    return Promise.resolve(true);
-                }
-
-                return validator.revalidate().then((isValid) => {
-                    if (!isValid) {
-                        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-                    }
-                    return isValid;
-                });
-            },
-
-            addEventListeners() {
-                document.addEventListener('htmx:afterSwap', (event) => {
-                    const pushUrl = event.detail.xhr.getResponseHeader('HX-Push-Url') || '';
-                    const newStepName = pushUrl.split('#')[1] || '';
-                    const prevStepName = this.currentStep.name;
-                    const newStep = this.stepStore.findStepBy('urlHash', newStepName);
-
-                    if (newStep) {
-                        this.stepStore.currentStep = newStep;
-                    }
-
-                    this.$dispatch('mahxcheckout-step-changed', {
-                        htmxEvent: event,
-                        prevStep: this.stepStore.findStepBy('urlHash', prevStepName),
-                        newStep: this.currentStep
-                    });
-                });
-
-                document.body.addEventListener('htmx:configRequest', function(evt) {
-                    if (evt.detail.parameters && evt.detail.parameters['step']) {
-                        return;
-                    }
-
-                    const stepInput = document.querySelector('#current-step');
-                    if (stepInput) {
-                        evt.detail.parameters['step'] = stepInput.value;
-                    }
-                });
-            },
-
-            dispatchPageActionCompleted(event) {
-                this.$dispatch('mahxcheckout-page-action-completed', { htmxEvent: event });
-            },
-
-            get stepStore() {
-                return this.$store.checkoutStepStorage;
-            },
-
-            get currentStep() {
-                return this.stepStore.currentStep;
-            },
-        }));
-
-        Alpine.data('NavItem', () => ({
+    function NavItem() {
+        return {
             stepName: null,
             step: null,
 
@@ -176,16 +79,238 @@ $viewModel = $viewModelProvider(StepManager::class);
             },
 
             get stepDataContent() {
-                return this.isStepCompleted ? '✓' : this.step.order;
-            },
-
-            dispatchNavStepChanged(event) {
-                this.$dispatch('mahxcheckout-step-nav-changed', { htmxEvent: event, step: this.stepName });
+                return this.isStepCompleted ? '✓' : this.step?.order;
             },
 
             get stepStore() {
                 return this.$store.checkoutStepStorage;
             },
-        }))
+        };
+    }
+
+    function PageAction(rootElem) {
+        return {
+            root: null,
+            init() {
+                this.root = rootElem || this.$el;
+                this.addEventListeners();
+            },
+
+            addEventListeners() {
+                const pageNavButton = this.root.querySelector("button[data-role='opc-continue']");
+                if (pageNavButton) {
+                    pageNavButton.addEventListener('htmx:confirm', this.handleStepAction.bind(this));
+                }
+
+                document.body.addEventListener('mahxcheckout-billing-canceled', () => this.updateDisableStatus(false));
+                document.body.addEventListener('mahxcheckout-billing-validated', () => this.updateDisableStatus(false));
+            },
+
+            async handleStepAction(event) {
+                <?php // Stop sending request immediately. ?>
+                event.preventDefault();
+                this.root.dispatchEvent(
+                    new CustomEvent('mahxcheckout-step-validation-before', {
+                        detail: { currentStep: this.currentStep },
+                        bubbles: true
+                    })
+                );
+
+                const showErrors = true;
+                const isAllValid = await this.validateStepForms(showErrors);
+
+                if (isAllValid) {
+                    this.root.dispatchEvent(
+                        new CustomEvent('mahxcheckout-step-validation-success', {
+                            detail: { currentStep: this.currentStep },
+                            bubbles: true
+                        })
+                    );
+                    <?php // Sends request ?>
+                    event.detail.issueRequest();
+                }
+            },
+
+            async validateStepForms(showErrors = false) {
+                if (!this.currentStep) {
+                    return false;
+                }
+                const validationResults = await Promise.all(
+                    Object.keys(this.currentStep.formComponents).map((componentId) => {
+                        const form = document.getElementById(componentId);
+                        const validator = this.stepStore.validators[componentId];
+
+                        return this.prepareValidationPromiseForForm(form, validator, showErrors)
+                    })
+                );
+
+                return validationResults.every((result) => result === true);
+            },
+
+            prepareValidationPromiseForForm(form, validator, showErrors = false) {
+                if (!form || !validator) {
+                    return Promise.resolve(true);
+                }
+
+                // validator.onFail((fields) =>  console.log(fields));
+
+                return validator.revalidate().then((isValid) => {
+                    if (!isValid && showErrors) {
+                        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                    }
+                    return isValid;
+                });
+            },
+
+            updateDisableStatus(status) {
+                const pageNavButton = this.root.querySelector("button[data-role='opc-continue']");
+                if (pageNavButton) {
+                    pageNavButton.disabled = status;
+                }
+            },
+
+            get buttonLabel() {
+                return this.stepStore?.currentStep?.buttonLabel;
+            },
+            get buttonDisabled() {
+                return this.stepStore?.actionButton?.isDisabled;
+            },
+            <?php if($themeInfo->isHyvaTheme()): ?>
+            get stepStore() {
+                return this.$store.checkoutStepStorage;
+            },
+            <?php endif; ?>
+        }
+    }
+
+    function PageNavigation() {
+        return {
+            isStepValid: false,
+
+            get isStepInvalid() {
+                return !this.isStepValid;
+            },
+
+            init() {
+                this.calculateCurrentStep();
+                this.addEventListeners();
+            },
+
+            calculateCurrentStep() {
+                const hash = window.location.hash.substring(1);
+                this.stepStore.currentStep =
+                    this.stepStore.findStepBy('urlHash', hash) ||
+                    this.stepStore.findStepBy('isDefault', true) ||
+                    this.stepStore.getFirstStep();
+                this.updateStepInputValue(this.stepStore.currentStep.name);
+            },
+
+            updateStepInputValue(step) {
+                this.getCurrentStepInput().value = step;
+            },
+
+            getCurrentStepInput() {
+                return document.getElementById('current-step');
+            },
+
+            addValidatorToPageNavigation(componentId, validator) {
+                this.stepStore.validators[componentId] = validator;
+            },
+
+            removeValidatorFromPageNavigation(componentId) {
+                delete this.stepStore.validators[componentId];
+            },
+
+            getStepButtonDisabledClass() {
+                return this.isStepValid ? '' : 'btn-disabled';
+            },
+
+            addEventListeners() {
+                document.body.addEventListener('htmx:configRequest', (event) => {
+                    const excludePaths = [
+                        'mahxcheckout/step/getStepContent',
+                        'mahxcheckout/shipping/saveShippingInformation',
+                    ];
+                    const needToExcludeStepData = excludePaths.some((path) => event.detail.path.includes(path));
+                    if (!needToExcludeStepData) {
+                        event.detail.parameters['step'] = this.getCurrentStepInput().value;
+                    }
+                });
+                document.addEventListener('htmx:afterSwap', (event) => {
+                    const pushUrl = event.detail.xhr.getResponseHeader('HX-Push-Url') || '';
+
+                    if (!pushUrl) {
+                        return;
+                    }
+
+                    const newStepName = pushUrl.split('#')[1] || '';
+                    const prevStepName = this.currentStep.name;
+                    const newStep = this.stepStore.findStepBy('urlHash', newStepName);
+
+                    if (newStep) {
+                        this.stepStore.currentStep = newStep;
+                        this.updateStepInputValue(newStep.name);
+                    }
+
+                    const checkoutMainElem = document.getElementById('checkout');
+
+                    checkoutMainElem.dispatchEvent(new CustomEvent('mahxcheckout-step-changed', {
+                        detail: {
+                            htmxEvent: event,
+                            prevStep: this.stepStore.findStepBy('urlHash', prevStepName),
+                            newStep: this.currentStep
+                        },
+                        bubbles: true
+                    }));
+                });
+            },
+
+            get stepStore() {
+                return this.$store.checkoutStepStorage;
+            },
+
+            get currentStep() {
+                return this.stepStore.currentStep;
+            },
+        };
+    }
+    <?php if ($themeInfo->isHyvaTheme()): ?>
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('checkoutStepStorage', CheckoutStepStorage);
+        Alpine.data('PageNavigation', PageNavigation);
+        Alpine.data('NavItem', NavItem);
+        Alpine.data('PageAction', PageAction);
     });
+    <?php endif; ?>
+</script>
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
+    'use strict';
+    <?php
+    /**
+     * When the page loads for the first time, there are chance that the current step (stored in the server session)
+     * mismatches with the url hash. In that case, we need to force reset the current step in the session according
+     * to the hash url and also reload the content based on the hash url.
+     */
+    ?>
+    document.body.addEventListener("htmx:load", () => {
+        const storage = CheckoutStepStorage;
+        const stepReloaderElem = document.getElementById('step-reloader');
+        const currentStep = storage.findStepBy('name', stepReloaderElem.dataset.currentStep);
+        const urlHash = (window.location.hash || '').replace('#', '');
+        const hashStep = storage.findStepBy('urlHash', urlHash) || storage.findStepBy('isDefault', true);
+
+        if (currentStep && hashStep && currentStep.urlHash !== hashStep.urlHash) {
+            stepReloaderElem.setAttribute('hx-vals', JSON.stringify({ step: hashStep.name }));
+            stepReloaderElem.dispatchEvent(
+                new CustomEvent('mahxcheckout-reload-step', {
+                    bubbles: true,
+                    cancelable: true,
+                    detail: {
+                        currentStep: currentStep,
+                        hashStep: hashStep,
+                    }
+                }),
+            );
+        }
+    }, { once: true });
 </script>

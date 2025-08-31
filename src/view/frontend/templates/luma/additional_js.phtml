@@ -1,0 +1,21 @@
+<?php declare(strict_types=1);
+
+use MageHx\MageTemplateUtils\Model\Esc;
+
+/** @var Esc $esc */
+/** @var string $nonce */
+?>
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
+    'use strict';
+
+    define('MageHx_MahxCheckout/js/page-navigation', [], function () {
+        const pageNavigation = PageNavigation();
+        pageNavigation.$store = {
+            checkoutStepStorage: CheckoutStepStorage
+        };
+        pageNavigation.init();
+
+        return pageNavigation;
+    })
+</script>
+

@@ -1,38 +1,60 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\ViewModel\BillingAddressFormActions;
+use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
-/** @var Closure $viewModelProvider */
-/** @var BillingAddressFormActions $viewModel */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(BillingAddressFormActions::class);
+$viewModel = $viewModelProvider->get(BillingAddressFormActions::class);
+$hxAttrRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
+$showFormViewModel = $viewModelProvider->get(ShowBillingForm::class);
 ?>
-<?php if ($viewModel->canShow()): ?>
-<div class="flex items-center justify-end space-x-4">
-    <button
-        class="btn btn-ghost" type="button"
-        hx-target="#billing-address-section"
-        hx-indicator="#billing-address-section-loader"
-        hx-include="#is-billing-same"
-        hx-vals='{"show_form": 0, "is_edit": <?= $eHtmlAttr((int)$viewModel->isCustomerLoggedIn()) ?> }'
-        hx-get="<?= $block->getUrl('mahxcheckout/billing/editBilling') ?>"
-    >
-        <?= $eHtml(__('Cancel')) ?>
-    </button>
-    <button class="btn btn-neutral" type="button" @click="handleBillingUpdate"
-            hx-swap="outerHTML"
-            hx-indicator="#checkout-page-loader"
-            hx-target="#checkout-main-content"
-            hx-trigger="mahxcheckout-billing-address-form-validated from:body"
-            hx-post="<?= $eUrl($block->getUrl('mahxcheckout/billing/billingAddressPost')) ?>"
-            hx-on:afterSwap="dispatchBillingAddressSaved"
-    >
-        <?= $eHtml(__('Update')) ?>
-    </button>
+<?php if ($showFormViewModel->canShowForm()): ?>
+<div class="actions-toolbar max-w-lg">
+    <div class="actions flex items-center justify-end space-x-4">
+        <?php if ($viewModel->canShowCancelButton()): ?>
+        <button
+            class="action action-cancel btn btn-ghost" type="button"
+            data-role="action-cancel"
+            <?= $hxAttrRenderer->hxBuilder()
+                ->post('mahxcheckout/billing/editBilling')
+                ->target('#billing-address-section')
+                ->indicator('#billing-address-section-loader')
+                ->include('[name=form_key]')
+                ->vals([
+                    'show_form' => 0,
+                    'show_cards' => (int) $viewModel->isCustomerHaveAddresses(),
+                    'is_billing_same' => (int) $viewModel->isBillingSame(),
+                ])
+                ->swapOuterHTML()
+                ->render() ?>
+        >
+            <?= $esc->html(__('Cancel')) ?>
+        </button>
+        <?php endif; ?>
+        <button class="action action-update btn btn-neutral" type="button"
+                data-role="action-update"
+                <?= $hxAttrRenderer->hxBuilder()
+                    ->post('mahxcheckout/billing/billingAddressPost')
+                    ->target('#billing-address-section')
+                    ->trigger('mahxcheckout-billing-validated from:body')
+                    ->indicator('.save-billing-loader')
+                    ->vals([
+                        'show_form' => 0,
+                        'show_cards' => 0,
+                        'is_billing_same' => (int) $viewModel->isBillingSame(),
+                    ])
+                    ->swapOuterHTML()
+                    ->render() ?>
+        >
+            <?= $esc->html(__('Update')) ?>
+        </button>
+    </div>
 </div>
 <?php endif; ?>

@@ -10,7 +10,7 @@ use Magento\Framework\Event\ObserverInterface;
 use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 use MageHx\MahxCheckout\Model\Config;
-use MageHx\MahxCheckout\Model\FormDataStorage;
+use MageHx\MahxCheckout\Model\CheckoutDataStorage;
 use MageHx\MahxCheckout\Model\QuoteDetails;
 use MageHx\MahxCheckout\Service\GenerateBlockHtml;
 use MageHx\MahxCheckout\Service\PrepareRegionFieldAttribute;
@@ -25,7 +25,7 @@ class UpdateRegionFieldBasedOnCountry implements ObserverInterface
     public function __construct(
         private readonly Config $config,
         private readonly QuoteDetails $quote,
-        private readonly FormDataStorage $formDataStorage,
+        private readonly CheckoutDataStorage $formDataStorage,
         private readonly GenerateBlockHtml $generateBlockHtmlService,
         private readonly PrepareRegionFieldAttribute $prepareRegionFieldAttributeService,
     ) {}
@@ -60,7 +60,8 @@ class UpdateRegionFieldBasedOnCountry implements ObserverInterface
             && $field->name === 'region'
             && in_array($form, [
                 CheckoutForm::SHIPPING_ADDRESS->value,
-                CheckoutForm::BILLING_ADDRESS->value
+                CheckoutForm::BILLING_ADDRESS->value,
+                CheckoutForm::NEW_ADDRESS->value,
             ], true);
     }
 
@@ -80,7 +81,12 @@ class UpdateRegionFieldBasedOnCountry implements ObserverInterface
     private function configureRegionField(FormFieldConfig &$regionField, string $countryCode): void
     {
         $regionField = $this->prepareRegionFieldAttributeService->execute($countryCode, regionField: $regionField);
-
+        if ($regionField->form === CheckoutForm::NEW_ADDRESS->value) {
+            $regionField = $this->prepareRegionFieldAttributeService->addAdditionalAttributesToRegion(
+                $regionField,
+                $regionField->form
+            );
+        }
         $regionField->meta->wrapperElemExtraAttributes['id'] = "{$regionField->form}-region-section";
         $regionField->meta->wrapperElemExtraClasses = 'relative';
         $regionField->value = (string) $this->resolveRegionValue($regionField);
@@ -88,7 +94,7 @@ class UpdateRegionFieldBasedOnCountry implements ObserverInterface
         $loaderId = "{$regionField->form}-region-loader";
         $regionField->meta->afterInputHtml = $this->generateBlockHtmlService->getLoaderHtml(
             $loaderId,
-            'estimate-shipping-loader'
+            'est-shipping-country-loader'
         );
     }
 

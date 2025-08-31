@@ -1,8 +1,10 @@
 module.exports = {
     content: [
         './input.css',
-        '../templates/**/*.phtml',
-        '../layout/*.xml',
+        // '../templates/**/*.phtml',
+        // '../layout/*.xml',
+        '../../../../../**/src/view/frontend/templates/**/*.phtml',
+        '../../../../../**/src/view/frontend/layout/*.xml',
     ],
     safelist: [
         'input-error',

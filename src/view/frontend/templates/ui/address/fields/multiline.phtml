@@ -1,11 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
 use MageHx\MahxCheckout\Block\Address\FieldRenderer;
 use MageHx\MahxCheckout\Data\FormField\MultilineFieldMeta;
 
 /** @var FieldRenderer $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
+/** @var Esc $esc */
 /** @var Closure $classNames */
 /** @var MultilineFieldMeta $fieldMeta */
 
@@ -18,31 +18,47 @@ $fieldMeta = $fieldConfig->meta;
 $wrapperClasses = $block->getWrapperElemExtraClasses();
 ?>
 <div
-    class="<?= $classNames(['form-control w-full max-w-sm', $wrapperClasses => $wrapperClasses]) ?>"
+    class="<?= $classNames([
+        'multiline field form-control md-col-span-4 md:col-span-4 grid md:grid-cols-4 gap-2',
+        $wrapperClasses => $wrapperClasses
+    ]) ?>"
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
-    <label class="label" for="<?= $eHtmlAttr($fieldConfig->getFieldId() . '-0') ?>">
-        <span class="label-text">
-            <?= $eHtml($fieldConfig->label) ?>
-            <?php if ($fieldConfig->required): ?>
-                <span class="text-red-500 ml-1" aria-hidden="true">*</span>
-            <?php endif; ?>
-        </span>
-    </label>
-    <div class="space-y-2">
-        <?php foreach (range(0, ($fieldMeta->lineCount) - 1) as $index): ?>
-            <?php if ($index === 0): ?><div><?php endif; ?>
-            <input
-                type="text"
-                class="input input-bordered input-sm w-full max-w-sm"
-                id="<?= $eHtmlAttr($fieldConfig->getFieldId() . '-' . $index) ?>"
-                name="<?= $eHtmlAttr($fieldConfig->name) ?>[<?= $eHtmlAttr($index) ?>]"
-                value="<?= $eHtmlAttr($fieldConfig->value[$index] ?? '')  ?>"
-                <?= /** @noEscape */ !$index ? $block->getInputAdditionalAttributes() : '' ?>
-            />
-            <?php if ($index === 0): ?></div><?php endif; ?>
-        <?php endforeach; ?>
-    </div>
+    <?php foreach ($fieldMeta->lines as $index => $lineConfig): ?>
+        <?php $id = $fieldConfig->getFieldId() . '_' . $index ?>
+        <div
+            class="<?= $classNames([
+                'field form-control',
+                '_required' => $lineConfig->required,
+                'md-col-span-4 md:col-span-4' => $lineConfig->getSpanWidth() === 4,
+                'md-col-span-3 md:col-span-3' => $lineConfig->getSpanWidth() === 3,
+                'md-col-span-2 md:col-span-2' => $lineConfig->getSpanWidth() === 2,
+                'md-col-span-1 md:col-span-1' => $lineConfig->getSpanWidth() === 1,
+            ]) ?>"
+        >
+            <div class="<?= $classNames(['additional' => $index !== 0]) ?>">
+                <?php if ($lineConfig->label): ?>
+                    <label class="label" for="<?= $esc->htmlAttr($id) ?>">
+                <span class="<?= $classNames([
+                    'label-text',
+                    "after:content-['*'] after:text-red-500 after:ml-1" => $lineConfig->required
+                ]) ?>">
+                    <?= $esc->html($lineConfig->label) ?>
+                </span>
+                    </label>
+                <?php endif; ?>
+                <div class="control">
+                    <input
+                        type="text"
+                        id="<?= $esc->htmlAttr($id) ?>"
+                        name="<?= $esc->htmlAttr(sprintf('%s[%s]', $fieldConfig->name, $index)) ?>"
+                        class="input-text input input-bordered input-sm md:input-md w-full"
+                        value="<?= $esc->htmlAttr($fieldConfig->value[$index] ?? '')  ?>"
+                    />
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
     <?= /** @noEscape */ $block->getAfterInputHtml() ?>
 </div>

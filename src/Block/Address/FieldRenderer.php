@@ -73,7 +73,8 @@ class FieldRenderer extends Template
         $attributesHtml = '';
 
         foreach ($attributes as $attribute => $attributeValue) {
-            $attributesHtml .= " {$attribute}=\"{$attributeValue}\"";
+            $value = is_bool($attributeValue) ? ($attributeValue ? 'true' : 'false') : $attributeValue;
+            $attributesHtml .= " {$attribute}=\"{$value}\"";
         }
 
         return trim($attributesHtml);

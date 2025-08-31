@@ -1,0 +1,20 @@
+<?php declare(strict_types=1);
+
+use MageHx\MageTemplateUtils\Model\Esc;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var string $nonce */
+/** @var Esc $esc */
+?>
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
+    'use strict';
+
+    require(['jquery', 'MageHx_MahxCheckout/js/page-navigation'], ($, pageNavigation) => {
+        $(() => {
+            const guestForm = document.getElementById('guest-email-form');
+            const guestManager = Object.assign(pageNavigation, GuestEmailForm(guestForm));
+            guestManager.init();
+        });
+    });
+</script>

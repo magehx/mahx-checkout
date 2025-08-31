@@ -1,0 +1,32 @@
+<?php declare(strict_types=1);
+
+use MageHx\MageTemplateUtils\Model\Esc;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var string $nonce */
+/** @var Esc $esc */
+?>
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
+    'use strict';
+
+    require(['jquery'], ($) => {
+        $(() => {
+            const shippingAddrCards = document.getElementById('shipping-address-cards');
+            const shippingAddrCardsManager = ShippingAddressCards(shippingAddrCards);
+            shippingAddrCardsManager.$store = {
+                shippingAddressCardStorage: ShippingAddressCardStorage,
+            };
+            shippingAddrCardsManager.init();
+
+            const addressCardsElems = shippingAddrCards.querySelectorAll("[data-role='address-card']");
+            Array.from(addressCardsElems).forEach((cardElem) => {
+                const addressCardManager = AddressCard(cardElem);
+                addressCardManager.$store = {
+                    shippingAddressCardStorage: ShippingAddressCardStorage,
+                };
+                addressCardManager.init();
+            });
+        });
+    });
+</script>

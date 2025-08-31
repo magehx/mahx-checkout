@@ -35,6 +35,17 @@
     <event name="layout_load_before">
         <observer name="MageHx_MahxCheckout::add_additional_layout_handlers"
                   instance="MageHx\MahxCheckout\Observer\Layout\AddAdditionalLayoutHandlers" />
+        <observer name="MageHx_MahxCheckout::add_virtual_layout_handlers"
+                  instance="MageHx\MahxCheckout\Observer\Layout\AddVirtualLayoutHandler" />
+    </event>
+    <event name="hxactions_block_response_before">
+        <observer
+            name="MageHx_MahxCheckout::include_navigation_content_in_response"
+            instance="MageHx\MahxCheckout\Observer\Controller\IncludeNavContentInResponse"/>
+    </event>
+    <event name="mahxcheckout_steps_data_build_before">
+        <observer name="MageHx_MahxCheckout::modify_steps_for_virtual_checkout"
+                  instance="MageHx\MahxCheckout\Observer\Steps\ModifyStepsForVirtualCheckout" />
     </event>
     <!-- This includes checkout styles in the theme stylesheet in the case of Hyvä Themes -->
     <!--

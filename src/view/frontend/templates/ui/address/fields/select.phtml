@@ -1,12 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
 use MageHx\MahxCheckout\Block\Address\FieldRenderer;
 use MageHx\MahxCheckout\Data\FormField\SelectFieldMeta;
-use MageHx\MahxCheckout\Enum\AdditionalFieldAttribute as AFA;
 
 /** @var FieldRenderer $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
+/** @var Esc $esc */
 /** @var Closure $classNames */
 /** @var SelectFieldMeta $fieldMeta */
 
@@ -20,30 +19,40 @@ $fieldMeta = $fieldConfig->meta;
 $wrapperClasses = $block->getWrapperElemExtraClasses();
 ?>
 <div
-    class="<?= $classNames(['form-control w-full max-w-sm', $wrapperClasses => $wrapperClasses]) ?>"
+    class="<?= $classNames([
+        'field form-control',
+        '_required' => $fieldConfig->required,
+        'md-col-span-4 md:col-span-4' => $fieldConfig->meta->getSpanWidth() === 4,
+        'md-col-span-3 md:col-span-3' => $fieldConfig->meta->getSpanWidth() === 3,
+        'md-col-span-2 md:col-span-2' => $fieldConfig->meta->getSpanWidth() === 2,
+        'md-col-span-1 md:col-span-1' => $fieldConfig->meta->getSpanWidth() === 1,
+        $wrapperClasses => $wrapperClasses
+    ]) ?>"
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
-    <label class="label" for="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>">
-        <span class="label-text">
-            <?= $eHtml($fieldConfig->label) ?>
-            <?php if ($fieldConfig->required): ?>
-                <span class="text-red-500 ml-1" aria-hidden="true">*</span>
-            <?php endif; ?>
+    <label class="label" for="<?= $esc->htmlAttr($fieldConfig->getFieldId()) ?>">
+        <span class="<?= $classNames([
+                'label-text',
+                "after:content-['*'] after:text-red-500 after:ml-1" => $fieldConfig->required
+            ]) ?>">
+            <?= $esc->html($fieldConfig->label) ?>
         </span>
     </label>
-    <select
-        class="select select-bordered select-sm"
-        id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
-        name="<?= $eHtmlAttr($fieldConfig->name) ?>"
-        <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
-    >
-        <option value=""><?= $eHtml($fieldMeta->defaultOptionLabel) ?></option>
-        <?php foreach ($fieldMeta->options as $value => $label): ?>
-            <option value="<?= $eHtmlAttr($value) ?>" <?= $fieldConfig->value == $value ? 'selected' : '' ?>>
-                <?= $eHtml($label) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+    <div class="control">
+        <select
+            class="select select-bordered select-sm md:select-md w-full"
+            id="<?= $esc->htmlAttr($fieldConfig->getFieldId()) ?>"
+            name="<?= $esc->htmlAttr($fieldConfig->name) ?>"
+            <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
+        >
+            <option value=""><?= $esc->html($fieldMeta->defaultOptionLabel) ?></option>
+            <?php foreach ($fieldMeta->options as $value => $label): ?>
+                <option value="<?= $esc->htmlAttr($value) ?>" <?= $fieldConfig->value == $value ? 'selected' : '' ?>>
+                    <?= $esc->html($label) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
     <?= /** @noEscape */ $block->getAfterInputHtml() ?>
 </div>

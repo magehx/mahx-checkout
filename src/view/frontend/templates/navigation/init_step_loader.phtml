@@ -1,0 +1,27 @@
+<?php declare(strict_types=1);
+
+use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
+use Magento\Framework\View\Element\Template;
+use MageHx\MahxCheckout\ViewModel\StepManager;
+
+/** @var Template $block */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
+
+$viewModel = $viewModelProvider->get(StepManager::class);
+$hxRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
+?>
+<div
+    id="step-reloader"
+    data-current-step="<?= /** @noEscape */ $viewModel->getCurrentStep()->name ?>"
+    <?= $hxRenderer->hxBuilder()
+        ->post('mahxcheckout/step/getStepContent')
+        ->target('#checkout-main-content')
+        ->trigger('mahxcheckout-reload-step once')
+        ->include('[name=form_key]')
+        ->indicator('#checkout-page-loader')
+        ->swapOuterHTML()
+        ->render() ?>
+></div>

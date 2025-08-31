@@ -50,7 +50,7 @@ class PrepareShippingInformationFromRequest
         $isBillingSame = !$isLoggedIn || !$this->hasDefaultBillingAddress();
 
         return ShippingInformation::from([
-            'method' => $this->post('method', ''),
+            'method' => $this->post('shipping_method', ''),
             'address' => [
                 'firstname' => $data['firstname'] ?? '',
                 'lastname' => $data['lastname'] ?? '',
@@ -70,12 +70,17 @@ class PrepareShippingInformationFromRequest
     {
         $addressId = (int) $this->postCustomerAddressId();
         $address = $this->customerAddressService->getCurrentCustomerAddressById($addressId);
-        $billing = $this->getDefaultBillingAddress();
+        $quoteBilling = $this->quote->getBillingAddress();
+        $billingId = (int) $quoteBilling->getCustomerAddressId() ?? $this->getDefaultBillingAddress()?->getId();
 
-        $sameAsBilling = $billing && ((int) $address->getId() === (int) $billing->getId());
+        $sameAsBilling = $billingId && ((int) $address->getId() === $billingId);
+
+        if ($this->hasPost('is_billing_same')) {
+            $sameAsBilling = (bool) $this->post('is_billing_same');
+        }
 
         return ShippingInformation::from([
-            'method' => $this->post('method', ''),
+            'method' => $this->post('shipping_method', ''),
             'address' => [
                 'firstname' => $address->getFirstname(),
                 'lastname' => $address->getLastname(),
@@ -97,6 +102,12 @@ class PrepareShippingInformationFromRequest
         return $this->postData[$key] ?? $default;
     }
 
+    private function hasPost(string $key): bool
+    {
+        return isset($this->postData[$key]);
+    }
+
+
     private function postCustomerAddressId(): ?string
     {
         return $this->post('customer_address_id');
@@ -109,8 +120,8 @@ class PrepareShippingInformationFromRequest
 
     private function shouldUseExistingCustomerAddress(): bool
     {
-        $id = $this->postCustomerAddressId();
-        return $id !== 'new' && is_numeric($id);
+        $addressId = $this->postCustomerAddressId();
+        return $addressId !== 'new' && is_numeric($addressId);
     }
 
     private function getDefaultBillingAddress(): ?AddressInterface

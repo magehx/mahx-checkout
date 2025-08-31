@@ -1,61 +1,64 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
 use MageHx\MahxCheckout\ViewModel\ShippingAddress;
 use MageHx\MahxCheckout\ViewModel\ShippingAddressCards;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
+/** @var string $nonce */
+/** @var Esc $esc */
 /** @var string $formKey */
-/** @var Closure $viewModelProvider */
-/** @var ShippingAddressCards $viewModel */
-/** @var ShippingAddress $formModel */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(ShippingAddressCards::class);
-$formModel = $viewModelProvider(ShippingAddress::class);
+$viewModel = $viewModelProvider->get(ShippingAddressCards::class);
+$hxAttributesRenderer = $viewModelProvider->get(HxAttributesRenderer::class);
+$formModel = $viewModelProvider->get(ShippingAddress::class);
 $addOOBAttribute = $block->getData('add_oob_attribute');
 $newAddressFormName = CheckoutForm::NEW_ADDRESS->value;
 ?>
-<div id="new-address-form-container" x-data="NewAddressFormManager">
-    <form id="<?= $eHtmlAttr($newAddressFormName) ?>">
-        <h2 class="text-xl font-semibold mb-4"><?= $eHtml(__('Add New Address')) ?></h2>
-        <?php foreach ($formModel->getAddressFields($newAddressFormName) as $field): ?>
-            <?= $formModel->renderField($field) ?>
-        <?php endforeach; ?>
-        <?= $formKey ?>
-        <div class="flex items-center justify-end space-x-4">
-            <button
-                class="btn btn-ghost" type="button"
-                hx-target="#shipping-address-cards-container"
-                hx-indicator="#shipping-address-cards-loader"
-                hx-get="<?= $block->getUrl("mahxcheckout/shipping/getShippingAddressCardsContent") ?>"
-            >
-                <?= $eHtml(__('Cancel')) ?>
-            </button>
-            <button
-                class="btn btn-neutral" type="button"
-                @click="updateNewShippingAddress"
-                hx-target="#shipping-address-cards-container"
-                hx-indicator="#shipping-address-cards-loader"
-                hx-trigger="mahxcheckout-new-shipping-address-created from:body"
-                hx-post="<?= $block->getUrl("mahxcheckout/form/saveNewShippingAddress") ?>"
-                hx-on:afterSwap="dispatchShippingAddressSaved"
-            >
-                <?= $eHtml($viewModel->isNewAddressExists() ? __('Ship Here') : __('Update')) ?>
-            </button>
+<div id="new-shipping-address-container" x-data="NewShippingAddressFormManager">
+    <form id="<?= $esc->htmlAttr($newAddressFormName) ?>"
+        <?= $hxAttributesRenderer->hxBuilder()
+            ->post('mahxcheckout/form/saveNewShippingAddress')
+            ->target('#shipping-address-cards')
+            ->indicator('#shipping-address-cards-loader')
+            ->swapOuterHTML()
+            ->render(); ?>
+    >
+        <h2 class="text-xl font-semibold mb-4"><?= $esc->html(__('Add New Address')) ?></h2>
+
+        <div class="max-w-lg">
+            <div class="fieldset address grid md:grid-cols-4 gap-2">
+                <?php foreach ($formModel->getAddressFields($newAddressFormName) as $field): ?>
+                    <?= $formModel->renderField($field) ?>
+                <?php endforeach; ?>
+                <?= $formKey ?>
+            </div>
         </div>
+
+        <div class="actions-toolbar max-w-lg">
+            <div class="actions flex items-center justify-end space-x-4">
+                <button
+                    class="action action-cancel btn btn-ghost" type="button"
+                    <?= $hxAttributesRenderer->hxBuilder()
+                        ->post('mahxcheckout/shipping/getShippingAddressCardsContent')
+                        ->target('#shipping-address-cards')
+                        ->include('[name=form_key]')
+                        ->indicator('#shipping-address-cards-loader')
+                        ->swapOuterHTML()
+                        ->render(); ?>
+                >
+                    <?= $esc->html(__('Cancel')) ?>
+                </button>
+                <button class="action action-update btn btn-neutral" type="submit">
+                    <?= $esc->html($viewModel->isNewAddressExists() ? __('Ship Here') : __('Update')) ?>
+                </button>
+            </div>
+        </div>
+        <?= $block->getChildHtml('luma_js') ?>
     </form>
-    <?php if (!$viewModel->isNewAddressExists()): ?>
-        <button
-            type="button" class="btn btn-outline btn-md"
-            hx-target="#shipping-address-form-section"
-            hx-indicator="#shipping-address-cards-loader"
-            hx-get="<?= $block->getUrl("mahxcheckout/shipping/getNewAddressForm") ?>"
-        >
-            + <?= $eHtml(__('New Address')) ?>
-        </button>
-    <?php endif; ?>
 </div>

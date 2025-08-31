@@ -66,14 +66,14 @@ class PrepareRegionFieldAttribute
         string $formId
     ): FormFieldConfig {
         $regionField->meta->inputElementHxAttributes = HxAttributesData::from([
-            'get' => MageUrlData::from([
+            'post' => MageUrlData::from([
                 'path' => 'mahxcheckout/form/getRegionInput',
                 'params' => ['form' => $formId]
             ]),
             'swap'      => HtmxSwapOption::outerHTML,
             'target'    => 'closest .form-control',
-            'trigger'   => "mahxcheckout-{$formId}-country_id-changed from:window",
-            'include'   => "#{$formId}-country_id",
+            'trigger'   => "mahxcheckout-{$formId}-country_id-changed from:body",
+            'include'   => ["#{$formId}-country_id", '[name=form_key]'],
             'vals'      =>  ['form' => $formId],
             'indicator' => "#{$formId}-region-loader",
         ]);

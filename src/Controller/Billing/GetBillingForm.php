@@ -23,7 +23,7 @@ class GetBillingForm extends ComponentAction
         $isBillingSame = (bool) $this->getRequest()->getParam('is_billing_same', false);
 
         if ($this->quote->isBillingSameAsShipping() !== $isBillingSame) {
-            $this->formDataStorage->setData(['is_billing_same' => $isBillingSame]);
+            $this->checkoutDataStorage->setData(['is_billing_same' => $isBillingSame]);
         }
 
         return $this->getComponentResponse('billing.address.section');

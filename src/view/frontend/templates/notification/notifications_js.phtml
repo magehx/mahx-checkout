@@ -1,8 +1,11 @@
-<?php
-/** @var string $eHtmlAttr */
+<?php declare(strict_types=1);
+
+use MageHx\MageTemplateUtils\Model\Esc;
+
+/** @var Esc $esc */
 /** @var string $nonce */
 ?>
-<script nonce="<?= $eHtmlAttr($nonce) ?>">
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
     document.addEventListener('alpine:init', () => {
         let timer;
         Alpine.data('Notification', () => ({

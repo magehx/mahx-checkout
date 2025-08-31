@@ -9,7 +9,7 @@ use Rkt\MageData\Data;
 class AddressData extends Data
 {
     public function __construct(
-        public string $firstname,
+        public ?string $firstname,
         public string $lastname,
         public array $street,
         public string $city,
@@ -60,6 +60,20 @@ class AddressData extends Data
             'same_as_billing' => $this->same_as_billing,
             'save_in_address_book' => $this->save_in_address_book,
             'customer_address_id' => $this->customer_address_id,
+        ];
+    }
+
+    public static function defaultValues(): array
+    {
+        return [
+            'firstname' => '',
+            'lastname' => '',
+            'street' => [],
+            'city' => '',
+            'country_id' => '',
+            'postcode' => '',
+            'telephone' => '',
+            'region' => '',
         ];
     }
 }

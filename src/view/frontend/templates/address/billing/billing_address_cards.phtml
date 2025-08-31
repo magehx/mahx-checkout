@@ -1,62 +1,63 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
+use MageHx\MahxCheckout\ViewModel\ShowBillingForm;
 use Magento\Framework\View\Element\Template;
 use MageHx\MahxCheckout\ViewModel\BillingAddressCards;
 
 /** @var Template $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
-/** @var Closure $eUrl */
+/** @var Esc $esc */
 /** @var Closure $classNames */
-/** @var Closure $viewModelProvider */
-/** @var BillingAddressCards $viewModel */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(BillingAddressCards::class);
+$viewModel = $viewModelProvider->get(BillingAddressCards::class);
+$showFormViewModel = $viewModelProvider->get(ShowBillingForm::class);
 
-if (!$viewModel->canShowCards()) {
+if (!$showFormViewModel->canShowCards()) {
     return;
 }
 ?>
 <div id="billing-address-cards" class="my-8">
     <ul class="space-y-4">
         <?php foreach ($viewModel->getAddressCards() as $addressCard): ?>
-            <?php
-                $id = $addressCard['id'];
-                $isSelected = $addressCard['isSelected'];
-                $inputId = "bac-input-{$id}";
-            ?>
+            <?php $inputId = "bac-input-{$addressCard->addressId}"; ?>
             <li class="<?= $classNames([
                     'alert shadow transition-colors duration-200',
-                    'bg-white hover:bg-base-200' => !$isSelected,
-                    'border-2 border-orange-500 relative' => $isSelected
+                    'bg-white hover:bg-base-200' => !$addressCard->isSelected,
+                    'border-2 border-orange-500 relative' => $addressCard->isSelected
                 ]) ?>"
             >
                 <input
                     type="radio" name="billing_address_id" class="radio"
-                    id="<?= $eHtmlAttr($inputId) ?>" value="<?= $eHtmlAttr($id) ?>" <?= $isSelected ? 'checked' : '' ?>
+                    id="<?= $esc->htmlAttr($inputId) ?>"
+                    value="<?= $esc->htmlAttr($addressCard->addressId) ?>"
+                    <?= $addressCard->isSelected ? 'checked' : '' ?>
                     hx-include="[name=form_key]"
                     hx-indicator="#checkout-page-loader"
                     hx-target="#checkout-main-content"
                     hx-swap="outerHTML"
-                    hx-post="<?= $eUrl($block->getUrl('mahxcheckout/billing/saveBillingById')) ?>"
-                    hx-on:afterSwap="dispatchBillingAddressSavedById"
+                    hx-post="<?= $esc->url($block->getUrl('mahxcheckout/billing/saveBillingById')) ?>"
                 />
-                <label for="<?= $eHtmlAttr($inputId) ?>" class="cursor-pointer"><?= $eHtml($addressCard['label']) ?></label>
+                <label for="<?= $esc->htmlAttr($inputId) ?>" class="cursor-pointer">
+                    <?= $esc->html($addressCard->addressLines->label()) ?>
+                </label>
             </li>
         <?php endforeach; ?>
     </ul>
-    <?php if (!$viewModel->canShowForm()): ?>
-        <div id="bac-form-section" class="mt-8">
+    <?php if (!$showFormViewModel->canShowForm()): ?>
+        <div id="bac-form-section" class="mt-8" hx-target="this">
             <div id="bac-form-actions">
                 <button
                     type="button" class="btn btn-outline"
                     hx-target="#billing-address-section"
                     hx-indicator="#billing-address-section-loader"
-                    hx-include="#is-billing-same"
-                    hx-vals='{"show_form": 1 }'
-                    hx-get="<?= $block->getUrl('mahxcheckout/billing/editBilling') ?>"
+                    hx-include="#is-billing-same, [name=form_key]"
+                    hx-vals='{"show_form": 1, "show_cards": 1}'
+                    hx-swap="outerHTML"
+                    hx-post="<?= $block->getUrl('mahxcheckout/billing/editBilling') ?>"
                 >
-                    + <?= $eHtml(__('New Address')) ?>
+                    + <?= $esc->html(__('New Address')) ?>
                 </button>
             </div>
         </div>

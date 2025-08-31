@@ -64,7 +64,7 @@ class EstimateShippingMethods extends ComponentAction
 
     private function respondWithRegionAndShipping(ShippingEstimateFieldsData $addressData): ResultInterface
     {
-        $this->formDataStorage->setData(['country_id' => $addressData->country]);
+        $this->checkoutDataStorage->setData(['country_id' => $addressData->country]);
         $regionFieldHtml = $this->renderUpdatedRegionField($addressData->country);
 
         return $this->getComponentResponse('shipping.methods.form', additionalHtml: $regionFieldHtml);
@@ -76,8 +76,8 @@ class EstimateShippingMethods extends ComponentAction
             country: $country,
             form: CheckoutForm::SHIPPING_ADDRESS->value
         );
-        $regionField->meta->wrapperElemExtraAttributes[HtmxCoreAttributes::swapOob->value] = 'true';
+        $regionField->meta->wrapperElemExtraAttributes[HtmxCoreAttributes::swapOOB->value] = 'true';
 
-        return $this->addressFieldManager->getRenderForAddressField($regionField)->render($regionField);
+        return $this->addressFieldManager->getRendererForAddressField($regionField)->render($regionField);
     }
 }

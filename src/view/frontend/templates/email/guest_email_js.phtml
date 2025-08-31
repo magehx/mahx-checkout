@@ -1,52 +1,43 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
+use MageHx\MahxCheckout\ViewModel\DesignThemeInfo;
 use MageHx\MahxCheckout\ViewModel\GuestEmail;
 use Magento\Framework\View\Element\Template;
 
 /** @var Template $block */
-/** @var string $eHtmlAttr */
 /** @var string $nonce */
-/** @var Closure $eJs */
-/** @var Closure $viewModelProvider */
-/** @var GuestEmail $viewModel */
+/** @var Esc $esc */
+/** @var ViewModelProvider $viewModelProvider */
 
-$viewModel = $viewModelProvider(GuestEmail::class);
+$viewModel = $viewModelProvider->get(GuestEmail::class);
+$themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
 ?>
-<script nonce="<?= $eHtmlAttr($nonce) ?>">
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('GuestEmailForm', () => ({
+<script nonce="<?= $esc->html($nonce) ?>">
+    'use strict';
+
+    function GuestEmailForm(form) {
+        return {
             form: null,
             validator: null,
 
             init() {
-                this.form = this.$el;
+                this.form = form || this.$el;
                 this.addValidationToForm();
-            },
-
-            <?php
-            /**
-             * Email field directly triggers htmx post request as it is bind directly.
-             * However, we want to apply frontend validation first and then only need to trigger htmx post request.
-             * This is how it is performed
-             */
-            ?>
-            async validate() {
-                const isValid = await this.validator.revalidate();
-                if (isValid) {
-                    htmx.trigger(document.body, 'mahxcheckout-guest-email-form-validated')
-                }
-            },
-
-            dispatchEmailSavedEvent(event) {
-                this.$dispatch('mahxcheckout-email-saved', { htmxEvent: event, form: form });
             },
 
             addValidationToForm() {
                 this.validator = mahxCheckout.validator(Object.assign({
                     form: this.form,
-                }, JSON.parse('<?= $eJs($viewModel->getValidationJson()) ?>')));
+                }, JSON.parse('<?= $esc->js($viewModel->getValidationJson()) ?>')));
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
-        }));
+        };
+    }
+    <?php if ($themeInfo->isHyvaTheme()): ?>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('GuestEmailForm', GuestEmailForm);
     });
+    <?php endif; ?>
 </script>

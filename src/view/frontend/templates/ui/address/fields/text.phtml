@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
 use MageHx\MahxCheckout\Block\Address\FieldRenderer;
 
 /** @var FieldRenderer $block */
-/** @var Closure $eHtml */
-/** @var Closure $eHtmlAttr */
+/** @var Esc $esc */
 /** @var Closure $classNames */
 
 $fieldConfig = $block->getFieldConfig();
@@ -15,25 +15,35 @@ if (! $fieldConfig) {
 $wrapperClasses = $block->getWrapperElemExtraClasses();
 ?>
 <div
-    class="<?= $classNames(['form-control w-full max-w-sm', $wrapperClasses => $wrapperClasses]) ?>"
+    class="<?= $classNames([
+        'field form-control',
+        '_required' => $fieldConfig->required,
+        'md-col-span-4 md:col-span-4' => $fieldConfig->meta->getSpanWidth() === 4,
+        'md-col-span-3 md:col-span-3' => $fieldConfig->meta->getSpanWidth() === 3,
+        'md-col-span-2 md:col-span-2' => $fieldConfig->meta->getSpanWidth() === 2,
+        'md-col-span-1 md:col-span-1' => $fieldConfig->meta->getSpanWidth() === 1,
+        $wrapperClasses => $wrapperClasses
+    ]) ?>"
     <?= $block->getWrapperAdditionalAttributes() ?>
 >
     <?= /** @noEscape */ $block->getBeforeInputHtml() ?>
-    <label class="label" for="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>">
-        <span class="label-text">
-            <?= $eHtml($fieldConfig->label) ?>
-            <?php if ($fieldConfig->required): ?>
-                <span class="text-red-500 ml-1" aria-hidden="true">*</span>
-            <?php endif; ?>
+    <label class="label" for="<?= $esc->htmlAttr($fieldConfig->getFieldId()) ?>">
+        <span class="<?= $classNames([
+                'label-text',
+                "after:content-['*'] after:text-red-500 after:ml-1" => $fieldConfig->required
+            ]) ?>">
+            <?= $esc->html($fieldConfig->label) ?>
         </span>
     </label>
-    <input
-        type="text"
-        id="<?= $eHtmlAttr($fieldConfig->getFieldId()) ?>"
-        name="<?= $eHtmlAttr($fieldConfig->name) ?>"
-        class="input input-bordered input-sm w-full max-w-sm"
-        value="<?= $eHtmlAttr($fieldConfig->value)  ?>"
-        <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
-    />
+   <div class="control">
+       <input
+           type="text"
+           id="<?= $esc->htmlAttr($fieldConfig->getFieldId()) ?>"
+           name="<?= $esc->htmlAttr($fieldConfig->name) ?>"
+           class="input-text input input-bordered input-sm md:input-md w-full"
+           value="<?= $esc->htmlAttr($fieldConfig->value)  ?>"
+           <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
+       />
+   </div>
     <?= /** @noEscape */ $block->getAfterInputHtml() ?>
 </div>

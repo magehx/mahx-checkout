@@ -1,30 +1,32 @@
-<?php
+<?php declare(strict_types=1);
 
+use MageHx\MageTemplateUtils\Model\Esc;
+use MageHx\MageTemplateUtils\Model\ViewModelProvider;
 use MageHx\MahxCheckout\Block\PaymentMethods;
 
 /** @var PaymentMethods $block */
-/** @var Closure $eHtmlAttr */
+/** @var string $nonce */
+/** @var Esc $esc */
 /** @var string $formKey */
 /** @var Closure $classNames */
+/** @var ViewModelProvider $viewModelProvider */
 ?>
-<div id="payment-methods-section" class="<?= $classNames(['relative', 'mt-12' => $block->isVirtualCart()]) ?>">
+<div id="payment-methods-section" class="<?= $classNames(['checkout-payment-method relative', 'mt-12' => $block->isVirtualCart()]) ?>">
     <?= $block->getChildHtml('formTitle') ?>
     <div class="overflow-x-auto">
         <form
             id="payment-methods-form"
             x-data="PaymentMethodsForm"
-            data-validation="<?= $eHtmlAttr($block->getValidationJson()) ?>"
+            data-validation="<?= $esc->htmlAttr($block->getValidationJson()) ?>"
         >
             <?= $formKey ?>
-            <?php foreach ($block->getPaymentMethods() as $method): ?>
-                <?= $block->getPaymentHtml($method) ?>
-            <?php endforeach; ?>
+            <div class="space-y-2">
+                <?php foreach ($block->getPaymentMethods() as $method): ?>
+                    <?= $block->getPaymentHtml($method) ?>
+                <?php endforeach; ?>
+            </div>
         </form>
     </div>
-    <div id="payment-loader"
-         class="htmx-indicator absolute inset-0 flex items-center justify-center bg-white/50 pointer-events-none">
-        <span class="loading loading-dots loading-md"></span>
-        <span class="loading loading-dots loading-md"></span>
-        <span class="loading loading-dots loading-md"></span>
-    </div>
+    <?= $block->getChildHtml('loader') ?>
+    <?= $block->getChildHtml('luma_js') ?>
 </div>

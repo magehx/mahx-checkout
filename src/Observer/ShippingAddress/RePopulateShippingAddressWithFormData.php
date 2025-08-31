@@ -8,12 +8,12 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use MageHx\MahxCheckout\Data\FormFieldConfig;
 use MageHx\MahxCheckout\Enum\CheckoutForm;
-use MageHx\MahxCheckout\Model\FormDataStorage;
+use MageHx\MahxCheckout\Model\CheckoutDataStorage;
 use MageHx\MahxCheckout\Model\ShippingAddressForm;
 
 class RePopulateShippingAddressWithFormData implements ObserverInterface
 {
-    public function __construct(private readonly FormDataStorage $formDataStorage)
+    public function __construct(private readonly CheckoutDataStorage $formDataStorage)
     {
     }
 
