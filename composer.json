@@ -13,7 +13,7 @@
         "rkt/magento-data": "*",
         "magehx/htmx-actions": "*",
         "magehx/mahx-checkout-virtual": "*",
-        "magehx/mage-template-utils": "*"
+        "magehx/mage-template-utils": "^1.1.0"
     },
     "autoload": {
         "files": [
