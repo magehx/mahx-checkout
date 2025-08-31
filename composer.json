@@ -10,9 +10,8 @@
         "magento/module-catalog": ">=103.0.0",
         "magento/module-checkout": ">=100.3.0",
         "magento/module-customer": ">=102.0.0",
-        "rkt/magento-data": "*",
-        "magehx/htmx-actions": "*",
-        "magehx/mahx-checkout-virtual": "*",
+        "rkt/magento-data": "^1.0.0",
+        "magehx/htmx-actions": "^1.0.0",
         "magehx/mage-template-utils": "^1.1.0"
     },
     "autoload": {
