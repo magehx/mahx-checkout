@@ -5,6 +5,7 @@
         <mahxcheckout>
             <general>
                 <enabled>0</enabled>
+                <theme>default</theme>
             </general>
 <!--            <address>-->
 <!--                <render_map>-->
