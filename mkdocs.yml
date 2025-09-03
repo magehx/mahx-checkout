@@ -6,8 +6,9 @@ nav:
   - Why MAHX Checkout?: why-mahx-checkout.md
   - The Puzzle Piece - HTMX: puzzle-htmx.md
   - Checkout:
-    - Layout: layouts.md
+    - Themes: themes.md
     - Steps Implementation: steps.md
+    - Layout: layouts.md
     - Address Field Renderers: address-renderers.md
     - Payment Renderers: payment-renderer.md
   - Concepts:

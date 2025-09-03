@@ -1,6 +1,6 @@
 # MAHX Checkout
 
-🚀 **MAHX Checkout** is a blazing-fast, lightweight, and Magento-native checkout solution for Magento 2. Built with **HTMX**, **Alpine.js**, and **TailwindCSS**, it offers a modern developer experience while staying true to Magento’s architectural principles.
+🚀 **MAHX Checkout** is a blazing-fast, lightweight, and Magento-native checkout solution for Magento 2. It is build with the help of HTMX and offering a modern and efficient checkout experience while staying true to Magento's core principles.
 
 ---
 
@@ -12,12 +12,12 @@ MAHX (Magento + HTMX) Checkout is a clean, minimal, and extendable checkout syst
 
 ## 💡 Why MAHX Checkout?
 
-- ✅ **Magento-Native**: Built entirely using Magento layouts, blocks, and controllers — no magic, just Magento.
-- ⚡ **Super Fast**: Powered by **HTMX** — minimal JavaScript, instant partial updates.
-- 🧩 **Lightweight & Modular**: Uses **Alpine.js** and **TailwindCSS** for reactive behavior and clean styling.
-- 👨‍💻 **Developer-Friendly**: Designed for Magento developers with the concepts they already familiar with.
-- 🧘 **Zero State Management**: You heard it right! No state juggling in the frontend or PHP — everything lives cleanly at the database level, just as Magento intended.
-- 📚 **Tiny Learning Curve**: If you know Magento, you’re already 90% there. Just learn HTMX — it's fun and you’ll pick it up in 2 hours!
+- **Magento-Native**: Built entirely using Magento layouts, blocks, and controllers — no magic, just Magento.
+- **Super Fast**: Powered by **HTMX** — minimal JavaScript, instant partial updates.
+- **Theme Support** - Works with Luma & Hyvä themes out of the box.
+- **Developer-Friendly**: Designed for Magento developers with the concepts they already familiar with.
+- **Zero State Management**: You heard it right! No state juggling in the frontend or PHP — everything lives cleanly at the database level, just as Magento intended.
+- **Tiny Learning Curve**: If you know Magento, you’re already 90% there. Just learn HTMX — it's fun and you’ll pick it up in 2 hours!
 
 ---
 
@@ -26,9 +26,9 @@ MAHX (Magento + HTMX) Checkout is a clean, minimal, and extendable checkout syst
 | Tool            | Purpose                                              |
 |------------------|------------------------------------------------------|
 | <a href="https://htmx.org/" target="_blank" rel="noopener"><strong>HTMX</strong></a>            | Handles dynamic requests and updates via AJAX     |
-| <a href="https://alpinejs.dev/" target="_blank" rel="noopener"><strong>Alpine.js</strong></a>      | Provides lightweight frontend interactivity        |
-| <a href="https://tailwindcss.com/" target="_blank" rel="noopener"><strong>TailwindCSS</strong></a> | Utility-first styling framework                   |
+| <a href="https://github.com/rakit/validation/" target="_blank" rel="noopener"><strong>Rakit Validation</strong></a>      | Use for data validation in backend        |
 | <a href="https://just-validate.dev/" target="_blank" rel="noopener"><strong>JustValidate</strong></a> | Handles frontend form validation                  |
+| <a href="https://daisyui.com/" target="_blank" rel="noopener"><strong>DaisyUi</strong></a> | For styling checkout in Hyvä Themes                  |
 
 
 ---

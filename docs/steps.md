@@ -23,13 +23,17 @@ The checkout steps are configured using Magento's `di.xml`. Here's a simplified 
 ```xml
 <type name="MageHx\MahxCheckout\Model\StepManager\CheckoutStepPool">
     <arguments>
-        <argument name="steps" xsi:type="array">
-            <item name="shipping" xsi:type="object">MageHx\MahxCheckout\Model\StepManager\Step\ShippingStepVirtual</item>
-            <item name="payment" xsi:type="object">MageHx\MahxCheckout\Model\StepManager\Step\PaymentStepVirtual</item>
+        <argument name="themeSteps" xsi:type="array">
+            <item name="default" xsi:type="array">
+                <item name="shipping" xsi:type="object">MageHx\MahxCheckout\Model\StepManager\Step\ShippingStepVirtual</item>
+                <item name="payment" xsi:type="object">MageHx\MahxCheckout\Model\StepManager\Step\PaymentStepVirtual</item>
+            </item>
         </argument>
     </arguments>
 </type>
 ```
+
+Steps are associated to a theme. Here we define two steps for the default theme.
 
 Each step is defined as a **virtual type**. For example:
 
@@ -52,6 +56,9 @@ Each step is defined as a **virtual type**. For example:
     </arguments>
 </virtualType>
 ```
+
+You can go ahead an create a concrete step class and use it in the steps registration.
+For simple purpose, we just leverage Magento DI's Virtual type feature here.
 
 ### 🔍 Key Step Properties
 
