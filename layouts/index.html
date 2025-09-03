@@ -1,0 +1,1338 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../steps/">
+      
+      
+        <link rel="next" href="../address-renderers/">
+      
+      
+      <link rel="icon" href="../assets/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>Layout - MAHXCheckout</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#mahx-checkout-layouts" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="MAHXCheckout" class="md-header__button md-logo" aria-label="MAHXCheckout" data-md-component="logo">
+      
+  <img src="../assets/logo.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MAHXCheckout
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Layout
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/magehx/mahx-checkout" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    magehx/mahx-checkout
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="MAHXCheckout" class="md-nav__button md-logo" aria-label="MAHXCheckout" data-md-component="logo">
+      
+  <img src="../assets/logo.jpg" alt="logo">
+
+    </a>
+    MAHXCheckout
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/magehx/mahx-checkout" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    magehx/mahx-checkout
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../why-mahx-checkout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Why MAHX Checkout?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../puzzle-htmx/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    The Puzzle Piece - HTMX
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Checkout
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Checkout
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../themes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Themes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Steps Implementation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Layout
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Layout
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      🗂️ Directory Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-mahxcheckout_index_indexxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. mahxcheckout_index_index.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. mahxcheckout_index_index.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Purpose
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-mahxcheckout_layoutxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. mahxcheckout_layout.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. mahxcheckout_layout.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#structure-highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Structure Highlights
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-mahxcheckout_componentsxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. mahxcheckout_components.xml
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-mahxcheckout_scriptsxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. mahxcheckout_scripts.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. mahxcheckout_scripts.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-its-useful" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Why it's useful
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-mahxcheckout_step_shippingxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. mahxcheckout_step_shipping.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. mahxcheckout_step_shipping.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      📁 How it works
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-mahxcheckout_step_paymentxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. mahxcheckout_step_payment.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. mahxcheckout_step_payment.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 How it works
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-mahxcheckout_step_shipping_customer_logged_inxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. mahxcheckout_step_shipping_customer_logged_in.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. mahxcheckout_step_shipping_customer_logged_in.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 How it works
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-mahxcheckout_step_payment_customer_logged_inxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. mahxcheckout_step_payment_customer_logged_in.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. mahxcheckout_step_payment_customer_logged_in.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 How it works
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-mahxcheckout_step_shipping_customer_has_addressesxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. mahxcheckout_step_shipping_customer_has_addresses.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. mahxcheckout_step_shipping_customer_has_addresses.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 How it works
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      📌 Summary
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../address-renderers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Address Field Renderers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../payment-renderer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Payment Renderers
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Concepts
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Concepts
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-objects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Objects
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Validation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      🗂️ Directory Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-mahxcheckout_index_indexxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. mahxcheckout_index_index.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. mahxcheckout_index_index.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Purpose
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-mahxcheckout_layoutxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. mahxcheckout_layout.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. mahxcheckout_layout.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#structure-highlights" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Structure Highlights
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-mahxcheckout_componentsxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. mahxcheckout_components.xml
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-mahxcheckout_scriptsxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. mahxcheckout_scripts.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. mahxcheckout_scripts.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-its-useful" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Why it's useful
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-mahxcheckout_step_shippingxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. mahxcheckout_step_shipping.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. mahxcheckout_step_shipping.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      📁 How it works
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-mahxcheckout_step_paymentxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. mahxcheckout_step_payment.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. mahxcheckout_step_payment.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 How it works
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-mahxcheckout_step_shipping_customer_logged_inxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. mahxcheckout_step_shipping_customer_logged_in.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. mahxcheckout_step_shipping_customer_logged_in.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 How it works
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-mahxcheckout_step_payment_customer_logged_inxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. mahxcheckout_step_payment_customer_logged_in.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. mahxcheckout_step_payment_customer_logged_in.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 How it works
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-mahxcheckout_step_shipping_customer_has_addressesxml" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. mahxcheckout_step_shipping_customer_has_addresses.xml
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. mahxcheckout_step_shipping_customer_has_addresses.xml">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 How it works
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      📌 Summary
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="mahx-checkout-layouts">📊 MAHX Checkout — Layouts</h1>
+<p>MAHX Checkout uses a bunch of layout XML files to organize different parts of the checkout page.
+Each file groups related blocks together — making it easier to follow what’s going on, and way simpler to customize later.</p>
+<p>Here’s a quick breakdown of each layout file, what it does, and which blocks or containers it sets up.</p>
+<h2 id="directory-structure">🗂️ Directory Structure</h2>
+<div class="highlight"><pre><span></span><code>view/frontend/layout/
+├── mahxcheckout_index_index.xml
+├── mahxcheckout_layout.xml
+├── mahxcheckout_components.xml
+├── mahxcheckout_scripts.xml
+├── mahxcheckout_step_shipping.xml
+├── mahxcheckout_step_shipping_customer_has_addresses.xml
+├── mahxcheckout_step_shipping_customer_logged_in.xml
+├── mahxcheckout_step_payment.xml
+└── mahxcheckout_step_payment_customer_logged_in.xml
+</code></pre></div>
+<hr />
+<h2 id="1-mahxcheckout_index_indexxml">1. <code>mahxcheckout_index_index.xml</code></h2>
+<p><strong>Handle:</strong> Entry layout handle for the checkout.</p>
+<p><strong>Triggered on:</strong> Frontend route <code>/checkout</code> (internally <code>/mahxcheckout</code>)</p>
+<h3 id="purpose">🔍 Purpose</h3>
+<ul>
+<li>Main page layout handle for the checkout route.</li>
+<li>Loads essential scripts and styles for the checkout.</li>
+<li>Removes default Luma checkout assets to avoid conflicts.</li>
+<li>Defines the entry block <code>main.phtml</code>, which initializes the Alpine/HTMX-based UI.</li>
+<li>Declares a <code>checkout.scripts</code> container for mounting Alpine components.</li>
+<li>Adds a page loader block.</li>
+</ul>
+<hr />
+<h2 id="2-mahxcheckout_layoutxml">2. <code>mahxcheckout_layout.xml</code></h2>
+<p><strong>Handle:</strong> Included via <code>mahxcheckout_index_index.xml</code></p>
+<p><strong>Purpose:</strong> Core layout skeleton for the entire MAHX Checkout page.</p>
+<h3 id="structure-highlights">🔍 Structure Highlights</h3>
+<ul>
+<li>Mimics Luma checkout structure.</li>
+<li>Declares <code>checkout.step.navigation</code> — the top step indicator block.</li>
+<li>Defines <code>checkout.main.content</code> — the dynamic area for step specific components.</li>
+<li>Includes <code>checkout.right.section</code> — contains order summary, totals, etc.</li>
+<li>Adds <code>checkout.notifications</code> — used for inline validation/error messaging.</li>
+</ul>
+<hr />
+<h2 id="3-mahxcheckout_componentsxml">3. <code>mahxcheckout_components.xml</code></h2>
+<p><strong>Handle:</strong> Included via <code>mahxcheckout_layout.xml</code></p>
+<p><strong>Purpose:</strong> Declares individual block components used in the checkout.</p>
+<p>A "<strong>component</strong>" here represents a logical UI section.</p>
+<p>Example: <code>shipping.address.form</code> — encapsulates the entire shipping address form.</p>
+<p>These blocks are modular and reusable across different steps.</p>
+<hr />
+<h2 id="4-mahxcheckout_scriptsxml">4. <code>mahxcheckout_scripts.xml</code></h2>
+<p><strong>Handle:</strong> Included via <code>mahxcheckout_index_index.xml</code></p>
+<p><strong>Purpose:</strong> Registers all Alpine.js components used throughout the checkout.</p>
+<h3 id="why-its-useful">✅ Why it's useful</h3>
+<ul>
+<li>Centralizes all HTMX/Alpine scripts in one layout.</li>
+<li>Scripts load <strong>once</strong> and persist across dynamic swaps.</li>
+<li>Keeps JS organized and scoped to the checkout.</li>
+</ul>
+<p>💡 When customizing MAHX Checkout, add your Alpine/HTMX components here to ensure they load consistently.</p>
+<hr />
+<h2 id="5-mahxcheckout_step_shippingxml">5. <code>mahxcheckout_step_shipping.xml</code></h2>
+<p><strong>Handle:</strong> Dynamically loaded when the <strong>Shipping</strong> step is active.</p>
+<p><strong>Purpose:</strong> Renders all block components related to the Shipping step.</p>
+<h3 id="how-it-works">📁 How it works</h3>
+<p>This is a <strong>step-specific layout handle</strong>. MAHX Checkout dynamically loads only the layout file for the current step to reduce overhead and complexity.</p>
+<p>This layout ensures only shipping-related blocks are present when this step is active.</p>
+<div class="admonition reference">
+<p class="admonition-title">Reference</p>
+<p>Checkout steps are registered in <code>app/etc/di.xml</code>.
+Layout handle mapping is part of the step configuration.</p>
+</div>
+<hr />
+<h2 id="6-mahxcheckout_step_paymentxml">6. <code>mahxcheckout_step_payment.xml</code></h2>
+<p><strong>Handle:</strong> Dynamically loaded when the <strong>Payment</strong> step is active.</p>
+<p><strong>Purpose:</strong> Renders all block components related to the Payment step.</p>
+<h3 id="how-it-works_1">🔍 How it works</h3>
+<p>Same mechanism as the shipping step. When the checkout is in the <strong>payment</strong> phase, this layout injects relevant payment blocks (like methods, billing address, etc.), and removes unrelated content.</p>
+<hr />
+<h2 id="7-mahxcheckout_step_shipping_customer_logged_inxml">7. <code>mahxcheckout_step_shipping_customer_logged_in.xml</code></h2>
+<p><strong>Handle:</strong> Loaded only if the customer is <strong>logged in</strong> and for the <strong>Shipping</strong> step.</p>
+<p><strong>Purpose:</strong> Provides a variation of the shipping layout tailored for logged-in users.</p>
+<h3 id="how-it-works_2">🔍 How it works</h3>
+<p>MAHX Checkout dynamically includes additional handles for logged-in customers:</p>
+<p>Suppose current layout handles include:</p>
+<div class="highlight"><pre><span></span><code>- default
+- mahxcheckout_step_shipping
+</code></pre></div>
+<p>If the user is logged in, Magento will also include:</p>
+<div class="highlight"><pre><span></span><code>- default_customer_logged_in
+- mahxcheckout_step_shipping_customer_logged_in
+</code></pre></div>
+<p>This allows:</p>
+<ul>
+<li>Useful to modify customer logged-in checkout flow specific changes.</li>
+<li>Guest flows to remain lightweight by excluding unnecessary components.</li>
+</ul>
+<hr />
+<h2 id="8-mahxcheckout_step_payment_customer_logged_inxml">8. <code>mahxcheckout_step_payment_customer_logged_in.xml</code></h2>
+<p><strong>Handle:</strong> Loaded only if the customer is <strong>logged in</strong> and for the <strong>Payment</strong> step.</p>
+<p><strong>Purpose:</strong> Provides a variation of the payment layout tailored for logged-in users.</p>
+<h3 id="how-it-works_3">🔍 How it works</h3>
+<p>It is injected to the layout handle list similar to <code>mahxcheckout_step_shipping_customer_logged_in</code>.</p>
+<p>This allows:</p>
+<ul>
+<li>Logged-in flows to include billing address book features, saved addresses, etc.</li>
+<li>Guest flows to remain lightweight by excluding unnecessary components.</li>
+</ul>
+<hr />
+<h2 id="9-mahxcheckout_step_shipping_customer_has_addressesxml">9. <code>mahxcheckout_step_shipping_customer_has_addresses.xml</code></h2>
+<p><strong>Handle:</strong> Loaded only if the customer is <strong>logged in</strong>, holds <strong>save addresses</strong> and for the <strong>Shipping</strong> step.</p>
+<p><strong>Purpose:</strong> Provides customer address cards for the logged-in customer.</p>
+<h3 id="how-it-works_4">🔍 How it works</h3>
+<p>MAHX Checkout dynamically includes additional handles ending with <code>_customer_has_addresses</code> when customer is logged-in and has saved addresses:</p>
+<p>Suppose current layout handles include:</p>
+<div class="highlight"><pre><span></span><code>- default
+- mahxcheckout_step_shipping
+</code></pre></div>
+<p>If the user is logged in, Magento will also include:</p>
+<div class="highlight"><pre><span></span><code>- default_customer_has_addresses
+- mahxcheckout_step_shipping_customer_has_addresses
+</code></pre></div>
+<p>This allows:</p>
+<ul>
+<li>Logged-in flows to include shipping address book features, saved addresses, etc.</li>
+<li>Guest flows to remain lightweight by excluding unnecessary components.</li>
+</ul>
+<h2 id="summary">📌 Summary</h2>
+<ul>
+<li>MAHX Checkout layout files follow a modular, step-based architecture.</li>
+<li>Each step (Shipping, Payment, etc.) has its own isolated layout handle.</li>
+<li>Shared structures like <code>scripts</code>, <code>components</code>, and <code>main layout</code> are split for clarity and reuse.</li>
+<li>Logged-in and guest flows are handled via handle suffixes (<code>_customer_logged_in</code>).</li>
+</ul>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../steps/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Steps Implementation">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Steps Implementation
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../address-renderers/" class="md-footer__link md-footer__link--next" aria-label="Next: Address Field Renderers">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Address Field Renderers
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © MahxCheckout 2025-present. All rights reserved.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.sections", "navigation.path", "toc.follow", "navigation.top", "navigation.footer"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>
