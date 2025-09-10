@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Data;
 
+use MageHx\MahxCheckout\Model\Validation\AddressData\RegionRequiredRule;
 use Rkt\MageData\Data;
 
 class AddressData extends Data
@@ -33,8 +34,16 @@ class AddressData extends Data
             'street.0' => 'required',
             'city' => 'required|alpha_spaces',
             'country_id' => 'required|max:2',
+            'region' => 'region_required',
             'postcode' => 'required',
             'telephone' => 'required',
+        ];
+    }
+
+    public function customRules(): array
+    {
+        return [
+            'region_required' => RegionRequiredRule::class
         ];
     }
 

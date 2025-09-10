@@ -24,6 +24,8 @@ class Config
     const SUFFIX_SHOW_CONFIG_PATH = 'customer/address/suffix_show';
     const SUFFIX_OPTIONS_CONFIG_PATH = 'customer/address/suffix_options';
     const MIDDLE_NAME_SHOW_CONFIG_PATH = 'customer/address/middlename_show';
+    const REGION_REQUIRE_CONFIG_PATH = 'general/region/state_required';
+    const REGION_SHOW_OPTIONAL_CONFIG_PATH = 'general/region/display_all';
 
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig,
@@ -105,6 +107,16 @@ class Config
     public function getMiddleNameShow(): YesNo
     {
         return YesNo::tryFrom((int)$this->isStoreSetFlag(self::MIDDLE_NAME_SHOW_CONFIG_PATH));
+    }
+
+    public function getRegionRequiredCountries(): array
+    {
+        return array_filter(explode(',', $this->getStoreConfig(self::REGION_REQUIRE_CONFIG_PATH) ?? ''));
+    }
+
+    public function canShowOptionalRegion(): bool
+    {
+        return $this->isStoreSetFlag(self::REGION_SHOW_OPTIONAL_CONFIG_PATH);
     }
 
     public function getAddressRenderMapping(): array

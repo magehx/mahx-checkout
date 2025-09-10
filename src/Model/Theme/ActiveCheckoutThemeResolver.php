@@ -21,7 +21,6 @@ class ActiveCheckoutThemeResolver
         if (!$this->checkoutThemeRegistry) {
             $this->checkoutThemeRegistry = $this->checkoutThemeRegistryFactory->create();
         }
-
         return $this->checkoutThemeRegistry->get($this->config->getActiveTheme());
     }
 }

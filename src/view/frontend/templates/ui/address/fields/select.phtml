@@ -17,6 +17,8 @@ if (! $fieldConfig) {
 
 $fieldMeta = $fieldConfig->meta;
 $wrapperClasses = $block->getWrapperElemExtraClasses();
+$isDefaultOptSelected = empty($fieldConfig->value) || ! in_array($fieldConfig->value, array_keys($fieldMeta->options));
+$renderSelectedAttribute = fn ($condition) => $condition ? 'selected="selected"' : '';
 ?>
 <div
     class="<?= $classNames([
@@ -46,9 +48,14 @@ $wrapperClasses = $block->getWrapperElemExtraClasses();
             name="<?= $esc->htmlAttr($fieldConfig->name) ?>"
             <?= /** @noEscape */ $block->getInputAdditionalAttributes() ?>
         >
-            <option value=""><?= $esc->html($fieldMeta->defaultOptionLabel) ?></option>
+            <option value="" <?= $renderSelectedAttribute($isDefaultOptSelected) ?>>
+                <?= $esc->html($fieldMeta->defaultOptionLabel) ?>
+            </option>
             <?php foreach ($fieldMeta->options as $value => $label): ?>
-                <option value="<?= $esc->htmlAttr($value) ?>" <?= $fieldConfig->value == $value ? 'selected' : '' ?>>
+                <option
+                    value="<?= $esc->htmlAttr($value) ?>"
+                    <?= $renderSelectedAttribute($fieldConfig->value === $value) ?>
+                >
                     <?= $esc->html($label) ?>
                 </option>
             <?php endforeach; ?>

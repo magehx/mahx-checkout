@@ -18,8 +18,6 @@
     <event name="mahxcheckout_billing_address_form_fields_prepared">
         <observer name="MageHx_MahxCheckout::populate_billing_address_form_values"
             instance="MageHx\MahxCheckout\Observer\BillingAddress\PopulateBillingAddressFormValues"/>
-        <observer name="MageHx_MahxCheckout::add_additional_attributes_to_country_field"
-                  instance="MageHx\MahxCheckout\Observer\BillingAddress\AddAdditionalAttributesToCountryField"/>
         <observer name="MageHx_MahxCheckout::add_additional_attributes_to_region_field"
                   instance="MageHx\MahxCheckout\Observer\BillingAddress\AddAdditionalAttributesToRegionField"/>
     </event>

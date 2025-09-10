@@ -21,6 +21,7 @@ $themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
         return {
             form: null,
             validator: null,
+            validationRules: <?= /** @noEscape */ $viewModel->getValidationJson() ?>,
 
             init() {
                 this.form = form || this.$el;
@@ -38,6 +39,23 @@ $themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
             },
 
             registerEventListeners() {
+                htmx.on(this.form, 'htmx:beforeSwap', (event) => {
+                    if (event.detail.requestConfig.elt.name === 'region') {
+                        this.validator.removeField(this.form.elements.region);
+                    }
+                });
+
+                htmx.on(this.form, 'htmx:afterSwap', (event) => {
+                    if (event.detail.requestConfig.elt.name === 'region') {
+                        this.validator.applyRules({ region: this.validationRules.rules.region });
+                    }
+                });
+
+                htmx.on(this.form.country_id, 'change', (event) => {
+                    const eventName = 'mahxcheckout-' + this.form.id + '-country_id-changed';
+                    htmx.trigger(event.target, eventName, { country: event.target.value });
+                });
+
                 const cancelButton = this.form.querySelector("button[data-role='action-cancel']");
                 if (cancelButton) {
                     cancelButton.addEventListener('click', this.handleBillingCancel.bind(this));
@@ -50,11 +68,16 @@ $themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
             },
 
             async handleBillingUpdate() {
+                // this.validator.onFail((fields) =>  console.log(fields));
                 const isValid = await this.validator.revalidate();
-                if (isValid) {
-                    this.stepStore.actionButton.isDisabled = false;
-                    htmx.trigger(document.body, 'mahxcheckout-billing-validated');
+
+                if (! isValid) {
+                    htmx.trigger(this.form, 'submit');
+                    return;
                 }
+
+                this.stepStore.actionButton.isDisabled = false;
+                htmx.trigger(this.form, 'mahxcheckout-billing-validated');
             },
 
             handleBillingCancel(event) {
@@ -62,13 +85,10 @@ $themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
                 this.stepStore.actionButton.isDisabled = false;
             },
 
-            handleCountryChange(event) {
-                this.$dispatch(`mahxcheckout-${this.form.id}-country_id-changed`, { country: event.target.value })
-            },
-
             modifyFormAfterRender() {
                 Promise.resolve().then(() => {
                     this.focusOnFirstname();
+                    console.log('applyvalidation')
                     this.applyValidation();
                 });
             },
@@ -80,7 +100,7 @@ $themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
             applyValidation() {
                 this.validator = mahxCheckout.validator(Object.assign({
                     form: this.form,
-                }, JSON.parse('<?= $esc->js($viewModel->getValidationJson()) ?>')))
+                }, this.validationRules))
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
             <?php if($themeInfo->isHyvaTheme()): ?>

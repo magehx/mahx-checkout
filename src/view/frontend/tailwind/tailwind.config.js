@@ -7,7 +7,7 @@ module.exports = {
         '../../../../../**/src/view/frontend/layout/*.xml',
     ],
     safelist: [
-        'input-error',
+        'input-error', 'select-error'
     ],
     theme: {
         extend: {},

@@ -49,6 +49,7 @@ class AddHtmxAttributesToInputsForShippingEstimation implements ObserverInterfac
     {
         return HxAttributesData::from([
             'target' => "#shipping-methods-section",
+            'trigger' => 'change delay:300ms',
             'swap' => HtmxSwapOption::outerHTML,
             'indicator' => $this->isCountryField($fieldName) ? ".est-shipping-country-loader" : ".est-shipping-loader",
             'include' => ['#guest-email-form'],

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\MahxCheckout\Observer\Controller;
 
+use MageHx\MahxCheckout\Model\CheckoutDataStorage;
 use MageHx\MahxCheckout\Model\Theme\ActiveCheckoutThemeResolver;
 use MageHx\MahxCheckout\Model\Theme\CheckoutThemeInterface;
 use MageHx\MahxCheckout\Service\GenerateBlockHtml;
@@ -13,14 +14,12 @@ use Magento\Framework\Event\ObserverInterface;
 
 class IncludeNavContentInResponse implements ObserverInterface
 {
-    private CheckoutThemeInterface $checkoutTheme;
     private ?Observer $observer = null;
 
     public function __construct(
-        ActiveCheckoutThemeResolver $checkoutThemeResolver,
         private readonly GenerateBlockHtml $generateBlockHtml,
+        private readonly CheckoutDataStorage $checkoutDataStorage,
     ) {
-        $this->checkoutTheme = $checkoutThemeResolver->resolve();
     }
 
 
@@ -28,7 +27,7 @@ class IncludeNavContentInResponse implements ObserverInterface
     {
         $this->observer = $observer;
 
-        if (!$this->isAllowedActions()) {
+        if (! $this->isAllowedActions() || $this->checkoutDataStorage->isErrorResponse()) {
             return;
         }
 
