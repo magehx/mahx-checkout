@@ -19,14 +19,40 @@ $themeInfo = $viewModelProvider->get(DesignThemeInfo::class);
         return {
             form: null,
             validator: null,
+            validationRules: <?= /** @noEscape */ $viewModel->getValidationJson() ?>,
 
             init() {
                 this.form = form || this.$el ;
-                this.validator = mahxCheckout.validator(Object.assign({
-                    form: this.form,
-                }, JSON.parse('<?= $esc->js($viewModel->getValidationJson()) ?>')));
+                this.initializeValidator();
+                this.registerEventListeners();
+            },
+
+            initializeValidator() {
+                this.validator = mahxCheckout.validator(
+                    Object.assign({ form: this.form }, this.validationRules)
+                );
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
+
+            registerEventListeners() {
+                <?php
+                /**
+                 * When county switches, it swaps just the region field within the shipping address.
+                 * A region can be optional or required based on the country. So this means we
+                 * need to "refresh" just the validation of region field. This is what we do here.
+                 */
+                ?>
+                htmx.on('htmx:beforeSwap', (event) => {
+                    if (event.detail.requestConfig.elt.name === 'country_id') {
+                        this.validator.removeField(this.form.elements.region);
+                    }
+                });
+                htmx.on(this.form, 'htmx:afterSwap', (event) => {
+                    if (event.detail.requestConfig.elt.name === 'country_id') {
+                        this.validator.applyRules({ region: this.validationRules.rules.region });
+                    }
+                });
+            }
         };
     }
     <?php if($themeInfo->isHyvaTheme()): ?>

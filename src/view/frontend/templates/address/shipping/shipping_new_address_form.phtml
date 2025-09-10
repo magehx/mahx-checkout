@@ -55,7 +55,7 @@ $newAddressFormName = CheckoutForm::NEW_ADDRESS->value;
                     <?= $esc->html(__('Cancel')) ?>
                 </button>
                 <button class="action action-update btn btn-neutral" type="submit">
-                    <?= $esc->html($viewModel->isNewAddressExists() ? __('Ship Here') : __('Update')) ?>
+                    <?= $esc->html($viewModel->isNewAddressExists() ? __('Update') : __('Ship Here')) ?>
                 </button>
             </div>
         </div>

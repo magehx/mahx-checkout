@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MageHx\MahxCheckout\Controller\Shipping;
 
 use Exception;
+use MageHx\MahxCheckout\Model\CheckoutDataStorage;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Psr\Log\LoggerInterface;
@@ -45,6 +46,7 @@ class SaveShippingInformation extends ComponentAction
             return $this->withCurrentStepPushUrlHeader($this->getCheckoutContentResponse());
         } catch (Exception $e) {
             $this->logger->error('MAHXCheckout::SaveShippingInformation::failed', ['exception' => $e]);
+            $this->checkoutDataStorage->setIsErrorResponse(true);
             $this->prepareErrorNotificationsWithFormData($shippingInfo->toArray(), $e);
             return $this->withNoReswapHeader($this->getNotificationsResponse());
         }

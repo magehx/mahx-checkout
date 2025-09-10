@@ -16,9 +16,11 @@ $viewModel = $viewModelProvider->get(ShippingAddress::class);
 <script nonce="<?= $esc->htmlAttr($nonce) ?>">
     function NewShippingAddressFormManager(elem) {
         const newFormId = '<?= /** @noEscape */ CheckoutForm::NEW_ADDRESS->value ?>';
+
         return {
             form: null,
             validator: null,
+            validationRules: <?= /** @noEscape */ $viewModel->getValidationJson() ?>,
 
             init() {
                 this.$el = elem || this.$el;
@@ -28,10 +30,11 @@ $viewModel = $viewModelProvider->get(ShippingAddress::class);
             },
 
             handleCountryChange(event) {
-                event.target.dispatchEvent(new CustomEvent('mahxcheckout-' + newFormId + '-country_id-changed', {
+                const eventName = 'mahxcheckout-' + newFormId + '-country_id-changed';
+                htmx.trigger(event.target, eventName, {
                     bubbles: true,
                     detail: { country: event.target.value }
-                }))
+                });
             },
 
             modifyFormAfterRender() {
@@ -42,7 +45,47 @@ $viewModel = $viewModelProvider->get(ShippingAddress::class);
             },
 
             registerEventListeners() {
-                this.form.elements.country_id.addEventListener('change', this.handleCountryChange.bind(this));
+                htmx.on(this.form.elements.country_id, 'change', this.handleCountryChange.bind(this));
+                <?php // Prevent form submission when the form validation fails ?>
+                htmx.on(this.form, 'htmx:confirm', (event) => {
+                    if (event.detail.elt !== this.form) {
+                        return;
+                    }
+                    <?php // Stop sending htmx request immediately. ?>
+                    event.preventDefault();
+
+                    this.validator.revalidate().then((isValid) => {
+                        if (isValid) {
+                            <?php // Proceed with htmx request. ?>
+                            event.detail.issueRequest();
+                        }
+                    });
+                });
+                <?php // When country changes, region field is swapped. Here we remove the validation for region field ?>
+                htmx.on(this.form, 'htmx:beforeSwap', (event) => {
+                    if (event.detail.requestConfig.elt.name === 'region') {
+                        this.validator.removeField(this.form.elements.region);
+                    }
+                });
+                <?php // When country changes, region field is swapped. Here we reapply the validation for region field ?>
+                htmx.on(this.form, 'htmx:afterSwap', (event) => {
+                    if (event.detail.requestConfig.elt.name === 'region') {
+                        this.validator.applyRules({ region: this.validationRules.rules.region });
+                    }
+                });
+            },
+
+            async handleAddressUpdate() {
+                this.validator.onFail((fields) =>  console.log(fields));
+                const isValid = await this.validator.revalidate();
+
+                if (! isValid) {
+                    htmx.trigger(this.form, 'submit');
+                    return;
+                }
+
+                this.stepStore.actionButton.isDisabled = false;
+                htmx.trigger(this.form, 'mahxcheckout-billing-validated');
             },
 
             focusOnFirstname() {
@@ -52,7 +95,7 @@ $viewModel = $viewModelProvider->get(ShippingAddress::class);
             applyValidation() {
                 this.validator = mahxCheckout.validator(Object.assign({
                     form: this.form,
-                }, JSON.parse('<?= $esc->js($viewModel->getValidationJson()) ?>')));
+                }, this.validationRules));
                 this.addValidatorToPageNavigation(this.form.id, this.validator);
             },
         };

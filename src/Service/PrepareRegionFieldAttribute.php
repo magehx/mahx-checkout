@@ -10,12 +10,14 @@ use MageHx\HtmxActions\Enums\HtmxSwapOption;
 use MageHx\MahxCheckout\Data\FormField\BaseFormFieldMeta;
 use MageHx\MahxCheckout\Data\FormField\SelectFieldMeta;
 use MageHx\MahxCheckout\Data\FormFieldConfig;
+use MageHx\MahxCheckout\Model\Config;
 use MageHx\MahxCheckout\Model\CountryProvider;
 use MageHx\MahxCheckout\Model\CustomerAddress;
 
 class PrepareRegionFieldAttribute
 {
     public function __construct(
+        private readonly Config $config,
         private readonly CustomerAddress $customerAddress,
         private readonly CountryProvider $countryProvider,
         private readonly GenerateBlockHtml $generateBlockHtmlService,
@@ -39,7 +41,7 @@ class PrepareRegionFieldAttribute
                meta: new BaseFormFieldMeta(),
            );
        }
-
+        $regionField->required = in_array($country, $this->config->getRegionRequiredCountries());
         $regionOptions = $this->countryProvider->getRegionOptionsByCountry($country);
 
         if (empty($regionOptions)) {
@@ -47,7 +49,6 @@ class PrepareRegionFieldAttribute
         }
 
         $regionField->type = 'select';
-        $regionField->required = true;
 
         if (!$regionField->meta instanceof SelectFieldMeta) {
             $regionFieldMeta = SelectFieldMeta::from([

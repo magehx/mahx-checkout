@@ -48,7 +48,7 @@ $showFormViewModel = $viewModelProvider->get(ShowBillingForm::class);
                     ->vals([
                         'show_form' => 0,
                         'show_cards' => 0,
-                        'is_billing_same' => (int) $viewModel->isBillingSame(),
+                        'is_billing_same' => 0,
                     ])
                     ->swapOuterHTML()
                     ->render() ?>
