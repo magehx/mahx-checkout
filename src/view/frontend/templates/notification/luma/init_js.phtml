@@ -1,0 +1,24 @@
+<?php declare(strict_types=1);
+
+use MageHx\MageTemplateUtils\Model\Esc;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var string $nonce */
+/** @var Esc $esc */
+?>
+<script nonce="<?= $esc->htmlAttr($nonce) ?>">
+    'use strict';
+
+    require(['jquery'], ($) => {
+        $(() => {
+            const notificationContainer = document.getElementById('notifications-container');
+            const notificationItems = notificationContainer.querySelectorAll("[data-role=notification]");
+
+            Array.from(notificationItems).forEach((notificationItem) => {
+                const notificationManager = CheckoutNotification(notificationItem);
+                notificationManager.init();
+            });
+        });
+    });
+</script>
