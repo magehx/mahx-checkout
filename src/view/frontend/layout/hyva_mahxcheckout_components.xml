@@ -12,5 +12,6 @@
         <referenceBlock name="billing.address.form.luma.js" remove="true" />
         <referenceBlock name="shipping.address.cards.form.luma.js" remove="true" />
         <referenceBlock name="checkout.luma.js" remove="true" />
+        <referenceBlock name="checkout.notifications.luma.js" remove="true" />
     </body>
 </page>

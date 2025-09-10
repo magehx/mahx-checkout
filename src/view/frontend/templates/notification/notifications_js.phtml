@@ -6,19 +6,32 @@ use MageHx\MageTemplateUtils\Model\Esc;
 /** @var string $nonce */
 ?>
 <script nonce="<?= $esc->htmlAttr($nonce) ?>">
-    document.addEventListener('alpine:init', () => {
+    'use strict';
+
+    function CheckoutNotification(elem) {
         let timer;
-        Alpine.data('Notification', () => ({
-            show: true,
+
+        return {
+            root: null,
+            show: false,
 
             init() {
+                this.root = elem || this.$el;
                 clearTimeout(timer);
-                timer = setTimeout(() => this.setShow(false),  3000);
+                this.toggleNotifications();
+                timer = setTimeout(this.toggleNotifications.bind(this),  3000);
             },
 
-            setShow(status) {
-                this.show = status;
+            toggleNotifications() {
+                this.show = !this.show;
+                const alertElems = htmx.findAll(this.root, '.alert');
+                Array.from(alertElems).forEach((alertItem) => {
+                    htmx.toggleClass(alertItem, 'show');
+                });
             },
-        }));
+        };
+    }
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('Notification', CheckoutNotification);
     });
 </script>

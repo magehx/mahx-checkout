@@ -8,9 +8,9 @@ use MageHx\MahxCheckout\Block\Notifications;
 ?>
 <div id="notifications-container" <?= $block->isHtmxOOBNeeded() ?  'hx-swap-oob="true"' : ''?>>
     <?php if (!empty($block->getValidationErrors())): ?>
-        <div class="toast toast-top toast-end z-50" x-data="Notification" x-show="show">
+        <div class="toast toast-top toast-end z-50" data-role="notification" x-data="Notification">
             <?php foreach ($block->getValidationErrors() as $message): ?>
-                <div class="alert alert-error">
+                <div class="alert alert-error" x-show="show">
                     <span><?= $esc->html(__($message)) ?></span>
                 </div>
             <?php endforeach; ?>
@@ -18,18 +18,19 @@ use MageHx\MahxCheckout\Block\Notifications;
     <?php endif; ?>
 
     <?php if (!empty($block->getGenericErrorMessage())): ?>
-    <div class="toast toast-top toast-end z-50" x-data="Notification" x-show="show">
-        <div class="alert alert-warning">
+    <div class="toast toast-top toast-end z-50" data-role="notification" x-data="Notification">
+        <div class="alert alert-warning" x-show="show">
             <span><?= $esc->html($block->getGenericErrorMessage()) ?></span>
         </div>
     </div>
     <?php endif; ?>
 
     <?php if (!empty($block->getSuccessMessage())): ?>
-        <div class="toast toast-top toast-end z-50" x-data="Notification" x-show="show">
-            <div class="alert alert-success">
+        <div class="toast toast-top toast-end z-50" data-role="notification" x-data="Notification">
+            <div class="alert alert-success" x-show="show">
                 <span><?= $esc->html($block->getSuccessMessage()) ?></span>
             </div>
         </div>
     <?php endif; ?>
+    <?= $block->getChildHtml('luma_js') ?>
 </div>
